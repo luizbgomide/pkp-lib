@@ -3,8 +3,8 @@
 /**
  * @file controllers/modals/publish/PublishHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PublishHandler
@@ -83,7 +83,7 @@ class PublishHandler extends Handler {
 		$allowedLocales = $submissionContext->getSupportedSubmissionLocales();
 		$errors = Services::get('publication')->validatePublish($this->publication, $this->submission, $allowedLocales, $primaryLocale);
 
-		$publicationApiUrl = $request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getPath(), 'submissions/' . $this->submission->getId() . '/publications/' . $this->publication->getId() . '/publish');
+		$publicationApiUrl = $request->getDispatcher()->url($request, PKPApplication::ROUTE_API, $submissionContext->getPath(), 'submissions/' . $this->submission->getId() . '/publications/' . $this->publication->getId() . '/publish');
 
 		$publishForm = new APP\components\forms\publication\PublishForm($publicationApiUrl, $this->publication, $submissionContext, $errors);
 

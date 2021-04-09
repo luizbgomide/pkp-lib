@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/files/productionReady/ProductionReadyFilesGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ProductionReadyFilesGridHandler
@@ -40,13 +40,7 @@ class ProductionReadyFilesGridHandler extends FileListGridHandler {
 				'deleteFile',
 			)
 		);
-	}
 
-	/**
-	 * @copydoc FileListGridHandler::initialize()
-	 */
-	function initialize($request, $args = null) {
-		parent::initialize($request, $args);
 		$this->setTitle('editor.submission.production.productionReadyFiles');
 	}
 }

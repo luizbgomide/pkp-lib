@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/queries/QueryNotesGridCellProvider.inc.php
  *
- * Copyright (c) 2016-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2016-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class QueryNotesGridCellProvider
@@ -59,14 +59,14 @@ class QueryNotesGridCellProvider extends DataObjectGridCellProvider {
 	function getCellActions($request, $row, $column, $position = GRID_ACTION_POSITION_DEFAULT) {
 		switch ($column->getId()) {
 			case 'contents':
-				$element = $row->getData();
-				$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-				import('lib.pkp.classes.submission.SubmissionFile');
-				$submissionFiles = $submissionFileDao->getLatestRevisionsByAssocId(
-					ASSOC_TYPE_NOTE, $element->getId(),
-					$this->_submission->getId(),
-					SUBMISSION_FILE_QUERY
-				);
+				import('lib.pkp.classes.submission.SubmissionFile'); // SUBMISSION_FILE_
+				$submissionFiles = Services::get('submissionFile')->getMany([
+					'assocTypes' => [ASSOC_TYPE_NOTE],
+					'assocIds' => [$row->getData()->getId()],
+					'submissionIds' => [$this->_submission->getId()],
+					'fileStages' => [SUBMISSION_FILE_QUERY],
+				]);
+
 				import('lib.pkp.controllers.api.file.linkAction.DownloadFileLinkAction');
 				$actions = array();
 				foreach ($submissionFiles as $submissionFile) {

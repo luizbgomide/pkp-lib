@@ -4,8 +4,8 @@
 <!--
   * xml/schema/submissions.xml
   *
-  * Copyright (c) 2014-2020 Simon Fraser University
-  * Copyright (c) 2000-2020 John Willinsky
+  * Copyright (c) 2014-2021 Simon Fraser University
+  * Copyright (c) 2000-2021 John Willinsky
   * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
   *
   * Submission-related schema (e.g. authors) in XML.
@@ -54,9 +54,6 @@
 		<descr>Submissions</descr>
 		<index name="submissions_context_id">
 			<col>context_id</col>
-		</index>
-		<index name="submissions_publication_id">
-			<col>current_publication_id</col>
 		</index>
 	</table>
 
@@ -355,9 +352,6 @@
 		<field name="assoc_id" type="I8">
 			<descr>Optional ID of an associated record (e.g., a file_id)</descr>
 		</field>
-		<index name="submission_search_object_submission">
-			<col>submission_id</col>
-		</index>
 		<descr>Indexed objects.</descr>
 	</table>
 

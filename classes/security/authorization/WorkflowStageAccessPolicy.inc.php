@@ -2,8 +2,8 @@
 /**
  * @file classes/security/authorization/WorkflowStageAccessPolicy.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class WorkflowStageAccessPolicy
@@ -25,7 +25,7 @@ class WorkflowStageAccessPolicy extends ContextPolicy {
 	 * @param $submissionParameterName string
 	 * @param $stageId integer One of the WORKFLOW_STAGE_ID_* constants.
 	 * @param $workflowType string|null Which workflow the stage access must be granted
-	 *  for. One of WORKFLOW_TYPE_*.
+	 *  for. One of PKPApplication::WORKFLOW_TYPE_*.
 	 */
 	function __construct($request, &$args, $roleAssignments, $submissionParameterName, $stageId, $workflowType = null) {
 		parent::__construct($request);

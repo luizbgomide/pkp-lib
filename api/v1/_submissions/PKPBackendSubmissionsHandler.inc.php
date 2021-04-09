@@ -3,8 +3,8 @@
 /**
  * @file api/v1/_submissions/PKPBackendSubmissionsHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPBackendSubmissionsHandler
@@ -42,7 +42,7 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 			),
 			'DELETE' => array(
 				array(
-					'pattern' => "{$rootPattern}/{submissionId}",
+					'pattern' => "{$rootPattern}/{submissionId:\d+}",
 					'handler' => array($this, 'delete'),
 					'roles' => array(
 						ROLE_ID_SITE_ADMIN,
@@ -102,7 +102,7 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 				case 'status':
 				case 'stageIds':
 				case 'assignedTo':
-					if (is_string($val) && strpos($val, ',') > -1) {
+					if (is_string($val)) {
 						$val = explode(',', $val);
 					} elseif (!is_array($val)) {
 						$val = array($val);

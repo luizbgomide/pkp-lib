@@ -3,8 +3,8 @@
 /**
  * @file classes/plugins/PluginGalleryDAO.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PluginGalleryDAO
@@ -31,7 +31,7 @@ class PluginGalleryDAO extends DAO {
 	function getNewestCompatible($application, $category = null, $search = null) {
 		$doc = $this->_getDocument();
 		$plugins = array();
-		foreach ($doc->getElementsByTagName('plugin') as $element) {
+		foreach ($doc->getElementsByTagName('plugin') as $index => $element) {
 			$plugin = $this->_compatibleFromElement($element, $application);
 			// May be null if no compatible version exists; also
 			// apply search filters if any supplied.
@@ -40,7 +40,7 @@ class PluginGalleryDAO extends DAO {
 				($category == '' || $category == PLUGIN_GALLERY_ALL_CATEGORY_SEARCH_VALUE || $plugin->getCategory() == $category) &&
 				($search == '' || PKPString::strpos(PKPString::strtolower(serialize($plugin)), PKPString::strtolower($search)) !== false)
 			) {
-				$plugins[] = $plugin;
+				$plugins[$index] = $plugin;
 			}
 		}
 		return $plugins;

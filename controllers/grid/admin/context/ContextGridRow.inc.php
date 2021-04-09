@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/admin/context/ContextGridRow.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ContextGridRow
@@ -68,7 +68,7 @@ class ContextGridRow extends GridRow {
 		$this->addAction(
 			new LinkAction(
 				'wizard',
-				new RedirectAction($dispatcher->url($request, ROUTE_PAGE, 'index', 'admin', 'wizard', $element->getId())),
+				new RedirectAction($dispatcher->url($request, PKPApplication::ROUTE_PAGE, 'index', 'admin', 'wizard', $element->getId())),
 				__('grid.action.wizard'),
 				'wrench'
 			)

@@ -2,8 +2,8 @@
 /**
  * @file classes/notification/managerDelegate/AnnouncementNotificationManager.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AnnouncementNotificationManager
@@ -46,7 +46,7 @@ class AnnouncementNotificationManager extends NotificationManagerDelegate {
 	public function getNotificationUrl($request, $notification) {
 		return $request->getDispatcher()->url(
 			$request,
-			ROUTE_PAGE,
+			PKPApplication::ROUTE_PAGE,
 			$request->getContext()->getData('path'),
 			'announcement',
 			'view',
@@ -126,7 +126,7 @@ class AnnouncementNotificationManager extends NotificationManagerDelegate {
 			'announcement' => $this->_announcement->getLocalizedDescription(),
 			'url' => Application::get()->getRequest()->getDispatcher()->url(
 				Application::get()->getRequest(),
-				ROUTE_PAGE,
+				PKPApplication::ROUTE_PAGE,
 				Application::get()->getRequest()->getContext()->getData('path'),
 				'announcement',
 				'view',

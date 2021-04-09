@@ -23,6 +23,9 @@ msgstr "Provide a formatted list of references for works cited in this submissio
 msgid "author.submission.roundStatus.reviewsReady"
 msgstr "New reviews have been submitted and are being considered by the editor."
 
+msgid "author.submission.roundStatus.reviewOverdue"
+msgstr "One or more reviewers missed their deadline. The editorial team has been notified and will take action to ensure reviews are completed. You do not need to take any action at this time. You will be notified when a decision has been made."
+
 msgid "submission.confirm.message"
 msgstr "Your submission has been uploaded and is ready to be sent. You may go back to review and adjust any of the information you have entered before continuing. When you are ready, click \"Finish Submission\"."
 
@@ -58,6 +61,18 @@ msgstr "Acknowledge the copyright statement"
 
 msgid "submission.submit.copyrightNoticeAgree"
 msgstr "Yes, I agree to abide by the terms of the copyright statement."
+
+msgid "submission.submit.genre.label"
+msgstr "What kind of file is this?"
+
+msgid "submission.submit.genre.description"
+msgstr "Choose the option that best describes this file."
+
+msgid "submission.submit.genre.error"
+msgstr "Please select the kind of file for each upload."
+
+msgid "submission.submit.removeConfirm"
+msgstr "Are you sure you want to remove this file?"
 
 msgid "submission.submit.whatNext"
 msgstr "What Happens Next?"
@@ -416,9 +431,6 @@ msgstr "Accepted"
 msgid "submission.acknowledge"
 msgstr "Acknowledge"
 
-msgid "submission.addSuppFile"
-msgstr "Add a Supplementary File"
-
 msgid "submission.ask"
 msgstr "Ask"
 
@@ -567,7 +579,7 @@ msgid "submission.event.submissionSubmitted"
 msgstr "Initial submission completed."
 
 msgid "submission.event.fileRevised"
-msgstr "Revision \"{$name}\" (file ID {$fileId}-{$fileRevision}) was uploaded."
+msgstr "Revision \"{$name}\" was uploaded for file {$submissionFileId}."
 
 msgid "submission.event.general.metadataUpdated"
 msgstr "Submission metadata updated"
@@ -631,6 +643,9 @@ msgstr "Files"
 
 msgid "submission.files.downloadAll"
 msgstr "Download All Files"
+
+msgid "submission.file.notAllowedUploaderUserId"
+msgstr "A record of the file uploader is saved when the file is created and can not be changed."
 
 msgid "submission.galley"
 msgstr "Galley"
@@ -725,9 +740,6 @@ msgstr "Are you sure you want to permanently delete this galley?"
 msgid "submission.layout.confirmDeleteGalleyImage"
 msgstr "Are you sure you want to remove this image from the galley?"
 
-msgid "submission.layout.confirmDeleteSupplementaryFile"
-msgstr "Are you sure you want to permanently delete this supplementary file?"
-
 msgid "submission.layout.deleteGalleyStylesheet"
 msgstr "Delete this style sheet."
 
@@ -791,14 +803,8 @@ msgstr "Layout Version"
 msgid "submission.layout.newGalley"
 msgstr "Create New Galley"
 
-msgid "submission.layout.newSupplementaryFile"
-msgstr "Upload New Supplementary File"
-
 msgid "submission.layout.noStyleFile"
 msgstr "No style sheet file has been added to this galley."
-
-msgid "submission.layout.supplementaryFiles"
-msgstr "Supplementary File Review"
 
 msgid "submission.layout.viewingGalley"
 msgstr "Viewing Submission Galley"
@@ -1025,6 +1031,12 @@ msgstr "Dependent Files"
 msgid "submission.manageDependentFiles"
 msgstr "Manage Dependent Files"
 
+msgid "submission.upload.instructions"
+msgstr "Upload any files the editorial team will need to evaluate your submission."
+
+msgid "submission.upload.percentComplete"
+msgstr "Uploading {$percent}% complete"
+
 msgid "submission.upload.dependent"
 msgstr "Upload a Dependent File"
 
@@ -1033,9 +1045,6 @@ msgstr "Upload a Discussion File"
 
 msgid "submission.summary"
 msgstr "Summary"
-
-msgid "submission.supplementaryFiles"
-msgstr "Supplementary Files"
 
 msgid "submission.supportingAgencies"
 msgstr "Supporting Agencies"
@@ -1160,9 +1169,6 @@ msgstr "Declined"
 msgid "submission.status.published"
 msgstr "Published"
 
-msgid "submission.status.scheduled"
-msgstr "Scheduled"
-
 msgid "submission.submit.uploadStep"
 msgstr "1. Upload File"
 
@@ -1216,9 +1222,6 @@ msgstr "Upload File"
 
 msgid "submission.upload.copyeditedVersion"
 msgstr "Upload Copyedited File"
-
-msgid "submission.upload.fairCopy"
-msgstr "Upload Fair Copy"
 
 msgid "submission.upload.uploadFiles"
 msgstr "Upload Files"
@@ -1361,6 +1364,9 @@ msgstr "Approve Proofs"
 msgid "editor.submission.decision.disapproveProofsDescription"
 msgstr "This file proof will no longer be publicly available for download or purchase. Do you want to disapprove it?"
 
+msgid "editor.submission.decision.revertDecline"
+msgstr "Revert Decline"
+
 msgid "editor.submission.decision.noDecisionsAvailable"
 msgstr "Assign an editor to enable the editorial decisions for this stage."
 
@@ -1414,6 +1420,9 @@ msgstr "Draft Files"
 
 msgid "editor.submission.addAuditorError"
 msgstr "There was an error trying to assign the auditor. Please Try again."
+
+msgid "submission.event.fileEdited"
+msgstr "The metadata for file \"{$originalFileName}\" was edited by {$username}."
 
 msgid "submission.event.fileUploaded"
 msgstr "A file \"{$originalFileName}\" was uploaded for submission {$submissionId} by {$username}."
@@ -1490,6 +1499,9 @@ msgstr "A new round of reviews was initiated."
 msgid "notification.type.editorDecisionDecline"
 msgstr "Submission declined."
 
+msgid "notification.type.editorDecisionRevertDecline"
+msgstr "Declined submission reactivated."
+
 msgid "notification.uploadedResponse"
 msgstr "Response uploaded."
 
@@ -1498,6 +1510,9 @@ msgstr "An editor must be assigned before review is initiated. Please add editor
 
 msgid "notification.type.submissionNewVersion"
 msgstr "A new version of a submission was created"
+
+msgid "notification.type.revertDecline"
+msgstr "The decision to decline this submission was reverted."
 
 msgid "grid.reviewAttachments.title"
 msgstr "Reviewer's Attachments"
@@ -1607,26 +1622,17 @@ msgstr "Attach the following permissions to the submission:"
 msgid "submission.license"
 msgstr "License"
 
-msgid "submission.license.description"
-msgstr "The license will be set automatically to <a href='{$licenseUrl}' target='_blank'>{$licenseName}</a> when this is published."
-
 msgid "submission.copyright"
 msgstr "Copyright"
 
 msgid "submission.copyrightHolder"
 msgstr "Copyright Holder"
 
-msgid "submission.copyrightHolder.description"
-msgstr "Copyright will be assigned automatically to {$copyright} when this is published."
-
 msgid "submission.copyrightHolder.other"
 msgstr "Custom copyright statement"
 
 msgid "submission.copyrightOther"
 msgstr "Copyright statement"
-
-msgid "submission.copyrightOther.description"
-msgstr "Assign copyright for published submissions to the following party."
 
 msgid "submission.copyrightYear"
 msgstr "Copyright Year"
@@ -1702,9 +1708,6 @@ msgstr "Review Discussions"
 
 msgid "submission.queries.editorial"
 msgstr "Copyediting Discussions"
-
-msgid "submission.queries.production"
-msgstr "Production Discussions"
 
 msgid "submission.query.subject"
 msgstr "Subject"
@@ -1850,74 +1853,20 @@ msgstr "Nothing has been published in this category yet."
 msgid "catalog.category.subcategories"
 msgstr "Subcategories"
 
-msgid "submission.publication"
-msgstr "Publication"
-
-msgid "submission.publications"
-msgstr "Publications"
-
 msgid "publication.contributors"
 msgstr "Contributors"
-
-msgid "publication.copyrightYearBasis.issueDescription"
-msgstr "The copyright year will be set automatically when this is published in an issue."
-
-msgid "publication.copyrightYearBasis.submissionDescription"
-msgstr "The copyright year will be set automatically based on the publication date."
 
 msgid "publication.createVersion"
 msgstr "Create New Version"
 
-msgid "publication.datePublished"
-msgstr "Date Published"
-
 msgid "publication.datePublished.errorFormat"
 msgstr "The date must be in the format YYYY-MM-DD, such as 2019-01-01."
-
-msgid "publication.editDisabled"
-msgstr "This version has been published and can not be edited."
-
-msgid "publication.event.published"
-msgstr "The submission was published."
-
-msgid "publication.event.scheduled"
-msgstr "The submission was scheduled for publication."
-
-msgid "publication.event.unpublished"
-msgstr "The submission was unpublished."
 
 msgid "publication.event.versionCreated"
 msgstr "A new version was created."
 
-msgid "publication.event.versionPublished"
-msgstr "A new version was published."
-
-msgid "publication.event.versionScheduled"
-msgstr "A new version was scheduled for publication."
-
-msgid "publication.event.versionUnpublished"
-msgstr "A version was removed from publication."
-
-msgid "publication.invalidSubmission"
-msgstr "The submission for this publication could not be found."
-
 msgid "publication.publicationLicense"
 msgstr "Permissions & Disclosure"
-
-msgid "publication.publish"
-msgstr "Publish"
-
-msgid "publication.publish.requirements"
-msgstr "The following requirements must be met before this can be published."
-
-msgid "publication.required.declined"
-msgstr "A declined submission can not be published."
-
-msgid "publication.required.reviewStage"
-msgstr "The submission must be in the Copyediting or Production stages before it can be published."
-
-msgid "publication.status.published"
-msgstr "Published"
 
 msgid "publication.status.scheduled"
 msgstr "Scheduled"
@@ -1925,23 +1874,11 @@ msgstr "Scheduled"
 msgid "publication.status.unpublished"
 msgstr "Unpublished"
 
-msgid "publication.status.unscheduled"
-msgstr "Unscheduled"
-
 msgid "publication.titleAbstract"
 msgstr "Title & Abstract"
 
-msgid "publication.unpublish"
-msgstr "Unpublish"
-
-msgid "publication.unpublish.confirm"
-msgstr "Are you sure you don't want this to be published?"
-
 msgid "publication.unschedule"
 msgstr "Unschedule"
-
-msgid "publication.unschedule.confirm"
-msgstr "Are you sure you don't want this scheduled for publication?"
 
 msgid "publication.urlPath"
 msgstr "URL Path"
@@ -1960,9 +1897,6 @@ msgstr "All Versions"
 
 msgid "publication.version.confirm"
 msgstr "Are you sure you want to create a new version?"
-
-msgid "publication.version.details"
-msgstr "Publication details for version {$version}"
 
 msgid "publication.wordCountLong"
 msgstr "The abstract is too long. It shoud be {$limit} words or less. It is currently {$count} words long."

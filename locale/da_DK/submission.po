@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:43+00:00\n"
-"PO-Revision-Date: 2020-10-09 07:50+0000\n"
+"PO-Revision-Date: 2020-12-09 09:51+0000\n"
 "Last-Translator: Niels Erik Frederiksen <nef@kb.dk>\n"
 "Language-Team: Danish <http://translate.pkp.sfu.ca/projects/pkp-lib/"
 "submission/da_DK/>\n"
@@ -25,9 +25,6 @@ msgstr "Accepteret"
 
 msgid "submission.acknowledge"
 msgstr "Bekræft"
-
-msgid "submission.addSuppFile"
-msgstr "Tilføj en supplerende fil"
 
 msgid "submission.ask"
 msgstr "Spørg"
@@ -213,9 +210,6 @@ msgstr "Er du sikker på, at du vil slette denne publiceringsfil permanent?"
 msgid "submission.layout.confirmDeleteGalleyImage"
 msgstr "Er du sikker på, at du vil fjerne dette billede fra publiceringsfilen?"
 
-msgid "submission.layout.confirmDeleteSupplementaryFile"
-msgstr "Er du sikker på, at du vil slette denne supplerende fil permanent?"
-
 msgid "submission.layout.deleteGalleyStylesheet"
 msgstr "Slet dette stylesheet."
 
@@ -273,14 +267,8 @@ msgstr "Layout-version"
 msgid "submission.layout.newGalley"
 msgstr "Opret ny publicerings-version"
 
-msgid "submission.layout.newSupplementaryFile"
-msgstr "Overfør ny supplerende fil"
-
 msgid "submission.layout.noStyleFile"
 msgstr "Der er ikke føjet en stylesheet-fil til denne publiceringsversion."
-
-msgid "submission.layout.supplementaryFiles"
-msgstr "Bedømmelse af supplerende fil"
 
 msgid "submission.layout.viewingGalley"
 msgstr "Visning af manuskript (publiceringsversion)"
@@ -443,9 +431,6 @@ msgstr "Indsender"
 
 msgid "submission.summary"
 msgstr "Resumé"
-
-msgid "submission.supplementaryFiles"
-msgstr "Supplerende filer"
 
 msgid "submission.titleAndAbstract"
 msgstr "Titel og resumé"
@@ -1024,9 +1009,6 @@ msgid "editor.submission.removeStageParticipant.description"
 msgstr ""
 "Du er i gang med at fjerne denne deltager fra <strong>alle</strong> trin."
 
-msgid "submission.queries.production"
-msgstr "Drøftelser under produktion"
-
 msgid "reviewer.submission.reviewFiles"
 msgstr "Bedømmelsesfiler"
 
@@ -1106,7 +1088,7 @@ msgid "submission.event.participantAdded"
 msgstr "\"{$name}\" ({$username}) blev tilknyttet denne indsendelse som {$userGroupName}."
 
 msgid "submission.event.fileRevised"
-msgstr "Revision \"{$name}\" (file ID {$fileId}-{$fileRevision}) blev uploadet."
+msgstr "Revision \"{$name}\" blev uploadet til {$submissionFileId}."
 
 msgid "submission.event.lastRevisionDeleted"
 msgstr "En fil \"{$title}\" fik seneste revision fjernet af {$username}."
@@ -1267,9 +1249,6 @@ msgstr "Upload en biblioteksfil"
 
 msgid "submission.upload.libraryCategory"
 msgstr "Kategori for indsendelsesdokument"
-
-msgid "submission.upload.fairCopy"
-msgstr "Upload kopi af renskrift"
 
 msgid "submission.upload.uploadFiles"
 msgstr "Upload filer"
@@ -1594,10 +1573,10 @@ msgid "submission.list.infoCenter"
 msgstr "Aktivitetslog & Noter"
 
 msgid "submission.list.responseDue"
-msgstr "Svar forfalden"
+msgstr "Svar forfalden: {$date}"
 
 msgid "submission.list.reviewDue"
-msgstr "Bedømmelse forfalden"
+msgstr "Bedømmelse forfalden:  {$date}"
 
 msgid "submission.list.confirmDelete"
 msgstr "Slet indsendelse?"
@@ -1658,8 +1637,8 @@ msgstr "Du har fået tildelt en redaktionel rolle i forbindelse med denne indsen
 msgid "editor.submission.addStageParticipant.form.reviewerWarning"
 msgstr ""
 "Deltageren du valgte er blevet sat til at gennemføre en blind review "
-"bedømmelse. Hvis du vælger denne deltager, giver du vedkommende adgang til "
-"forfatterens identitet. Du opfordres til ikke at vælge denne deltager, "
+"bedømmelse. Hvis du vælger denne som deltager, giver du vedkommende adgang "
+"til forfatterens identitet. Du opfordres til ikke at vælge denne deltager, "
 "medmindre du kan sikre integriteten i fagfællebedømmelsesprocessen."
 
 msgid "editor.submission.roundStatus.resubmitForReview"
@@ -1759,33 +1738,17 @@ msgstr ""
 "Resuméet er for langt. Det skal være på {$limit} ord eller derunder. Det er "
 "i øjeblikket {$count} ord langt."
 
-msgid "publication.version.details"
-msgstr "Publikationsoplysninger i forbindelse med version {$version}"
-
 msgid "publication.version.confirm"
 msgstr "Er du sikker på, at du vil oprette en ny version?"
 
 msgid "publication.version.all"
 msgstr "Alle versioner"
 
-msgid "publication.unschedule.confirm"
-msgstr ""
-"Er du sikker på, at du ikke vil have dette planlagt til senere publicering?"
-
 msgid "publication.unschedule"
 msgstr "Planlæg ikke"
 
-msgid "publication.unpublish.confirm"
-msgstr "Er du sikker på, at du ikke ønsker, at dette skal publiceres?"
-
-msgid "publication.unpublish"
-msgstr "Træk tilbage"
-
 msgid "publication.titleAbstract"
 msgstr "Titel & Resumé"
-
-msgid "publication.status.unscheduled"
-msgstr "Ikke planlagt"
 
 msgid "publication.status.unpublished"
 msgstr "Ikke publiceret"
@@ -1793,71 +1756,20 @@ msgstr "Ikke publiceret"
 msgid "publication.status.scheduled"
 msgstr "Planlagt"
 
-msgid "publication.status.published"
-msgstr "Publiceret"
-
-msgid "publication.required.reviewStage"
-msgstr ""
-"Indsendelsen skal være under manuskriptredigerings- eller "
-"produktionstrinnet, før det kan offentliggøres."
-
-msgid "publication.required.declined"
-msgstr "En afvist indsendelse kan ikke offentliggøres."
-
-msgid "publication.publish.requirements"
-msgstr "Følgende krav skal være opfyldt, før dette kan offentliggøres."
-
-msgid "publication.publish"
-msgstr "Publicér"
-
 msgid "publication.publicationLicense"
 msgstr "Tilladelser & offentliggørelse"
-
-msgid "publication.invalidSubmission"
-msgstr "Indsendelsen til denne publikation kunne ikke findes."
-
-msgid "publication.event.versionUnpublished"
-msgstr "En version blev fjernet fra publikationen."
-
-msgid "publication.event.versionScheduled"
-msgstr "En ny version var planlagt til publicering."
-
-msgid "publication.event.versionPublished"
-msgstr "En ny version blev publiceret."
 
 msgid "publication.event.versionCreated"
 msgstr "En ny version blev oprettet."
 
-msgid "publication.event.unpublished"
-msgstr "Indsendelsen blev ikke publiceret."
-
-msgid "publication.event.scheduled"
-msgstr "Indsendelsen var planlagt til publicering."
-
-msgid "publication.event.published"
-msgstr "Indsendelsen blev publiceret."
-
-msgid "publication.editDisabled"
-msgstr "Denne version er blevet publiceret og kan ikke redigeres."
-
 msgid "publication.datePublished.errorFormat"
 msgstr "Datoen skal være i formatet ÅÅÅÅ-MM-DD, som f.eks. 2019-01-01."
-
-msgid "publication.datePublished"
-msgstr "Dato publiceret"
 
 msgid "publication.createVersion"
 msgstr "Opret ny version"
 
-msgid "publication.copyrightYearBasis.issueDescription"
-msgstr ""
-"Copyright-året indstilles automatisk, når dette offentliggøres i et nummer."
-
 msgid "publication.contributors"
 msgstr "Bidragydere"
-
-msgid "submission.publication"
-msgstr "Publikation"
 
 msgid "submission.list.reviewCancelled"
 msgstr "Bedømmelse annulleret"
@@ -1960,9 +1872,6 @@ msgstr "Afvis redigering af metadata"
 msgid "editor.submission.editStageParticipant"
 msgstr "Redigér opgave"
 
-msgid "submission.status.scheduled"
-msgstr "Planlagt"
-
 msgid "submission.outdatedVersion"
 msgstr ""
 "Dette er en forældet version offentliggjort d. {$datePublished}. Læs den <a "
@@ -1998,22 +1907,6 @@ msgstr ""
 "Forfatterne til denne publikation kan ikke redigeres, fordi publikationen "
 "allerede er offentliggjort."
 
-msgid "publication.copyrightYearBasis.submissionDescription"
-msgstr "Copyright-året indstilles automatisk ud fra publiceringsdatoen."
-
-msgid "submission.copyrightHolder.description"
-msgstr "Copyright tildeles automatisk {$copyright}, når dette publiceres."
-
-msgid "submission.license.description"
-msgstr ""
-"Licensen indstilles automatisk til <a href='{$licenseUrl}' target='_blank'>{$"
-" licensnavn}</a>, når dette publiceres."
-
-msgid "submission.copyrightOther.description"
-msgstr ""
-"Tildel copyright i forbindelse med offentliggjorte indsendelser til følgende "
-"gruppe."
-
 msgid "submission.copyrightOther"
 msgstr "Copyright-erklæring"
 
@@ -2031,9 +1924,6 @@ msgstr "En valgfri sti til brug i URL'en i stedet for ID."
 
 msgid "publication.urlPath"
 msgstr "URL-sti"
-
-msgid "submission.publications"
-msgstr "Publikationer"
 
 msgid "submission.publisherId.enable"
 msgstr "Aktivér for {$objects}"
@@ -2067,3 +1957,49 @@ msgstr "{$representation} af {$title}"
 
 msgid "notification.type.submissionNewVersion"
 msgstr "Der blev oprettet en ny version af en indsendelse"
+
+msgid "submission.event.fileEdited"
+msgstr ""
+"Metadataene til filen \"{$ originalFileName}\" blev redigeret af {$ "
+"username}."
+
+msgid "submission.upload.percentComplete"
+msgstr "Upload er {$percent}% gennemført"
+
+msgid "submission.upload.instructions"
+msgstr ""
+"Upload eventuelle filer, som redaktionen har brug for i forbindelse med "
+"evalueringen af din indsendelse."
+
+msgid "submission.file.notAllowedUploaderUserId"
+msgstr ""
+"En registrering af fil-indlæseren gemmes, når filen oprettes og kan ikke "
+"ændres."
+
+msgid "submission.submit.removeConfirm"
+msgstr "Er du sikker på, at du vil fjerne filen?"
+
+msgid "submission.submit.genre.error"
+msgstr "Vælg typen af fil til hver upload."
+
+msgid "submission.submit.genre.description"
+msgstr "Vælg den mulighed, der bedst beskriver denne fil."
+
+msgid "submission.submit.genre.label"
+msgstr "Hvilken slags fil er dette?"
+
+msgid "author.submission.roundStatus.reviewOverdue"
+msgstr ""
+"En eller flere bedømmere har overskredet deadline. Redaktionen er blevet "
+"underrettet og vil tage skridt til at sikre, at gennemgangen bliver "
+"afsluttet. Du behøver ikke at foretage dig noget på dette tidspunkt. Du får "
+"besked, når der er truffet en beslutning."
+
+msgid "notification.type.revertDecline"
+msgstr "Beslutningen om at afvise denne indsendelse blev ændret."
+
+msgid "notification.type.editorDecisionRevertDecline"
+msgstr "Afvist indsendelse genaktiveret."
+
+msgid "editor.submission.decision.revertDecline"
+msgstr "Omgør afvisning"

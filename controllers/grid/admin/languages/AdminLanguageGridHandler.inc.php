@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/admin/languages/AdminLanguageGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AdminLanguageGridHandler
@@ -419,7 +419,7 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 		$contextDao = Application::getContextDAO();
 		$contexts = $contextDao->getAll();
 		$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
-		$context = $request->getContext();
-		return ($contexts->getCount() == 1 && $context && in_array(ROLE_ID_MANAGER, $userRoles));
+		list($firstContext, $secondContext) = [$contexts->next(), $contexts->next()];
+		return ($firstContext && !$secondContext && $request->getContext() && in_array(ROLE_ID_MANAGER, $userRoles));
 	}
 }

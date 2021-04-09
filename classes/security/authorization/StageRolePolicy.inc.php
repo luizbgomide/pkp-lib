@@ -2,8 +2,8 @@
 /**
  * @file classes/security/authorization/StageRolePolicy.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class StageRolePolicy
@@ -69,8 +69,7 @@ class StageRolePolicy extends AuthorizationPolicy {
 				Application::get()->getRequest()->getUser()->getId(),
 				$this->_stageId
 			);
-			while (!$result->eof()) {
-				$stageAssignment = $result->next();
+			while ($stageAssignment = $result->next()) {
 				$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
 				$userGroup = $userGroupDao->getById($stageAssignment->getUserGroupId());
 				if (in_array($userGroup->getRoleId(), $this->_roleIds) && !$stageAssignment->getRecommendOnly()) {
@@ -92,17 +91,16 @@ class StageRolePolicy extends AuthorizationPolicy {
 				Application::get()->getRequest()->getUser()->getId(),
 				$this->_stageId
 			);
-			if ($result->wasEmpty()) {
-				return AUTHORIZATION_PERMIT;
-			}
-			while (!$result->eof()) {
-				$stageAssignment = $result->next();
-				$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
+			$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
+			$noResults = true;
+			while ($stageAssignment = $result->next()) {
+				$noResults = false;
 				$userGroup = $userGroupDao->getById($stageAssignment->getUserGroupId());
 				if ($userGroup->getRoleId() == ROLE_ID_MANAGER && !$stageAssignment->getRecommendOnly()) {
 					return AUTHORIZATION_PERMIT;
 				}
 			}
+			if ($noResults) return AUTHORIZATION_PERMIT;
 		}
 
 		return AUTHORIZATION_DENY;

@@ -2,8 +2,8 @@
 /**
  * @file pages/dashboard/DashboardHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DashboardHandler
@@ -61,10 +61,23 @@ class DashboardHandler extends Handler {
 
 		$currentUser = $request->getUser();
 		$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
-		$apiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), '_submissions');
+		$apiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), '_submissions');
 		$lists = [];
 
 		$includeIssuesFilter = array_intersect(array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT), $userRoles);
+		$includeAssignedEditorsFilter = array_intersect(array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER), $userRoles);
+		$includeCategoriesFilter = array_intersect(array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT), $userRoles);
+
+		// Get all available categories
+		$categories = [];
+		$categoryDao = \DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
+		$categoryIterator = $categoryDao->getByContextId($context->getId())->toAssociativeArray();
+		foreach ($categoryIterator as $category) {
+			$categories[] = array(
+				'id' => $category->getId(),
+				'title' => $category->getLocalizedTitle(),
+			);
+		}
 
 		// My Queue
 		$myQueueListPanel = new \APP\components\listPanels\SubmissionsListPanel(
@@ -77,7 +90,9 @@ class DashboardHandler extends Handler {
 					'assignedTo' => [(int) $request->getUser()->getId()],
 				],
 			'includeIssuesFilter' => $includeIssuesFilter,
+			'includeCategoriesFilter' => $includeCategoriesFilter,
 			'includeActiveSectionFiltersOnly' => true,
+			'categories' => $categories,
 		]);
 		$myQueueListPanel->set([
 			'items' => $myQueueListPanel->getItems($request),
@@ -99,7 +114,9 @@ class DashboardHandler extends Handler {
 					],
 					'lazyLoad' => true,
 					'includeIssuesFilter' => $includeIssuesFilter,
+					'includeCategoriesFilter' => $includeCategoriesFilter,
 					'includeActiveSectionFiltersOnly' => true,
+					'categories' => $categories,
 				]
 			);
 			$lists[$unassignedListPanel->id] = $unassignedListPanel->getConfig();
@@ -115,36 +132,12 @@ class DashboardHandler extends Handler {
 					],
 					'lazyLoad' => true,
 					'includeIssuesFilter' => $includeIssuesFilter,
+					'includeCategoriesFilter' => $includeCategoriesFilter,
+					'includeAssignedEditorsFilter' => $includeAssignedEditorsFilter,
+					'categories' => $categories,
 				]
 			);
 			$lists[$activeListPanel->id] = $activeListPanel->getConfig();
-			$lists[$activeListPanel->id]['filters'][] = [
-				'filters' => [
-					[
-						'title' => _('editors'),
-						'param' => 'assignedTo',
-						'value' => [],
-						'filterType' => 'pkp-filter-autosuggest',
-						'component' => 'field-select-users',
-						'autosuggestProps' => [
-								'allErrors' => (object) [],
-								'apiUrl' => $request->getDispatcher()->url($request, ROUTE_API, $context->getPath(), 'users', null, null, ['roleIds' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR]]),
-								'description' => '',
-								'deselectLabel' => __('common.removeItem'),
-								'formId' => 'default',
-								'groupId' => 'default',
-								'initialPosition' => 'inline',
-								'isRequired' => false,
-								'label' => __('editor.submissions.assignedTo'),
-								'locales' => [],
-								'name' => 'editorIds',
-								'primaryLocale' => 'en_US',
-								'selectedLabel' => __('common.assigned'),
-								'value' => [],
-							]
-						]
-					]
-				];
 		}
 
 		// Archived
@@ -162,6 +155,9 @@ class DashboardHandler extends Handler {
 				'getParams' => $params,
 				'lazyLoad' => true,
 				'includeIssuesFilter' => $includeIssuesFilter,
+				'includeCategoriesFilter' => $includeCategoriesFilter,
+				'includeAssignedEditorsFilter' => $includeAssignedEditorsFilter,
+				'categories' => $categories,
 			]
 		);
 		$lists[$archivedListPanel->id] = $archivedListPanel->getConfig();

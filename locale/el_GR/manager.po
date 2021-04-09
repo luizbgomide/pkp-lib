@@ -412,6 +412,7 @@ msgstr "Στατιστικά &amp; Αναφορές"
 msgid "manager.statistics.reports.description"
 msgstr "Το σύστημα παράγει τις εκθέσεις που παρακολουθούν τις λεπτομέρειες που σχετίζονται με τη χρήση της ιστοσελίδας και οι παρατηρήσεις σε μια δεδομένη χρονική περίοδο. Οι εκθέσεις που δημιουργούνται σε μορφή CSV που απαιτεί μια εφαρμογή λογιστικών φύλλων για να το δείτε."
 
+#, fuzzy
 msgid "manager.statistics.reports"
 msgstr "Δημιουργία  Εκθέσεων"
 
@@ -677,9 +678,6 @@ msgstr "Μεταφορτώστε μια εικόνα που θα εμφανίζ�
 
 msgid "manager.setup.homepageImage"
 msgstr "Εικόνα Αρχικής Σελίδας"
-
-msgid "manager.setup.groupType"
-msgstr "Ομαδοποίηση τύπων αρχείων"
 
 msgid "manager.setup.favicon"
 msgstr "Εικονίδιο ιστοτόπου"
@@ -1043,16 +1041,6 @@ msgstr "Ένα προαιρετικό σύντομο συμβολικό αναγ
 
 msgid "manager.setup.genres.key"
 msgstr "Κλειδί"
-
-msgid "manager.setup.genres.supplementary"
-msgstr ""
-"Σήμανση αρχείων αυτού του τύπου ως συμπληρωματικά αρχεία (π.χ. όχι πρωτεύον "
-"περιεχόμενο υποβολής)"
-
-msgid "manager.setup.genres.dependent"
-msgstr ""
-"Σήμανση αρχείων αυτού του τύπου ως εξαρτώμενα αρχεία (π.χ. να μην "
-"παρατίθενται με δημοσιευμένο περιεχόμενο)"
 
 msgid "grid.action.restoreGenres"
 msgstr "Επαναφέρετε τα στοιχεία στις προεπιλεγμένες ρυθμίσεις"

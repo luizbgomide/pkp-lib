@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/native/filter/NativeXmlPKPPublicationFilter.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class NativeXmlPKPPublicationFilter
@@ -76,8 +76,9 @@ class NativeXmlPKPPublicationFilter extends NativeImportFilter {
 		$publication = $this->populateObject($publication, $node);
 
 		$publicationLocale = $node->getAttribute('locale');
-		if (empty($publicationLocale)) 
+		if (empty($publicationLocale)) {
 			$publicationLocale = $context->getPrimaryLocale();
+		}
 
 		$publication->setData('locale', $publicationLocale);
 		$publication->setData('version', $node->getAttribute('version'));
@@ -140,7 +141,7 @@ class NativeXmlPKPPublicationFilter extends NativeImportFilter {
 					$controlledVocabulary[] = $nc->textContent;
 				}
 			}
-			
+
 			$controlledVocabulariesValues = array();
 			$controlledVocabulariesValues[$locale] = $controlledVocabulary;
 
@@ -244,7 +245,13 @@ class NativeXmlPKPPublicationFilter extends NativeImportFilter {
 	 */
 	function parseCitations($n, $publication) {
 		$publicationId = $publication->getId();
-		$citationsString = $n->textContent;
+		$citationsString = '';
+		foreach ($n->childNodes as $citNode) {
+			$nodeText = trim($citNode->textContent);
+			if (empty($nodeText)) continue;
+			$citationsString .= $nodeText ."\n";
+		}
+		$publication->setData('citationsRaw', $citationsString);
 		$citationDao = DAORegistry::getDAO('CitationDAO'); /** @var $citationDao CitationDAO */
 		$citationDao->importCitations($publicationId, $citationsString);
 	}
@@ -278,6 +285,7 @@ class NativeXmlPKPPublicationFilter extends NativeImportFilter {
 		return array(
 			'keywords' => array('SubmissionKeywordDAO', 'insertKeywords'),
 			'agencies' => array('SubmissionAgencyDAO', 'insertAgencies'),
+			'languages' => array('SubmissionLanguageDAO', 'insertLanguages'),
 			'disciplines' => array('SubmissionDisciplineDAO', 'insertDisciplines'),
 			'subjects' => array('SubmissionSubjectDAO', 'insertSubjects'),
 		);

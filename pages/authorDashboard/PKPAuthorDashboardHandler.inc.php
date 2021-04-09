@@ -3,8 +3,8 @@
 /**
  * @file pages/authorDashboard/PKPAuthorDashboardHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPAuthorDashboardHandler
@@ -159,41 +159,43 @@ abstract class PKPAuthorDashboardHandler extends Handler {
 			if ($fileStage && is_a($lastReviewRound, 'ReviewRound')) {
 				$editDecisionDao = DAORegistry::getDAO('EditDecisionDAO'); /* @var $editDecisionDao EditDecisionDAO */
 				$editorDecisions = $editDecisionDao->getEditorDecisions($submission->getId(), $submission->getData('stageId'), $lastReviewRound->getRound());
-				$lastDecision = array_last($editorDecisions)['decision'];
-				$revisionDecisions = [SUBMISSION_EDITOR_DECISION_PENDING_REVISIONS, SUBMISSION_EDITOR_DECISION_RESUBMIT];
-				if (!empty($editorDecisions) && in_array($lastDecision, $revisionDecisions)) {
-					$actionArgs['submissionId'] = $submission->getId();
-					$actionArgs['stageId'] = $submission->getData('stageId');
-					$actionArgs['uploaderRoles'] = ROLE_ID_AUTHOR;
-					$actionArgs['fileStage'] = $fileStage;
-					$actionArgs['reviewRoundId'] = $lastReviewRound->getId();
-					$uploadFileUrl = $request->getDispatcher()->url(
-						$request,
-						ROUTE_COMPONENT,
-						null,
-						'wizard.fileUpload.FileUploadWizardHandler',
-						'startWizard',
-						null,
-						$actionArgs
-					);
+				if (!empty($editorDecisions)) {
+					$lastDecision = end($editorDecisions)['decision'];
+					$revisionDecisions = [SUBMISSION_EDITOR_DECISION_PENDING_REVISIONS, SUBMISSION_EDITOR_DECISION_RESUBMIT];
+					if (in_array($lastDecision, $revisionDecisions)) {
+						$actionArgs['submissionId'] = $submission->getId();
+						$actionArgs['stageId'] = $submission->getData('stageId');
+						$actionArgs['uploaderRoles'] = ROLE_ID_AUTHOR;
+						$actionArgs['fileStage'] = $fileStage;
+						$actionArgs['reviewRoundId'] = $lastReviewRound->getId();
+						$uploadFileUrl = $request->getDispatcher()->url(
+							$request,
+							PKPApplication::ROUTE_COMPONENT,
+							null,
+							'wizard.fileUpload.FileUploadWizardHandler',
+							'startWizard',
+							null,
+							$actionArgs
+						);
+					}
 				}
 			}
 		}
 
-		$supportedFormLocales = $submissionContext->getSupportedFormLocales();
+		$supportedSubmissionLocales = $submissionContext->getSupportedSubmissionLocales();
 		$localeNames = AppLocale::getAllLocales();
 		$locales = array_map(function($localeKey) use ($localeNames) {
 			return ['key' => $localeKey, 'label' => $localeNames[$localeKey]];
-		}, $supportedFormLocales);
+		}, $supportedSubmissionLocales);
 
 		$latestPublication = $submission->getLatestPublication();
 
-		$submissionApiUrl = $request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getData('urlPath'), 'submissions/' . $submission->getId());
-		$latestPublicationApiUrl = $request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getData('urlPath'), 'submissions/' . $submission->getId() . '/publications/' . $latestPublication->getId());
+		$submissionApiUrl = $request->getDispatcher()->url($request, PKPApplication::ROUTE_API, $submissionContext->getData('urlPath'), 'submissions/' . $submission->getId());
+		$latestPublicationApiUrl = $request->getDispatcher()->url($request, PKPApplication::ROUTE_API, $submissionContext->getData('urlPath'), 'submissions/' . $submission->getId() . '/publications/' . $latestPublication->getId());
 
 		$contributorsGridUrl = $request->getDispatcher()->url(
 			$request,
-			ROUTE_COMPONENT,
+			PKPApplication::ROUTE_COMPONENT,
 			null,
 			'grid.users.author.AuthorGridHandler',
 			'fetchGrid',
@@ -206,7 +208,7 @@ abstract class PKPAuthorDashboardHandler extends Handler {
 
 		$submissionLibraryUrl = $request->getDispatcher()->url(
 			$request,
-			ROUTE_COMPONENT,
+			PKPApplication::ROUTE_COMPONENT,
 			null,
 			'modals.documentLibrary.DocumentLibraryHandler',
 			'documentLibrary',
@@ -332,7 +334,7 @@ abstract class PKPAuthorDashboardHandler extends Handler {
 			}
 		}
 		if ($metadataEnabled) {
-			$vocabSuggestionUrlBase =$request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getData('urlPath'), 'vocabs', null, null, ['vocab' => '__vocab__']);
+			$vocabSuggestionUrlBase =$request->getDispatcher()->url($request, PKPApplication::ROUTE_API, $submissionContext->getData('urlPath'), 'vocabs', null, null, ['vocab' => '__vocab__']);
 			$metadataForm = new PKP\components\forms\publication\PKPMetadataForm($latestPublicationApiUrl, $locales, $latestPublication, $submissionContext, $vocabSuggestionUrlBase);
 			$templateMgr->setConstants(['FORM_METADATA']);
 			$state['components'][FORM_METADATA] = $metadataForm->getConfig();

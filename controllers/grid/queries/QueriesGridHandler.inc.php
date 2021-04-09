@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/queries/QueriesGridHandler.inc.php
  *
- * Copyright (c) 2016-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2016-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class QueriesGridHandler
@@ -37,7 +37,7 @@ class QueriesGridHandler extends GridHandler {
 			array('fetchGrid', 'fetchRow', 'readQuery', 'participants', 'addQuery', 'editQuery', 'updateQuery', 'deleteQuery'));
 		$this->addRoleAssignment(
 			array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT),
-			array('openQuery', 'closeQuery', 'saveSequence'));
+			array('openQuery', 'closeQuery', 'saveSequence', 'fetchTemplateBody'));
 		$this->addRoleAssignment(
 			array(ROLE_ID_MANAGER),
 			array('leaveQuery'));
@@ -146,7 +146,8 @@ class QueriesGridHandler extends GridHandler {
 		AppLocale::requireComponents(
 			LOCALE_COMPONENT_PKP_SUBMISSION,
 			LOCALE_COMPONENT_PKP_USER,
-			LOCALE_COMPONENT_PKP_EDITOR
+			LOCALE_COMPONENT_PKP_EDITOR,
+			LOCALE_COMPONENT_APP_SUBMISSION
 		);
 
 		// Columns
@@ -570,7 +571,6 @@ class QueriesGridHandler extends GridHandler {
 	function leaveQuery($args, $request) {
 		$queryId = $args['queryId'];
 		$user = $request->getUser();
-		$context = $request->getContext();
 		if ($user && $this->_getCurrentUserCanLeave($queryId)) {
 			$queryDao = DAORegistry::getDAO('QueryDAO'); /* @var $queryDao QueryDAO */
 			$queryDao->removeParticipant($queryId, $user->getId());
@@ -599,7 +599,30 @@ class QueriesGridHandler extends GridHandler {
 		}
 		$user = Application::get()->getRequest()->getUser();
 		return in_array($user->getId(), $participantIds);
+	}
 
+	/**
+	 * Fetches an email template's message body.
+	 * @param array $args
+	 * @param PKPRequest $request
+	 * @return JSONMessage JSON object
+	 */
+	public function fetchTemplateBody(array $args, PKPRequest $request) : JSONMessage {
+		$templateId = $request->getUserVar('template');
+		import('lib.pkp.classes.mail.SubmissionMailTemplate');
+		$template = new SubmissionMailTemplate($this->getSubmission(), $templateId);
+		if ($template) {
+			$user = $request->getUser();
+			$template->assignParams([
+				'editorialContactSignature' => $user->getContactSignature(),
+				'signatureFullName' => $user->getFullname(),
+			]);
+			$template->replaceParams();
+			return new JSONMessage(
+				true,
+				['body' => $template->getBody()]
+			);
+		}
 	}
 }
 

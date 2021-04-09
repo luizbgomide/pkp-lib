@@ -2,14 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2019-09-27T09:47:24-07:00\n"
+"PO-Revision-Date: 2020-12-15 09:58+0000\n"
+"Last-Translator: Heike Riegler <heike.riegler@julius-kuehn.de>\n"
+"Language-Team: German <http://translate.pkp.sfu.ca/projects/pkp-lib/"
+"installer/de_DE/>\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-09-27T09:47:24-07:00\n"
-"PO-Revision-Date: 2019-09-27T09:47:24-07:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
 
 msgid "installer.additionalLocales"
 msgstr "Weitere Regionaleinstellungen"
@@ -40,12 +43,6 @@ msgstr "Zeichensatz für Verbindungen"
 
 msgid "installer.contentsOfConfigFile"
 msgstr "Inhalt der Konfigurationsdatei"
-
-msgid "installer.createDatabase"
-msgstr "Datenbank anlegen"
-
-msgid "installer.createDatabaseInstructions"
-msgstr "Zur Benutzung dieser Option muss Ihr Datenbanksystem das Anlegen von Datenbanken aus der Entfernung unterstützten und muss Ihr Benutzer/innen-Name die Rechte haben, Datenbanken anzulegen. Wenn die Installation unter Verwendung dieser Option scheitert, legen Sie die Datenbank manuell auf dem Server an und führen dann den Installer ohne diese Option aus."
 
 msgid "installer.databaseDriver"
 msgstr "Datenbank-Treiber"
@@ -191,3 +188,7 @@ msgstr "Eine eindeutige Identifikation und die OAI base URL an PKP übermitteln 
 
 msgid "installer.unsupportedPhpError"
 msgstr "Die PHP-Version Ihres Servers wird nicht von dieser Software unterstützt. Bitte überprüfen Sie die Installationsanforderungen in docs/README."
+
+#, fuzzy
+msgid "installer.installMigrationError"
+msgstr "Fehler beim Ausführen der migration-Klasse <tt>{$class}</tt>."

@@ -3,8 +3,8 @@
 /**
  * @file pages/admin/AdminHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AdminHandler
@@ -14,6 +14,8 @@
  */
 
 import('classes.handler.Handler');
+
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 class AdminHandler extends Handler {
 
@@ -91,16 +93,18 @@ class AdminHandler extends Handler {
 			]);
 		}
 
-		if (Config::getVar('general', 'show_upgrade_warning')) {
-			import('lib.pkp.classes.site.VersionCheck');
-			if ($latestVersion = VersionCheck::checkIfNewVersionExists()) {
-				$currentVersion = VersionCheck::getCurrentDBVersion();
-				$templateMgr->assign([
-					'currentVersion' => $currentVersion,
-					'newVersionAvailable' => true,
-					'latestVersion' => $latestVersion,
-				]);
-			}
+		// Interact with the beacon (if enabled) and determine if a new version exists
+		import('lib.pkp.classes.site.VersionCheck');
+		$latestVersion = VersionCheck::checkIfNewVersionExists();
+
+		// Display a warning message if there is a new version of OJS available
+		if (Config::getVar('general', 'show_upgrade_warning') && $latestVersion) {
+			$currentVersion = VersionCheck::getCurrentDBVersion();
+			$templateMgr->assign([
+				'newVersionAvailable' => true,
+				'currentVersion' => $currentVersion,
+				'latestVersion' => $latestVersion,
+			]);
 		}
 
 		return parent::initialize($request);
@@ -150,9 +154,9 @@ class AdminHandler extends Handler {
 		$site = $request->getSite();
 		$dispatcher = $request->getDispatcher();
 
-		$apiUrl = $dispatcher->url($request, ROUTE_API, CONTEXT_ID_ALL, 'site');
-		$themeApiUrl = $dispatcher->url($request, ROUTE_API, CONTEXT_ID_ALL, 'site/theme');
-		$temporaryFileApiUrl = $dispatcher->url($request, ROUTE_API, CONTEXT_ID_ALL, 'temporaryFiles');
+		$apiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, CONTEXT_ID_ALL, 'site');
+		$themeApiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, CONTEXT_ID_ALL, 'site/theme');
+		$temporaryFileApiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, CONTEXT_ID_ALL, 'temporaryFiles');
 
 		import('classes.file.PublicFileManager');
 		$publicFileManager = new PublicFileManager();
@@ -164,9 +168,12 @@ class AdminHandler extends Handler {
 			return ['key' => $localeKey, 'label' => $localeNames[$localeKey]];
 		}, $supportedLocales);
 
+		$contexts = Services::get('context')->getManySummary();
+
 		$siteAppearanceForm = new \PKP\components\forms\site\PKPSiteAppearanceForm($apiUrl, $locales, $site, $baseUrl, $temporaryFileApiUrl);
 		$siteConfigForm = new \PKP\components\forms\site\PKPSiteConfigForm($apiUrl, $locales, $site);
 		$siteInformationForm = new \PKP\components\forms\site\PKPSiteInformationForm($apiUrl, $locales, $site);
+		$siteBulkEmailsForm = new \PKP\components\forms\site\PKPSiteBulkEmailsForm($apiUrl, $site, $contexts);
 		$themeForm = new \PKP\components\forms\context\PKPThemeForm($themeApiUrl, $locales);
 
 		$templateMgr = TemplateManager::getManager($request);
@@ -176,6 +183,7 @@ class AdminHandler extends Handler {
 				FORM_SITE_APPEARANCE => $siteAppearanceForm->getConfig(),
 				FORM_SITE_CONFIG => $siteConfigForm->getConfig(),
 				FORM_SITE_INFO => $siteInformationForm->getConfig(),
+				FORM_SITE_BULK_EMAILS => $siteBulkEmailsForm->getConfig(),
 				FORM_THEME => $themeForm->getConfig(),
 			],
 		]);
@@ -204,6 +212,7 @@ class AdminHandler extends Handler {
 		$tabsSingleContextAvailability = [
 			'siteSetup',
 			'languages',
+			'bulkEmails',
 		];
 
 		$tabs = [
@@ -214,6 +223,7 @@ class AdminHandler extends Handler {
 			'siteInfo',
 			'languages',
 			'navigationMenus',
+			'bulkEmails',
 			'siteTheme',
 			'siteAppearanceSetup',
 		];
@@ -255,8 +265,8 @@ class AdminHandler extends Handler {
 			$request->getDispatcher()->handle404();
 		}
 
-		$apiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
-		$themeApiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), 'contexts/' . $context->getId() . '/theme');
+		$apiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
+		$themeApiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'contexts/' . $context->getId() . '/theme');
 		$sitemapUrl = $router->url($request, $context->getPath(), 'sitemap');
 
 		$supportedFormLocales = $context->getSupportedFormLocales();
@@ -269,14 +279,23 @@ class AdminHandler extends Handler {
 		$themeForm = new PKP\components\forms\context\PKPThemeForm($themeApiUrl, $locales, $context);
 		$indexingForm = new PKP\components\forms\context\PKPSearchIndexingForm($apiUrl, $locales, $context, $sitemapUrl);
 
+		$components = [
+			FORM_CONTEXT => $contextForm->getConfig(),
+			FORM_SEARCH_INDEXING => $indexingForm->getConfig(),
+			FORM_THEME => $themeForm->getConfig(),
+		];
+
+		$bulkEmailsEnabled = in_array($context->getId(), (array) $request->getSite()->getData('enableBulkEmails'));
+		if ($bulkEmailsEnabled) {
+			$userGroups = DAORegistry::getDAO('UserGroupDAO')->getByContextId($context->getId());
+			$restrictBulkEmailsForm = new PKP\components\forms\context\PKPRestrictBulkEmailsForm($apiUrl, $context, $userGroups);
+			$components[$restrictBulkEmailsForm->id] = $restrictBulkEmailsForm->getConfig();
+		}
+
 		$templateMgr = TemplateManager::getManager($request);
 
 		$templateMgr->setState([
-			'components' => [
-				FORM_CONTEXT => $contextForm->getConfig(),
-				FORM_SEARCH_INDEXING => $indexingForm->getConfig(),
-				FORM_THEME => $themeForm->getConfig(),
-			],
+			'components' => $components,
 		]);
 
 		$breadcrumbs = $templateMgr->get_template_vars('breadcrumbs');
@@ -292,6 +311,7 @@ class AdminHandler extends Handler {
 
 		$templateMgr->assign([
 			'breadcrumbs' => $breadcrumbs,
+			'bulkEmailsEnabled' => $bulkEmailsEnabled,
 			'editContext' => $context,
 			'pageTitle' => __('manager.settings.wizard'),
 		]);
@@ -317,15 +337,14 @@ class AdminHandler extends Handler {
 
 		$versionDao = DAORegistry::getDAO('VersionDAO'); /* @var $versionDao VersionDAO */
 		$versionHistory = $versionDao->getVersionHistory();
+		$pdo = Capsule::getPDO();
 
-		$dbconn = DBConnection::getConn();
-		$dbServerInfo = $dbconn->ServerInfo();
 		$serverInfo = [
 			'admin.server.platform' => PHP_OS,
 			'admin.server.phpVersion' => phpversion(),
 			'admin.server.apacheVersion' => $_SERVER['SERVER_SOFTWARE'],
-			'admin.server.dbDriver' => Config::getVar('database', 'driver'),
-			'admin.server.dbVersion' => (empty($dbServerInfo['description']) ? $dbServerInfo['version'] : $dbServerInfo['description'])
+			'admin.server.dbDriver' => $pdo->getAttribute(PDO::ATTR_DRIVER_NAME),
+			'admin.server.dbVersion' => $pdo->getAttribute(PDO::ATTR_SERVER_VERSION),
 		];
 
 		$templateMgr = TemplateManager::getManager($request);

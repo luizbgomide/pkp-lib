@@ -3,8 +3,8 @@
 /**
  * @file classes/notification/managerDelegate/PKPApproveSubmissionNotificationManager.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPApproveSubmissionNotificationManager
@@ -31,7 +31,7 @@ class PKPApproveSubmissionNotificationManager extends NotificationManagerDelegat
 	function getNotificationUrl($request, $notification) {
 		$dispatcher = Application::get()->getDispatcher();
 		$context = $request->getContext();
-		return $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'workflow', 'access', $notification->getAssocId());
+		return $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $context->getPath(), 'workflow', 'access', $notification->getAssocId());
 	}
 
 	/**

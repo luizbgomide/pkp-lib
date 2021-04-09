@@ -3,8 +3,8 @@
 /**
  * @file classes/core/PKPRequest.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPRequest
@@ -646,7 +646,7 @@ class PKPRequest {
 
 	/**
 	 * Redirect to the specified page within a PKP Application.
-	 * Shorthand for a common call to $request->redirect($dispatcher->url($request, ROUTE_PAGE, ...)).
+	 * Shorthand for a common call to $request->redirect($dispatcher->url($request, PKPApplication::ROUTE_PAGE, ...)).
 	 * @param $context Array The optional contextual paths
 	 * @param $page string The name of the op to redirect to.
 	 * @param $op string optional The name of the op to redirect to.
@@ -656,7 +656,7 @@ class PKPRequest {
 	 */
 	function redirect($context = null, $page = null, $op = null, $path = null, $params = null, $anchor = null) {
 		$dispatcher = $this->getDispatcher();
-		$this->redirectUrl($dispatcher->url($this, ROUTE_PAGE, $context, $page, $op, $path, $params, $anchor));
+		$this->redirectUrl($dispatcher->url($this, PKPApplication::ROUTE_PAGE, $context, $page, $op, $path, $params, $anchor));
 	}
 
 	/**

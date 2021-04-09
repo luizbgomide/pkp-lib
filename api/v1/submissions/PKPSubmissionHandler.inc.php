@@ -3,8 +3,8 @@
 /**
  * @file api/v1/submissions/PKPSubmissionHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionHandler
@@ -19,6 +19,45 @@ import('classes.core.Services');
 
 class PKPSubmissionHandler extends APIHandler {
 
+	/** @var array Handlers that must be authorized to access a submission */
+	public $requiresSubmissionAccess = [
+		'get',
+		'edit',
+		'delete',
+		'getGalleys',
+		'getParticipants',
+		'getPublications',
+		'getPublication',
+		'addPublication',
+		'versionPublication',
+		'editPublication',
+		'publishPublication',
+		'unpublishPublication',
+		'deletePublication',
+	];
+
+	/** @var array Handlers that must be authorized to write to a publication */
+	public $requiresPublicationWriteAccess = [
+		'addPublication',
+		'editPublication',
+	];
+
+	/** @var array Handlers that must be authorized to access a submission's production stage */
+	public $requiresProductionStageAccess = [
+		'addPublication',
+		'versionPublication',
+		'publishPublication',
+		'unpublishPublication',
+		'deletePublication',
+	];
+
+	/** @var array Roles that can access a submission's production stage */
+	public $productionStageAccessRoles = [
+		ROLE_ID_MANAGER,
+		ROLE_ID_SUB_EDITOR,
+		ROLE_ID_ASSISTANT
+	];
+
 	/**
 	 * Constructor
 	 */
@@ -32,27 +71,27 @@ class PKPSubmissionHandler extends APIHandler {
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT, ROLE_ID_REVIEWER, ROLE_ID_AUTHOR],
 				],
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}',
 					'handler' => [$this, 'get'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT, ROLE_ID_REVIEWER, ROLE_ID_AUTHOR],
 				],
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}/participants',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}/participants',
 					'handler' => [$this, 'getParticipants'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR],
 				],
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}/participants/{stageId}',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}/participants/{stageId:\d+}',
 					'handler' => [$this, 'getParticipants'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR],
 				],
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}/publications',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}/publications',
 					'handler' => [$this, 'getPublications'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT, ROLE_ID_REVIEWER, ROLE_ID_AUTHOR],
 				],
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}/publications/{publicationId}',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}/publications/{publicationId:\d+}',
 					'handler' => [$this, 'getPublication'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT, ROLE_ID_REVIEWER, ROLE_ID_AUTHOR],
 				],
@@ -64,46 +103,46 @@ class PKPSubmissionHandler extends APIHandler {
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR],
 				],
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}/publications',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}/publications',
 					'handler' => [$this, 'addPublication'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT],
 				],
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}/publications/{publicationId}/version',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}/publications/{publicationId:\d+}/version',
 					'handler' => [$this, 'versionPublication'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT],
 				],
 			],
 			'PUT' => [
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}',
 					'handler' => [$this, 'edit'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR],
 				],
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}/publications/{publicationId}',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}/publications/{publicationId:\d+}',
 					'handler' => [$this, 'editPublication'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT, ROLE_ID_AUTHOR],
 				],
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}/publications/{publicationId}/publish',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}/publications/{publicationId:\d+}/publish',
 					'handler' => [$this, 'publishPublication'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT],
 				],
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}/publications/{publicationId}/unpublish',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}/publications/{publicationId:\d+}/unpublish',
 					'handler' => [$this, 'unpublishPublication'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT],
 				],
 			],
 			'DELETE' => [
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}',
 					'handler' => [$this, 'delete'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR],
 				],
 				[
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}/publications/{publicationId}',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}/publications/{publicationId:\d+}',
 					'handler' => [$this, 'deletePublication'],
 					'roles' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT],
 				],
@@ -121,43 +160,19 @@ class PKPSubmissionHandler extends APIHandler {
 		import('lib.pkp.classes.security.authorization.ContextAccessPolicy');
 		$this->addPolicy(new ContextAccessPolicy($request, $roleAssignments));
 
-		$requiresSubmissionAccess = [
-			'get',
-			'edit',
-			'delete',
-			'getParticipants',
-			'getPublications',
-			'getPublication',
-			'addPublication',
-			'versionPublication',
-			'editPublication',
-			'publishPublication',
-			'unpublishPublication',
-			'deletePublication',
-		];
-		if (in_array($routeName, $requiresSubmissionAccess)) {
+		if (in_array($routeName, $this->requiresSubmissionAccess)) {
 			import('lib.pkp.classes.security.authorization.SubmissionAccessPolicy');
 			$this->addPolicy(new SubmissionAccessPolicy($request, $args, $roleAssignments));
 		}
 
-		$requiresPublicationWriteAccess = [
-			'editPublication',
-		];
-		if (in_array($routeName, $requiresPublicationWriteAccess)) {
+		if (in_array($routeName, $this->requiresPublicationWriteAccess)) {
 			import('lib.pkp.classes.security.authorization.PublicationWritePolicy');
 			$this->addPolicy(new PublicationWritePolicy($request, $args, $roleAssignments));
 		}
 
-		$requiresProductionStageAccess = [
-			'addPublication',
-			'versionPublication',
-			'publishPublication',
-			'unpublishPublication',
-			'deletePublication',
-		];
-		if (in_array($routeName, $requiresProductionStageAccess)) {
+		if (in_array($routeName, $this->requiresProductionStageAccess)) {
 			import('lib.pkp.classes.security.authorization.StageRolePolicy');
-			$this->addPolicy(new StageRolePolicy([ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT], WORKFLOW_STAGE_ID_PRODUCTION, false));
+			$this->addPolicy(new StageRolePolicy($this->productionStageAccessRoles, WORKFLOW_STAGE_ID_PRODUCTION, false));
 		}
 
 		return parent::authorize($request, $args, $roleAssignments);
@@ -209,7 +224,7 @@ class PKPSubmissionHandler extends APIHandler {
 				case 'status':
 				case 'stageIds':
 				case 'assignedTo':
-					if (is_string($val) && strpos($val, ',') > -1) {
+					if (is_string($val)) {
 						$val = explode(',', $val);
 					} elseif (!is_array($val)) {
 						$val = array($val);
@@ -332,7 +347,7 @@ class PKPSubmissionHandler extends APIHandler {
 
 		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$submission = $submissionDao->newDataObject();
-		$submission->_data = $params;
+		$submission->setAllData($params);
 		$submission = Services::get('submission')->add($submission, $request);
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
 
@@ -585,7 +600,7 @@ class PKPSubmissionHandler extends APIHandler {
 		$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
 		$publication = $publicationDao->newDataObject();
-		$publication->_data = $params;
+		$publication->setAllData($params);
 		$publication = Services::get('publication')->add($publication, $request);
 		$publicationProps = Services::get('publication')->getFullProperties(
 			$publication,
@@ -608,6 +623,7 @@ class PKPSubmissionHandler extends APIHandler {
 	 */
 	public function versionPublication($slimRequest, $response, $args) {
 		$request = $this->getRequest();
+		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION, LOCALE_COMPONENT_APP_SUBMISSION); // notification.type.submissionNewVersion
 		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
 		$publication = Services::get('publication')->get((int) $args['publicationId']);
 

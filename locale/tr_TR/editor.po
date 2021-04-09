@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:50:07+00:00\n"
-"PO-Revision-Date: 2020-04-28 21:28+0000\n"
-"Last-Translator: Sönmez Çelik <snmzclk@gmail.com>\n"
+"PO-Revision-Date: 2021-02-15 20:54+0000\n"
+"Last-Translator: Hüseyin Körpeoğlu <yoruyenturk@hotmail.com>\n"
 "Language-Team: Turkish <http://translate.pkp.sfu.ca/projects/pkp-lib/editor/"
-"tr/>\n"
+"tr_TR/>\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -14,11 +14,14 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.9.1\n"
 
+msgid "editor.submissionArchive.confirmDelete"
+msgstr "Bu kaydı tamamen silmek istediğinizden emin misiniz?"
+
 msgid "editor.review.rateReviewer"
 msgstr "Hakem Puanlama"
 
 msgid "editor.submissionLibrary"
-msgstr "Gönderi Kütüphanesi"
+msgstr "Kütüphane"
 
 msgid "editor.submission.copyediting.personalMessageToUser"
 msgstr "Kullanıcıya mesaj gönder"
@@ -104,13 +107,11 @@ msgstr "e-posta bildirimi gönderme"
 msgid "editor.submissionReview.open"
 msgstr "Açık"
 
-#, fuzzy
 msgid "editor.submissionReview.anonymous"
-msgstr "Körlenmiş"
+msgstr "Körleme Hakem/Açık Yazar"
 
-#, fuzzy
 msgid "editor.submissionReview.doubleAnonymous"
-msgstr "Çift-Körlenmiş"
+msgstr "Körleme Hakem/Körleme Yazar"
 
 msgid "editor.submissionReview.restrictFiles"
 msgstr "Değerlendirilecek Dosyalar"
@@ -463,3 +464,15 @@ msgstr "Karar kaydedildi"
 
 msgid "editor.activityLog"
 msgstr "Etkinlik Günlüğü"
+
+msgid "editor.submission.revertDeclineDescription"
+msgstr ""
+"Bu aday makalenin reddetme kararını geri almak istediğinizden emin misiniz?"
+
+msgid "editor.discussion.errorNotStageParticipant"
+msgstr "Seçilen kişi bu aşamaya atanmaz."
+
+msgid "editor.discussion.errorAnonymousParticipants"
+msgstr ""
+"Değerlendirme sürecinin körleme hakemlik sürecini etkileyeceği için seçilen "
+"kişilerle tartışma oluşturulamaz."

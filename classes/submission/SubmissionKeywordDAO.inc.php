@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/SubmissionKeywordDAO.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionKeywordDAO
@@ -72,18 +72,12 @@ class SubmissionKeywordDAO extends ControlledVocabDAO {
 	 * @return array
 	 */
 	function getAllUniqueKeywords() {
-		$keywords = array();
+		$result = $this->retrieve('SELECT DISTINCT setting_value FROM controlled_vocab_entry_settings WHERE setting_name = ?', [CONTROLLED_VOCAB_SUBMISSION_KEYWORD]);
 
-		$result = $this->retrieve(
-			'SELECT DISTINCT setting_value FROM controlled_vocab_entry_settings WHERE setting_name = ?', CONTROLLED_VOCAB_SUBMISSION_KEYWORD
-		);
-
-		while (!$result->EOF) {
-			$keywords[] = $result->fields[0];
-			$result->MoveNext();
+		$keywords = [];
+		foreach ($result as $row) {
+			$keywords[] = $row->setting_value;
 		}
-
-		$result->Close();
 		return $keywords;
 	}
 

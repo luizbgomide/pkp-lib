@@ -6,8 +6,8 @@
 /**
  * @file controllers/api/file/linkAction/BaseAddFileLinkAction.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class BaseAddFileLinkAction
@@ -50,7 +50,7 @@ class BaseAddFileLinkAction extends LinkAction {
 		import('lib.pkp.classes.linkAction.request.WizardModal');
 		$modal = new WizardModal(
 			$dispatcher->url(
-				$request, ROUTE_COMPONENT, null,
+				$request, PKPApplication::ROUTE_COMPONENT, null,
 				'wizard.fileUpload.FileUploadWizardHandler', 'startWizard',
 				null, $actionArgs
 			),

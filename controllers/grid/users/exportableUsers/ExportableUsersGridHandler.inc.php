@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/exportableUsers/ExportableUsersGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ExportableUsersGridHandler
@@ -68,7 +68,7 @@ class ExportableUsersGridHandler extends GridHandler {
 		$this->_pluginName = $pluginName;
 
 		$dispatcher = $request->getDispatcher();
-		$url = $dispatcher->url($request, ROUTE_PAGE, null, 'management', 'importexport', array('plugin', $pluginName, 'exportAllUsers'));
+		$url = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'management', 'importexport', array('plugin', $pluginName, 'exportAllUsers'));
 
 		$this->addAction(
 			new LinkAction(

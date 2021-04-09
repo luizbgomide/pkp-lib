@@ -7,8 +7,8 @@
 /**
  * @file controllers/tab/user/ProfileTabHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ProfileTabHandler
@@ -167,7 +167,7 @@ class ProfileTabHandler extends Handler {
 		$publicProfileForm = new PublicProfileForm($request->getUser());
 		$result = $publicProfileForm->uploadProfileImage();
 		if ($result) {
-			return $request->redirectUrlJson($request->getDispatcher()->url($request, ROUTE_PAGE, null, 'user', 'profile', null, array('uniq' => uniqid()), 'publicProfile'));
+			return $request->redirectUrlJson($request->getDispatcher()->url($request, PKPApplication::ROUTE_PAGE, null, 'user', 'profile', null, array('uniq' => uniqid()), 'publicProfile'));
 		} else {
 			return new JSONMessage(false, __('common.uploadFailed'));
 		}
@@ -182,7 +182,7 @@ class ProfileTabHandler extends Handler {
 		import('lib.pkp.classes.user.form.PublicProfileForm');
 		$publicProfileForm = new PublicProfileForm($request->getUser());
 		$publicProfileForm->deleteProfileImage();
-		$request->redirectUrl($request->getDispatcher()->url($request, ROUTE_PAGE, null, 'user', 'profile', null, array('uniq' => uniqid()), 'publicProfile'));
+		$request->redirectUrl($request->getDispatcher()->url($request, PKPApplication::ROUTE_PAGE, null, 'user', 'profile', null, array('uniq' => uniqid()), 'publicProfile'));
 	}
 
 	/**

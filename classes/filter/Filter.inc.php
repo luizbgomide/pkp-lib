@@ -2,8 +2,8 @@
 /**
  * @file classes/filter/Filter.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Filter
@@ -470,7 +470,7 @@ class Filter extends DataObject {
 	 */
 	static function supportedRuntimeEnvironmentSettings() {
 		static $runtimeEnvironmentSettings = array(
-			'phpVersionMin' => PHP_REQUIRED_VERSION,
+			'phpVersionMin' => PKPApplication::PHP_REQUIRED_VERSION,
 			'phpVersionMax' => null,
 			'phpExtensions' => array(),
 			'externalPrograms' => array()

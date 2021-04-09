@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:59+00:00\n"
-"PO-Revision-Date: 2019-12-18 21:40+0000\n"
+"PO-Revision-Date: 2021-03-12 18:08+0000\n"
 "Last-Translator: Pavel Pisklakov <ppv1979@mail.ru>\n"
 "Language-Team: Russian <http://translate.pkp.sfu.ca/projects/pkp-lib/common/"
-"ru/>\n"
+"ru_RU/>\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -357,6 +357,9 @@ msgstr "Скачать PDF"
 
 msgid "common.edit"
 msgstr "Редактировать"
+
+msgid "common.editItem"
+msgstr "Редактировать «{$name}»"
 
 msgid "common.enable"
 msgstr "Включить"
@@ -813,6 +816,9 @@ msgstr "Файл не может быть загружен или изменен
 
 msgid "common.up"
 msgstr "Наверх"
+
+msgid "common.addFile"
+msgstr "Добавить файл"
 
 msgid "common.upload.addFile"
 msgstr "Загрузить файл"
@@ -1546,6 +1552,12 @@ msgstr "Искать"
 msgid "search.searchResults"
 msgstr "Результаты поиска"
 
+msgid "search.searchResults.foundSingle"
+msgstr "Найден один результат."
+
+msgid "search.searchResults.foundPlural"
+msgstr "Найдено результатов: {$count}."
+
 msgid "search.subject"
 msgstr "Ключевые слова"
 
@@ -1564,9 +1576,8 @@ msgstr "Скачать этот файл"
 msgid "context.path"
 msgstr "Путь"
 
-#, fuzzy
 msgid "review.ensuringAnonymousReview"
-msgstr "Обеспечение слепого рецензирования"
+msgstr "Как гарантировать, что все файлы сделаны анонимными"
 
 msgid "grid.action.showReviewPolicy"
 msgstr "Прочитать текущие правила рецензирования"
@@ -1586,29 +1597,36 @@ msgstr "Задачи"
 msgid "dashboard.myQueue"
 msgstr "Мои дела"
 
-#, fuzzy
 msgid "review.anonymousPeerReview.title"
-msgstr "Обеспечение слепого рецензирования"
+msgstr "Как гарантировать, что все файлы сделаны анонимными"
 
-#, fuzzy
 msgid "review.anonymousPeerReview"
 msgstr ""
-"<p>Чтобы быть уверенными в честности слепого рецензирования материала для этого издания, должны быть предприняты все усилия к тому, чтобы авторы и рецензенты ничего не знали друг о друге. Для этого авторы, редакторы и рецензенты (те, кто загружает документы как часть своей рецензии) должны проверять, все ли перечисленные ниже шаги были выполнены относительно текста и свойств файла:</p>\n"
-"<ul><li>Авторы документа удалили свои имена из текста, используя «Автор» и год в библиографических ссылках и сносках, вместо имен авторов, названия статьи и т.д.</li>\n"
-"<li>Авторы документа удалили персональную информацию из свойств файла, выполнив следующие шаги:\n"
+"<p>Чтобы быть уверенными в честности анонимного рецензирования, должны быть "
+"предприняты все усилия к тому, чтобы авторы и рецензенты ничего не знали "
+"друг о друге. Для этого авторы, редакторы и рецензенты (те, кто загружает "
+"документы как часть своей рецензии) должны проверять, все ли перечисленные "
+"ниже шаги были выполнены относительно текста и свойств файла:</p>\n"
+"<ul><li>Авторы документа удалили свои имена из текста, используя «Автор» и "
+"год в библиографических ссылках и сносках, вместо имен авторов, названия "
+"статьи и т.д.</li>\n"
+"<li>Авторы документа удалили персональную информацию из свойств файла, "
+"выполнив следующие шаги:\n"
 "<ul><li>Microsoft Word для Windows:\n"
 "<ul><li>Перейти в меню «Файл»</li>\n"
 "<li>Выбрать «Сведения»</li>\n"
 "<li>Щелкнуть на «Проверка документа»</li>\n"
 "<li>Щелкнуть на «Проверить документ»</li>\n"
-"<li>В диалоговом окне «Инспектор документов» поставить галочки, выбрав типы скрытого контента, которые Вы хотите проверить. Нажать «Проверить»</li>\n"
+"<li>В диалоговом окне «Инспектор документов» поставить галочки, выбрав типы "
+"скрытого контента, которые Вы хотите проверить. Нажать «Проверить»</li>\n"
 "<li>Нажать «Удалить всё»</li>\n"
 "<li>Нажать «Закрыть»</li>\n"
 "<li>Сохранить документ</li></ul>\n"
 "<li>Microsoft Word для MacOS:\n"
 "<ul><li>Перейти в меню «Сервис»</li>\n"
 "<li>Щелкнуть на «Защитить документ»</li>\n"
-"<li>Выбрать «Удалить из этого файла персональные данные при сохранении»</li>\n"
+"<li>Выбрать «Удалить из этого файла персональные данные при сохранении»</li>"
+"\n"
 "<li>Нажать «OK» и сохранить файл</li></ul></li>\n"
 "<li>PDF:\n"
 "<ul><li>Перейти в меню «Файл»</li>\n"
@@ -1703,6 +1721,18 @@ msgstr "Неправильный материал."
 
 msgid "user.authorization.invalidRepresentation"
 msgstr "Неправильное представление."
+
+msgid "user.authorization.invalidReviewRound"
+msgstr "Неправильный раунд рецензирования."
+
+msgid "user.authorization.invalidQuery"
+msgstr "Неправильное обсуждение."
+
+msgid "user.authorization.unauthorizedNote"
+msgstr "У Вас нет доступа к этому сообщению в обсуждении."
+
+msgid "user.authorization.unauthorizedReviewAssignment"
+msgstr "У Вас нет доступа к этому назначению на рецензию."
 
 msgid "user.authorization.authorRoleMissing"
 msgstr "В данный момент у Вас не достаточно прав для просмотра материала. Пожалуйста, отредактируйте ваш профиль, чтобы убедиться в том, что Вам предоставлены соответствующие роли в разделе «Регистрация как»."
@@ -1946,3 +1976,36 @@ msgstr "{$attribute} уже использован."
 
 msgid "validator.url"
 msgstr "Некорректный URL."
+
+msgid "notification.unsubscribeNotifications"
+msgstr "Отписаться"
+
+msgid "notification.unsubscribeNotifications.errorMessage"
+msgstr ""
+"Произошла неожиданная ошибка и мы не смогли отписать адрес электронной почты "
+"{$email} от рассылки. Вы можете отписаться от всех уведомлений по "
+"электронной почте в вашем <a href=\"{$profileNotificationUrl}\">профиле "
+"пользователя</a> или связавшись с нами напрямую, чтобы мы смогли помочь вам."
+
+msgid "notification.unsubscribeNotifications.successMessage"
+msgstr ""
+"Адрес электронной почты {$email} был успешно отписан от рассылки. Мы больше "
+"не будем отправлять Вам эти письма. Вы можете в любой момент снова "
+"подписаться на уведомления по электронной почте в Вашем <a href=\""
+"{$profileNotificationUrl}\">профиле пользователя</a>."
+
+msgid "notification.unsubscribeNotifications.resubscribe"
+msgstr ""
+"Вы можете в любой момент снова подписаться на уведомления по электронной "
+"почте в Вашем <a href=\"{$profileNotificationUrl}\">профиле пользователя</a>."
+
+msgid "notification.unsubscribeNotifications.pageMessage"
+msgstr ""
+"Выберите письма, которые вы больше не хотите получать на {$email} от "
+"{$contextName}."
+
+msgid "notification.unsubscribeNotifications.error"
+msgstr "Мы не можем отписать Вас от рассылки"
+
+msgid "notification.unsubscribeNotifications.success"
+msgstr "Вы успешно отписались от рассылки"

@@ -3,8 +3,8 @@
 /**
  * @file classes/session/SessionManager.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SessionManager
@@ -182,11 +182,9 @@ class SessionManager {
 	function write($sessionId, $data) {
 		if (isset($this->userSession)) {
 			$this->userSession->setSessionData($data);
-			return $this->sessionDao->updateObject($this->userSession);
-
-		} else {
-			return true;
+			$this->sessionDao->updateObject($this->userSession);
 		}
+		return true;
 	}
 
 	/**
@@ -195,7 +193,8 @@ class SessionManager {
 	 * @return boolean
 	 */
 	function destroy($sessionId) {
-		return $this->sessionDao->deleteById($sessionId);
+		$this->sessionDao->deleteById($sessionId);
+		return true;
 	}
 
 	/**
@@ -205,7 +204,7 @@ class SessionManager {
 	 * @return boolean
 	 */
 	function gc($maxlifetime) {
-		return $this->sessionDao->deleteByLastUsed(time() - 86400, Config::getVar('general', 'session_lifetime') <= 0 ? 0 : time() - Config::getVar('general', 'session_lifetime') * 86400);
+		return (boolean) $this->sessionDao->deleteByLastUsed(time() - 86400, Config::getVar('general', 'session_lifetime') <= 0 ? 0 : time() - Config::getVar('general', 'session_lifetime') * 86400);
 	}
 
 	/**

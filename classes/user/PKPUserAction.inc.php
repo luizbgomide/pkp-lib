@@ -3,8 +3,8 @@
 /**
  * @file classes/user/PKPUserAction.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPUserAction
@@ -28,8 +28,13 @@ class PKPUserAction {
 
 		HookRegistry::call('UserAction::mergeUsers', array(&$oldUserId, &$newUserId));
 
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-		$submissionFileDao->transferOwnership($oldUserId, $newUserId);
+		$submissionFilesIterator = Services::get('submissionFile')->getMany([
+			'uploaderUserIds' => [$oldUserId],
+			'includeDependentFiles' => true,
+		]);
+		foreach ($submissionFilesIterator as $submissionFile) {
+			Services::get('submissionFile')->edit($submissionFile, ['uploaderUserId' => $newUserId], Application::get()->getRequest());
+		}
 
 		$noteDao = DAORegistry::getDAO('NoteDAO'); /* @var $noteDao NoteDAO */
 		$notes = $noteDao->getByUserId($oldUserId);
@@ -79,8 +84,7 @@ class PKPUserAction {
 		// Transfer old user's roles
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
 		$userGroups = $userGroupDao->getByUserId($oldUserId);
-		while(!$userGroups->eof()) {
-			$userGroup = $userGroups->next();
+		while($userGroup = $userGroups->next()) {
 			if (!$userGroupDao->userInGroup($newUserId, $userGroup->getId())) {
 				$userGroupDao->assignUserToGroup($newUserId, $userGroup->getId());
 			}

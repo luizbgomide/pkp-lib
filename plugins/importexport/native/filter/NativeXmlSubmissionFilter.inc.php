@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/native/filter/NativeXmlSubmissionFilter.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class NativeXmlSubmissionFilter
@@ -90,8 +90,8 @@ class NativeXmlSubmissionFilter extends NativeImportFilter {
 				$this->handleChildElement($n, $submission);
 			}
 		}
-		
-		$submission = Services::get('submission')->edit($submission, array(), Application::get()->getRequest());
+
+		$submission = Services::get('submission')->get($submission->getId());
 
 		return $submission;
 	}
@@ -127,12 +127,7 @@ class NativeXmlSubmissionFilter extends NativeImportFilter {
 				$this->parseSubmissionFile($n, $submission);
 				break;
 			case 'publication':
-				$publication = $this->parsePublication($n, $submission);
-
-				$publications = $submission->getData('publications');
-				$publications[] = $publication[0];
-				$submission->setData('publications', $publications);
-
+				$this->parsePublication($n, $submission);
 				break;
 			default:
 				$deployment = $this->getDeployment();

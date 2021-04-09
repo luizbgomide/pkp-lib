@@ -3,8 +3,8 @@
 /**
  * @file classes/core/PKPApplication.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPApplication
@@ -14,17 +14,9 @@
  *
  */
 
-define('PHP_REQUIRED_VERSION', '7.2.0');
-
-define('ROUTE_COMPONENT', 'component');
-define('ROUTE_PAGE', 'page');
-define('ROUTE_API', 'api');
-
-define('API_VERSION', 'v1');
-
 define('CONTEXT_SITE', 0);
 define('CONTEXT_ID_NONE', 0);
-define('CONTEXT_ID_ALL', '*');
+define('CONTEXT_ID_ALL', '_');
 define('REVIEW_ROUND_NONE', 0);
 
 define('ASSOC_TYPE_PRODUCTION_ASSIGNMENT',	0x0000202);
@@ -52,20 +44,10 @@ define('ASSOC_TYPE_SUBMISSION',			0x0100009);
 define('ASSOC_TYPE_QUERY',			0x010000a);
 define('ASSOC_TYPE_QUEUED_PAYMENT',		0x010000b);
 define('ASSOC_TYPE_PUBLICATION', 0x010000c);
+define('ASSOC_TYPE_ACCESSIBLE_FILE_STAGES',    0x010000d);
 
 // Constant used in UsageStats for submission files that are not full texts
 define('ASSOC_TYPE_SUBMISSION_FILE_COUNTER_OTHER', 0x0000213);
-
-// FIXME: these were defined in userGroup. they need to be moved somewhere with classes that do mapping.
-define('WORKFLOW_STAGE_PATH_SUBMISSION', 'submission');
-define('WORKFLOW_STAGE_PATH_INTERNAL_REVIEW', 'internalReview');
-define('WORKFLOW_STAGE_PATH_EXTERNAL_REVIEW', 'externalReview');
-define('WORKFLOW_STAGE_PATH_EDITING', 'editorial');
-define('WORKFLOW_STAGE_PATH_PRODUCTION', 'production');
-
-// Constant used to distinguish between editorial and author workflows
-define('WORKFLOW_TYPE_EDITORIAL', 'editorial');
-define('WORKFLOW_TYPE_AUTHOR', 'author');
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
@@ -114,6 +96,18 @@ interface iPKPApplicationInfoProvider {
 }
 
 abstract class PKPApplication implements iPKPApplicationInfoProvider {
+	public const PHP_REQUIRED_VERSION = '7.3.0';
+
+	// Constant used to distinguish between editorial and author workflows
+	public const WORKFLOW_TYPE_EDITORIAL = 'editorial';
+	public const WORKFLOW_TYPE_AUTHOR = 'author';
+
+	public const API_VERSION = 'v1';
+
+	public const ROUTE_COMPONENT = 'component';
+	public const ROUTE_PAGE = 'page';
+	public const ROUTE_API = 'api';
+
 	var $enabledProducts = array();
 	var $allProducts;
 
@@ -129,6 +123,17 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 		import('lib.pkp.classes.core.Registry');
 
 		import('lib.pkp.classes.config.Config');
+		if (!defined('PKP_STRICT_MODE')) define('PKP_STRICT_MODE', (boolean) Config::getVar('general', 'strict'));
+
+		// If not in strict mode, globally expose constants on this class.
+		if (!PKP_STRICT_MODE) foreach ([
+			'WORKFLOW_TYPE_EDITORIAL', 'WORKFLOW_TYPE_AUTHOR', 'PHP_REQUIRED_VERSION',
+			'API_VERSION',
+			'ROUTE_COMPONENT', 'ROUTE_PAGE', 'ROUTE_API',
+		] as $constantName) {
+			if (!defined($constantName)) define($constantName, constant('self::' . $constantName));
+		}
+
 
 		// Load Composer autoloader
 		require_once('lib/pkp/lib/vendor/autoload.php');
@@ -165,47 +170,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 		$notes = array();
 		Registry::set('system.debug.notes', $notes);
 
-		if (Config::getVar('general', 'installed')) {
-			// Initialize database connection
-			$conn = DBConnection::getInstance();
-
-			if (!$conn->isConnected()) {
-				if (Config::getVar('database', 'debug')) {
-					$dbconn =& $conn->getDBConn();
-					fatalError('Database connection failed: ' . $dbconn->errorMsg());
-				} else {
-					fatalError('Database connection failed!');
-				}
-			}
-
-			// Map valid config options to Illuminate database drivers
-			$driver = strtolower(Config::getVar('database', 'driver'));
-			if (substr($driver, 0, 8) === 'postgres') {
-				$driver = 'pgsql';
-			} else {
-				$driver = 'mysql';
-			}
-
-			// Always use `utf8` unless `latin1` is specified
-			$charset = Config::getVar('i18n', 'connection_charset');
-			if ($charset !== 'latin1') {
-				$charset = 'utf8';
-			}
-
-			$capsule = new Capsule;
-			$capsule->addConnection([
-				'driver'    => $driver,
-				'host'      => Config::getVar('database', 'host'),
-				'database'  => Config::getVar('database', 'name'),
-				'username'  => Config::getVar('database', 'username'),
-				'port'      => Config::getVar('database', 'port'),
-				'unix_socket'=> Config::getVar('database', 'unix_socket'),
-				'password'  => Config::getVar('database', 'password'),
-				'charset'   => $charset,
-				'collation' => 'utf8_general_ci',
-			]);
-			$capsule->setAsGlobal();
-		}
+		if (Config::getVar('general', 'installed')) $this->initializeDatabaseConnection();
 
 		// Register custom autoloader functions for namespaces
 		spl_autoload_register(function($class) {
@@ -218,6 +183,94 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			$rootPath = BASE_SYS_DIR . "/classes";
 			customAutoload($rootPath, $prefix, $class);
 		});
+	}
+
+	/**
+	 * Initialize the database connection (and related systems)
+	 */
+	public function initializeDatabaseConnection() {
+		// Ensure multiple calls to this function don't cause trouble
+		static $databaseConnectionInitialized = false;
+		if ($databaseConnectionInitialized) return;
+
+		$databaseConnectionInitialized = true;
+		$laravelContainer = new Illuminate\Container\Container();
+		Registry::set('laravelContainer', $laravelContainer);
+		(new Illuminate\Bus\BusServiceProvider($laravelContainer))->register();
+		(new Illuminate\Events\EventServiceProvider($laravelContainer))->register();
+		$eventDispatcher = new \Illuminate\Events\Dispatcher($laravelContainer);
+		$laravelContainer->instance('Illuminate\Contracts\Events\Dispatcher', $eventDispatcher);
+		$laravelContainer->instance('Illuminate\Contracts\Container\Container', $laravelContainer);
+
+		// Map valid config options to Illuminate database drivers
+		$driver = strtolower(Config::getVar('database', 'driver'));
+		if (substr($driver, 0, 8) === 'postgres') {
+			$driver = 'pgsql';
+		} else {
+			$driver = 'mysql';
+		}
+
+		$capsule = new Capsule;
+		$capsule->addConnection([
+			'driver'    => $driver,
+			'host'      => Config::getVar('database', 'host'),
+			'database'  => Config::getVar('database', 'name'),
+			'username'  => Config::getVar('database', 'username'),
+			'port'      => Config::getVar('database', 'port'),
+			'unix_socket'=> Config::getVar('database', 'unix_socket'),
+			'password'  => Config::getVar('database', 'password'),
+			'charset'   => Config::getVar('i18n', 'connection_charset', 'utf8'),
+			'collation' => Config::getVar('database', 'collation', 'utf8_general_ci'),
+		]);
+		$capsule->setEventDispatcher($eventDispatcher);
+		$capsule->setAsGlobal();
+		if (Config::getVar('database', 'debug')) Capsule::listen(function($query) {
+			error_log("Database query\n$query->sql\n" . json_encode($query->bindings));//\n Bindings: " . print_r($query->bindings, true));
+		});
+
+
+		// Set up Laravel queue handling
+		$laravelContainer->bind('exception.handler', function () {
+			return new class implements Illuminate\Contracts\Debug\ExceptionHandler {
+				public function shouldReport(Throwable $e) {
+					return true;
+				}
+
+				public function report(Throwable $e) {
+					error_log((string) $e);
+				}
+
+				public function render($request, Throwable $e) {
+					return null;
+				}
+
+				public function renderForConsole($output, Throwable $e) {
+					echo (string) $e;
+				}
+			};
+		});
+
+		$queue = new Illuminate\Queue\Capsule\Manager($laravelContainer);
+
+		// Synchronous (immediate) queue
+		$queue->addConnection(['driver' => 'sync']);
+
+		// Persistent queue
+		$connection = Capsule::schema()->getConnection();
+		$resolver = new \Illuminate\Database\ConnectionResolver(['default' => $connection]);
+		$manager = $queue->getQueueManager();
+		$laravelContainer['queue'] = $queue->getQueueManager();
+		$manager->addConnector('database', function () use ($resolver) {
+			return new Illuminate\Queue\Connectors\DatabaseConnector($resolver);
+		});
+		$queue->addConnection([
+			'driver' => 'database',
+			'table' => 'jobs',
+			'connection' => 'default',
+			'queue' => 'default',
+		], 'persistent');
+
+		$queue->setAsGlobal();
 	}
 
 	/**
@@ -244,7 +297,8 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 		$application = Application::get();
 		$userAgent = $application->getName() . '/';
 		if (Config::getVar('general', 'installed') && !defined('RUNNING_UPGRADE')) {
-			$currentVersion = $application->getCurrentVersion();
+			$versionDao = DAORegistry::getDAO('VersionDAO');
+			$currentVersion = $versionDao->getCurrentVersion();
 			$userAgent .= $currentVersion->getVersionString();
 		} else {
 			$userAgent .= '?';
@@ -255,10 +309,8 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 				'http' => Config::getVar('proxy', 'http_proxy', null),
 				'https' => Config::getVar('proxy', 'https_proxy', null),
 			],
-			'defaults' => [
-				'headers' => [
-					'User-Agent' => $userAgent,
-				],
+			'headers' => [
+				'User-Agent' => $userAgent,
 			],
 		]);
 	}
@@ -296,9 +348,9 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			$dispatcher->setApplication(PKPApplication::get());
 
 			// Inject router configuration
-			$dispatcher->addRouterName('lib.pkp.classes.core.APIRouter', ROUTE_API);
-			$dispatcher->addRouterName('lib.pkp.classes.core.PKPComponentRouter', ROUTE_COMPONENT);
-			$dispatcher->addRouterName('classes.core.PageRouter', ROUTE_PAGE);
+			$dispatcher->addRouterName('lib.pkp.classes.core.APIRouter', self::ROUTE_API);
+			$dispatcher->addRouterName('lib.pkp.classes.core.PKPComponentRouter', self::ROUTE_COMPONENT);
+			$dispatcher->addRouterName('classes.core.PageRouter', self::ROUTE_PAGE);
 		}
 
 		return $dispatcher;
@@ -471,7 +523,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			'SubmissionDisciplineEntryDAO' => 'lib.pkp.classes.submission.SubmissionDisciplineEntryDAO',
 			'SubmissionEmailLogDAO' => 'lib.pkp.classes.log.SubmissionEmailLogDAO',
 			'SubmissionEventLogDAO' => 'lib.pkp.classes.log.SubmissionEventLogDAO',
-			'SubmissionFileDAO' => 'lib.pkp.classes.submission.SubmissionFileDAO',
+			'SubmissionFileDAO' => 'classes.submission.SubmissionFileDAO',
 			'SubmissionFileEventLogDAO' => 'lib.pkp.classes.log.SubmissionFileEventLogDAO',
 			'QueryDAO' => 'lib.pkp.classes.query.QueryDAO',
 			'SubmissionLanguageDAO' => 'lib.pkp.classes.submission.SubmissionLanguageDAO',
@@ -755,8 +807,8 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 	 */
 	public static function getWorkflowTypeRoles() {
 		return array(
-			WORKFLOW_TYPE_EDITORIAL => array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT),
-			WORKFLOW_TYPE_AUTHOR => array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_AUTHOR),
+			self::WORKFLOW_TYPE_EDITORIAL => [ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT],
+			self::WORKFLOW_TYPE_AUTHOR => [ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_AUTHOR],
 		);
 	}
 
@@ -790,7 +842,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			case WORKFLOW_STAGE_ID_SUBMISSION: return '#d00a0a';
 			case WORKFLOW_STAGE_ID_INTERNAL_REVIEW: return '#e05c14';
 			case WORKFLOW_STAGE_ID_EXTERNAL_REVIEW: return '#e08914';
-			case WORKFLOW_STAGE_ID_EDITING: return '#007ab2';
+			case WORKFLOW_STAGE_ID_EDITING: return '#006798';
 			case WORKFLOW_STAGE_ID_PRODUCTION: return '#00b28d';
 		}
 		throw new Exception('Color requested for an unrecognized stage id.');

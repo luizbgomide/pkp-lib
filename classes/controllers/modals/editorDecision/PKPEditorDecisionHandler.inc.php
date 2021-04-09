@@ -3,8 +3,8 @@
 /**
  * @file controllers/modals/editorDecision/EditorDecisionHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class EditorDecisionHandler
@@ -94,9 +94,10 @@ class PKPEditorDecisionHandler extends Handler {
 	 */
 	function saveExternalReview($args, $request) {
 		assert($this->getAuthorizedContextObject(ASSOC_TYPE_WORKFLOW_STAGE) == WORKFLOW_STAGE_ID_SUBMISSION);
+		$workflowStageDao = DAORegistry::getDAO('WorkflowStageDAO'); /* @var $workflowStageDao WorkflowStageDAO */
 		return $this->_saveEditorDecision(
 			$args, $request, 'InitiateExternalReviewForm',
-			WORKFLOW_STAGE_PATH_EXTERNAL_REVIEW,
+			$workflowStageDao::WORKFLOW_STAGE_PATH_EXTERNAL_REVIEW,
 			SUBMISSION_EDITOR_DECISION_EXTERNAL_REVIEW
 		);
 	}
@@ -185,6 +186,26 @@ class PKPEditorDecisionHandler extends Handler {
 	 */
 	function savePromoteInReview($args, $request) {
 		return $this->_saveGeneralPromote($args, $request);
+	}
+
+	/**
+	 * Show a revert decline form.
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return string Serialized JSON object
+	 */
+	function revertDecline($args, $request) {
+		return $this->_initiateEditorDecision($args, $request, 'RevertDeclineForm');
+	}
+
+	/**
+	 * Save the revert decline form.
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return string Serialized JSON object
+	 */
+	function saveRevertDecline($args, $request) {
+		return $this->_saveEditorDecision($args, $request, 'RevertDeclineForm');
 	}
 
 	/**
@@ -364,6 +385,7 @@ class PKPEditorDecisionHandler extends Handler {
 			case 'NewReviewRoundForm':
 			case 'PromoteForm':
 			case 'SendReviewsForm':
+			case 'RevertDeclineForm':
 				return "lib.pkp.controllers.modals.editorDecision.form.$formName";
 			default:
 				assert(false);
@@ -490,12 +512,12 @@ class PKPEditorDecisionHandler extends Handler {
 
 			if ($redirectOp) {
 				$dispatcher = $this->getDispatcher();
-				$redirectUrl = $dispatcher->url($request, ROUTE_PAGE, null, 'workflow', $redirectOp, array($submission->getId()));
+				$redirectUrl = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'workflow', $redirectOp, array($submission->getId()));
 				return $request->redirectUrlJson($redirectUrl);
 			} else {
-				if (in_array($decision, [SUBMISSION_EDITOR_DECISION_DECLINE, SUBMISSION_EDITOR_DECISION_INITIAL_DECLINE])) {
+				if (in_array($decision, [SUBMISSION_EDITOR_DECISION_DECLINE, SUBMISSION_EDITOR_DECISION_INITIAL_DECLINE, SUBMISSION_EDITOR_DECISION_REVERT_DECLINE])) {
 					$dispatcher = $this->getDispatcher();
-					$redirectUrl = $dispatcher->url($request, ROUTE_PAGE, null, 'workflow', 'access', array($submission->getId()));
+					$redirectUrl = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'workflow', 'access', array($submission->getId()));
 					return $request->redirectUrlJson($redirectUrl);
 
 				} else {

@@ -3,8 +3,8 @@
 /**
  * @file pages/user/PKPUserHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPUserHandler
@@ -61,16 +61,12 @@ class PKPUserHandler extends Handler {
 	 * @return JSONMessage JSON object
 	 */
 	function getInterests($args, $request) {
-		// Get the input text used to filter on
-		$filter = $request->getUserVar('term');
-
 		import('lib.pkp.classes.user.InterestManager');
-		$interestManager = new InterestManager();
-
-		$interests = $interestManager->getAllInterests($filter);
-
 		import('lib.pkp.classes.core.JSONMessage');
-		return new JSONMessage(true, $interests);
+		return new JSONMessage(
+			true,
+			(new InterestManager())->getAllInterests($request->getUserVar('term'))
+		);
 	}
 
 	/**

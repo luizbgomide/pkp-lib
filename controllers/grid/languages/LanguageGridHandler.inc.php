@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/languages/LanguageGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class LanguageGridHandler
@@ -97,19 +97,38 @@ class LanguageGridHandler extends GridHandler {
 				} else {
 					$key = array_search($locale, $currentSettingValue);
 					if ($key !== false) unset($currentSettingValue[$key]);
+
+					if ($currentSettingValue === []) {
+						return new JSONMessage(false, __('notification.localeSettingsCannotBeSaved'));
+					}
+
 					if ($settingName == 'supportedFormLocales') {
 						// if a form locale is disabled, disable it form submission locales as well
 						$supportedSubmissionLocales = (array) $context->getData('supportedSubmissionLocales');
 						$key = array_search($locale, $supportedSubmissionLocales);
 						if ($key !== false) unset($supportedSubmissionLocales[$key]);
 						$supportedSubmissionLocales = array_values($supportedSubmissionLocales);
+						if ($supportedSubmissionLocales == []) {
+							return new JSONMessage(false, __('notification.localeSettingsCannotBeSaved'));
+						}
 						$context = $contextService->edit($context, ['supportedSubmissionLocales' => $supportedSubmissionLocales], $request);
+					}
+
+					if ($settingName == 'supportedSubmissionLocales') {
+						// If someone tried to disable all submissions checkboxes, we should display an error message.
+						$supportedSubmissionLocales = (array) $context->getData('supportedSubmissionLocales');
+						$key = array_search($locale, $supportedSubmissionLocales);
+						if ($key !== false) unset($supportedSubmissionLocales[$key]);
+						$supportedSubmissionLocales = array_values($supportedSubmissionLocales);
+						if ($supportedSubmissionLocales == []) {
+							return new JSONMessage(false, __('notification.localeSettingsCannotBeSaved'));
+						}
 					}
 				}
 			}
 		}
 
-		$context = $contextService->edit($context, [$settingName => $currentSettingValue], $request);
+		$context = $contextService->edit($context, [$settingName => array_values(array_unique($currentSettingValue))], $request);
 
 		$notificationManager = new NotificationManager();
 		$user = $request->getUser();

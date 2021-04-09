@@ -3,8 +3,8 @@
 /**
  * @file lib/pkp/classes/handler/APIHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class APIHandler
@@ -138,7 +138,7 @@ class APIHandler extends PKPHandler {
 	/**
 	 * Return PKP request object
 	 *
-	 * @return PKPRequest
+	 * @return Request
 	 */
 	public function getRequest() {
 		return $this->_request;
@@ -273,8 +273,7 @@ class APIHandler extends PKPHandler {
 	 * @return array Converted parameters
 	 */
 	public function convertStringsToSchema($schema, $params) {
-		$schemaService = Services::get('schema');
-		$schema = $schemaService->get($schema);
+		$schema = Services::get('schema')->get($schema);
 
 		foreach ($params as $paramName => $paramValue) {
 			if (!property_exists($schema->properties, $paramName)) {

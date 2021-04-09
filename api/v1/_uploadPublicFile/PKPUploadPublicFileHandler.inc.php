@@ -2,8 +2,8 @@
 /**
  * @file api/v1/contexts/PKPUploadPublicFileHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPUploadPublicFileHandler
@@ -79,7 +79,7 @@ class PKPUploadPublicFileHandler extends APIHandler {
 		$request = $this->getRequest();
 
 		if (empty($_FILES) || empty($_FILES['file'])) {
-			return $response->withStatus(400)->withJsonError('api.temporaryFiles.400.noUpload');
+			return $response->withStatus(400)->withJsonError('api.files.400.noUpload');
 		}
 
 		$siteDir = Core::getBaseDir() . '/' . Config::getVar('files', 'public_files_dir') . '/site';
@@ -155,7 +155,7 @@ class PKPUploadPublicFileHandler extends APIHandler {
 		}
 
 		// Save the file
-		$destinationPath = $siteDir . '/images/' . $request->getUser()->getUsername() . '/' . $filename;
+		$destinationPath = $this->_getFilename($siteDir . '/images/' . $request->getUser()->getUsername() . '/' . $filename, $fileManager);
 		$success = $fileManager->uploadFile('file', $destinationPath);
 
 		if ($success === false) {
@@ -163,25 +163,25 @@ class PKPUploadPublicFileHandler extends APIHandler {
 				switch ($fileManager->getUploadErrorCode($filename)) {
 					case UPLOAD_ERR_INI_SIZE:
 					case UPLOAD_ERR_FORM_SIZE:
-					return $response->withStatus(400)->withJsonError('api.temporaryFiles.400.fileSize', ['maxSize' => Application::getReadableMaxFileSize()]);
+					return $response->withStatus(400)->withJsonError('api.files.400.fileSize', ['maxSize' => Application::getReadableMaxFileSize()]);
 					case UPLOAD_ERR_PARTIAL:
-					return $response->withStatus(400)->withJsonError('api.temporaryFiles.409.uploadFailed');
+					return $response->withStatus(400)->withJsonError('api.files.400.uploadFailed');
 					case UPLOAD_ERR_NO_FILE:
-					return $response->withStatus(400)->withJsonError('api.temporaryFiles.400.noUpload');
+					return $response->withStatus(400)->withJsonError('api.files.400.noUpload');
 					case UPLOAD_ERR_NO_TMP_DIR:
 					case UPLOAD_ERR_CANT_WRITE:
 					case UPLOAD_ERR_EXTENSION:
-					return $response->withStatus(400)->withJsonError('api.temporaryFiles.400.config');
+					return $response->withStatus(400)->withJsonError('api.files.400.config');
 				}
 			}
-			return $response->withStatus(400)->withJsonError('api.temporaryFiles.409.uploadFailed');
+			return $response->withStatus(400)->withJsonError('api.files.400.uploadFailed');
 		}
 
 		return $this->getResponse($response->withJson([
 			'url' => $request->getBaseUrl() . '/' .
 					Config::getVar('files', 'public_files_dir') . '/site/images/' .
 					$request->getUser()->getUsername() . '/' .
-					$filename,
+					pathinfo($destinationPath, PATHINFO_BASENAME),
 		]));
 	}
 
@@ -196,5 +196,25 @@ class PKPUploadPublicFileHandler extends APIHandler {
 	 */
 	public function getOptions($slimRequest, $response, $args) {
 		return $this->getResponse($response);
+	}
+
+	/**
+	 * A recursive function to get a filename that will not overwrite an
+	 * existing file
+	 *
+	 * @param string $path Preferred filename
+	 * @param FileManager $fileManager
+	 * @return string
+	 */
+	private function _getFilename($path, $fileManager) {
+		if ($fileManager->fileExists($path)) {
+			$pathParts = pathinfo($path);
+			$filename = $pathParts['filename'] . '-' . md5(microtime()) . '.' . $pathParts['extension'];
+			if (strlen($filename > 255)) {
+				$filename = substr($filename, -255, 255);
+			}
+			return $this->_getFilename($pathParts['dirname'] . '/' . $filename, $fileManager);
+		}
+		return $path;
 	}
 }

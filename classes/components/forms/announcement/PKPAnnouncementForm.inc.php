@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/announcement/PKPAnnouncementForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPAnnouncementForm
@@ -61,22 +61,20 @@ class PKPAnnouncementForm extends FormComponent {
 				'size' => 'small',
 			]));
 
-		$announcementTypeDAO = \DAORegistry::getDAO('AnnouncementTypeDAO');
-		$announcementTypesFactory = $announcementTypeDAO->getByAssoc(\Application::get()->getContextAssocType(), $announcementContext->getId());
-		if (!$announcementTypesFactory->wasEmpty) {
-			$announcementOptions = [];
-			while ($announcementType = $announcementTypesFactory->next()) {
-				$announcementOptions[] = [
-					'value' => (int) $announcementType->getId(),
-					'label' => $announcementType->getLocalizedTypeName(),
-				];
-			}
-			$this->addField(new FieldOptions('typeId', [
-				'label' => __('manager.announcementTypes.typeName'),
-				'type' => 'radio',
-				'options' => $announcementOptions,
-			]));
+		$announcementTypeDao = \DAORegistry::getDAO('AnnouncementTypeDAO');
+		$announcementTypes = $announcementTypeDao->getByAssoc(\Application::get()->getContextAssocType(), $announcementContext->getId());
+		$announcementOptions = [];
+		foreach ($announcementTypes as $announcementType) {
+			$announcementOptions[] = [
+				'value' => (int) $announcementType->getId(),
+				'label' => $announcementType->getLocalizedTypeName(),
+			];
 		}
+		if (!empty($announcementOptions)) $this->addField(new FieldOptions('typeId', [
+			'label' => __('manager.announcementTypes.typeName'),
+			'type' => 'radio',
+			'options' => $announcementOptions,
+		]));
 
 		$this->addField(new FieldOptions('sendEmail', [
 			'label' => __('common.sendEmail'),

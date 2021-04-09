@@ -1,8 +1,8 @@
 {**
  * templates/frontend/pages/submissions.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Display the page to view the editorial team.
@@ -19,10 +19,8 @@
 	</h1>
 
 	<div class="cmp_notification">
-		{if $sections|@count == 0}
+		{if $sections|@count == 0 || $currentContext->getData('disableSubmissions')}
 			{translate key="author.submit.notAccepting"}
-		{elseif $currentContext->getData('disableSubmissions')}
-			{translate key="manager.setup.disableSubmissions.notAccepting"}
 		{else}
 			{if $isUserLoggedIn}
 				{capture assign="newSubmission"}<a href="{url page="submission" op="wizard"}">{translate key="about.onlineSubmissions.newSubmission"}</a>{/capture}
@@ -46,6 +44,7 @@
 			<ul>
 				{foreach from=$submissionChecklist item=checklistItem}
 					<li>
+						<span class="fa fa-check" aria-hidden="true"></span>
 						{$checklistItem.content|nl2br}
 					</li>
 				{/foreach}
@@ -57,7 +56,7 @@
 	<div class="author_guidelines" id="authorGuidelines">
 		<h2>
 			{translate key="about.authorGuidelines"}
-			{include file="frontend/components/editLink.tpl" page="management" op="settings" path="publication" anchor="submission/authorGuidelines" sectionTitleKey="about.authorGuidelines"}
+			{include file="frontend/components/editLink.tpl" page="management" op="settings" path="workflow" anchor="submission/authorGuidelines" sectionTitleKey="about.authorGuidelines"}
 		</h2>
 		{$currentContext->getLocalizedData('authorGuidelines')}
 	</div>

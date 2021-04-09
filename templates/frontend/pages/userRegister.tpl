@@ -1,8 +1,8 @@
 {**
  * templates/frontend/pages/userRegister.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * User registration form.
@@ -39,7 +39,7 @@
 						<div class="optin optin-privacy">
 							<label>
 								<input type="checkbox" name="privacyConsent" value="1"{if $privacyConsent} checked="checked"{/if}>
-								{capture assign="privacyUrl"}{url router=$smarty.const.ROUTE_PAGE page="about" op="privacy"}{/capture}
+								{capture assign="privacyUrl"}{url router=PKPApplication::ROUTE_PAGE page="about" op="privacy"}{/capture}
 								{translate key="user.register.form.privacyConsent" privacyUrl=$privacyUrl}
 							</label>
 						</div>
@@ -86,36 +86,13 @@
 								{/if}
 							{/foreach}
 						</div>
-
 						<div id="reviewerInterests" class="reviewer_interests">
-							{*
-							 * This container will be processed by the tag-it jQuery
-							 * plugin. In order for it to work, your theme will need to
-							 * load the jQuery tag-it plugin and initialize the
-							 * component.
-							 *
-							 * Two data attributes are added which are not a default
-							 * feature of the plugin. These are converted into options
-							 * when the plugin is initialized on the element.
-							 *
-							 * See: /plugins/themes/default/js/main.js
-							 *
-							 * `data-field-name` represents the name used to POST the
-							 * interests when the form is submitted.
-							 *
-							 * `data-autocomplete-url` is the URL used to request
-							 * existing entries from the server.
-							 *
-							 * @link: http://aehlke.github.io/tag-it/
-							 *}
-							<div class="label">
-								{translate key="user.interests"}
-							</div>
-							<ul class="interests tag-it" data-field-name="interests[]" data-autocomplete-url="{url|escape router=$smarty.const.ROUTE_PAGE page='user' op='getInterests'}">
-								{foreach from=$interests item=interest}
-									<li>{$interest|escape}</li>
-								{/foreach}
-							</ul>
+							<label>
+								<span class="label">
+									{translate key="user.interests"}
+								</span>
+								<input type="text" name="interests" id="interests" value="{$interests|escape}">
+							</label>
 						</div>
 					</div>
 				</fieldset>
@@ -127,21 +104,16 @@
 		{* When a user is registering for no specific journal, allow them to
 		   enter their reviewer interests *}
 		{if !$currentContext}
-			<fieldset class="reviewer_nocontext_interests">
-				<legend>
-					{translate key="user.register.noContextReviewerInterests"}
-				</legend>
-				<div class="fields">
-					<div class="reviewer_nocontext_interests">
-						{* See comment for .tag-it above *}
-						<ul class="interests tag-it" data-field-name="interests[]" data-autocomplete-url="{url|escape router=$smarty.const.ROUTE_PAGE page='user' op='getInterests'}">
-							{foreach from=$interests item=interest}
-								<li>{$interest|escape}</li>
-							{/foreach}
-						</ul>
-					</div>
+			<div class="fields">
+				<div class="reviewer_nocontext_interests">
+					<label>
+						<span class="label">
+							{translate key="user.register.noContextReviewerInterests"}
+						</span>
+						<input type="text" name="interests" id="interests" value="{$interests|escape}">
+					</label>
 				</div>
-			</fieldset>
+			</div>
 
 			{* Require the user to agree to the terms of the privacy policy *}
 			{if $siteWidePrivacyStatement}
@@ -149,7 +121,7 @@
 					<div class="optin optin-privacy">
 						<label>
 							<input type="checkbox" name="privacyConsent[{$smarty.const.CONTEXT_ID_NONE}]" id="privacyConsent[{$smarty.const.CONTEXT_ID_NONE}]" value="1"{if $privacyConsent[$smarty.const.CONTEXT_ID_NONE]} checked="checked"{/if}>
-							{capture assign="privacyUrl"}{url router=$smarty.const.ROUTE_PAGE page="about" op="privacy"}{/capture}
+							{capture assign="privacyUrl"}{url router=PKPApplication::ROUTE_PAGE page="about" op="privacy"}{/capture}
 							{translate key="user.register.form.privacyConsent" privacyUrl=$privacyUrl}
 						</label>
 					</div>
@@ -168,11 +140,12 @@
 		{/if}
 
 		{* recaptcha spam blocker *}
-		{if $reCaptchaHtml}
+		{if $recaptchaPublicKey}
 			<fieldset class="recaptcha_wrapper">
 				<div class="fields">
 					<div class="recaptcha">
-						{$reCaptchaHtml}
+						<div class="g-recaptcha" data-sitekey="{$recaptchaPublicKey|escape}">
+						</div>
 					</div>
 				</div>
 			</fieldset>

@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/PKPAuthorDAO.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPAuthorDAO
@@ -18,19 +18,19 @@ import('lib.pkp.classes.db.SchemaDAO');
 import('lib.pkp.classes.submission.PKPAuthor');
 
 abstract class PKPAuthorDAO extends SchemaDAO {
-	/** @copydoc SchemaDao::$schemaName */
+	/** @copydoc SchemaDAO::$schemaName */
 	public $schemaName = SCHEMA_AUTHOR;
 
-	/** @copydoc SchemaDao::$tableName */
+	/** @copydoc SchemaDAO::$tableName */
 	public $tableName = 'authors';
 
-	/** @copydoc SchemaDao::$settingsTableName */
+	/** @copydoc SchemaDAO::$settingsTableName */
 	public $settingsTableName = 'author_settings';
 
-	/** @copydoc SchemaDao::$primaryKeyColumn */
+	/** @copydoc SchemaDAO::$primaryKeyColumn */
 	public $primaryKeyColumn = 'author_id';
 
-	/** @copydoc SchemaDao::$primaryTableColumns */
+	/** @copydoc SchemaDAO::$primaryTableColumns */
 	public $primaryTableColumns = [
 		'id' => 'author_id',
 		'email' => 'email',
@@ -54,16 +54,11 @@ abstract class PKPAuthorDAO extends SchemaDAO {
 	 */
 	public function getById($objectId) {
 		$result = $this->retrieve(
-			'SELECT a.*, p.locale AS submission_locale FROM authors a JOIN publications p ON (a.publication_id = p.publication_id) WHERE author_id = ?',
-			(int) $objectId
+			'SELECT a.*, s.locale AS submission_locale FROM authors a JOIN publications p ON (a.publication_id = p.publication_id) JOIN submissions s ON (s.submission_id = p.submission_id) WHERE author_id = ?',
+			[(int) $objectId]
 		);
-
-		$returner = null;
-		if ($result->RecordCount() != 0) {
-			$returner = $this->_fromRow($result->GetRowAssoc(false));
-		}
-		$result->Close();
-		return $returner;
+		$row = $result->current();
+		return $row ? $this->_fromRow((array) $row) : null;
 	}
 
 	/**
@@ -74,15 +69,15 @@ abstract class PKPAuthorDAO extends SchemaDAO {
 	 * @return array Authors ordered by sequence
 	 */
 	function getByPublicationId($publicationId, $sortByAuthorId = false, $useIncludeInBrowse = false) {
-		$authors = array();
-		$params = array((int) $publicationId);
+		$params = [(int) $publicationId];
 		if ($useIncludeInBrowse) $params[] = 1;
 
 		$result = $this->retrieve(
-			'SELECT DISTINCT a.*, ug.show_title, p.locale AS submission_locale
+			'SELECT DISTINCT a.*, ug.show_title, s.locale AS submission_locale
 			FROM authors a
 				JOIN user_groups ug ON (a.user_group_id=ug.user_group_id)
 				JOIN publications p ON (p.publication_id = a.publication_id)
+				JOIN submissions s ON (s.submission_id = p.submission_id)
 				LEFT JOIN author_settings au ON (au.author_id = a.author_id)
 			WHERE	a.publication_id = ? ' .
 			($useIncludeInBrowse ? ' AND a.include_in_browse = ?' : '')
@@ -90,18 +85,15 @@ abstract class PKPAuthorDAO extends SchemaDAO {
 			$params
 		);
 
-		while (!$result->EOF) {
-			$row = $result->getRowAssoc(false);
+		$authors = [];
+		foreach ($result as $row) {
 			if ($sortByAuthorId) {
-				$authorId = $row['author_id'];
-				$authors[$authorId] = $this->_fromRow($row);
+				$authorId = $row->author_id;
+				$authors[$authorId] = $this->_fromRow((array) $row);
 			} else {
-				$authors[] = $this->_fromRow($row);
+				$authors[] = $this->_fromRow((array) $row);
 			}
-			$result->MoveNext();
 		}
-
-		$result->Close();
 		return $authors;
 	}
 

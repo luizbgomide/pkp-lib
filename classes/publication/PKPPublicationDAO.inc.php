@@ -3,8 +3,8 @@
 /**
  * @file classes/publication/PKPPublicationDAO.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPPublicationDAO
@@ -13,22 +13,24 @@
  *
  * @brief Operations for retrieving and modifying publication objects.
  */
+use Illuminate\Database\Capsule\Manager as Capsule;
+
 import('lib.pkp.classes.db.SchemaDAO');
 import('lib.pkp.classes.plugins.PKPPubIdPluginDAO');
 import('classes.publication.Publication');
 import('lib.pkp.classes.services.PKPSchemaService'); // SCHEMA_ constants
 
 class PKPPublicationDAO extends SchemaDAO implements PKPPubIdPluginDAO {
-	/** @copydoc SchemaDao::$schemaName */
+	/** @copydoc SchemaDAO::$schemaName */
 	public $schemaName = SCHEMA_PUBLICATION;
 
-	/** @copydoc SchemaDao::$tableName */
+	/** @copydoc SchemaDAO::$tableName */
 	public $tableName = 'publications';
 
-	/** @copydoc SchemaDao::$settingsTableName */
+	/** @copydoc SchemaDAO::$settingsTableName */
 	public $settingsTableName = 'publication_settings';
 
-	/** @copydoc SchemaDao::$primaryKeyColumn */
+	/** @copydoc SchemaDAO::$primaryKeyColumn */
 	public $primaryKeyColumn = 'publication_id';
 
 	/** @var array List of properties that are stored in the controlled_vocab tables. */
@@ -48,6 +50,12 @@ class PKPPublicationDAO extends SchemaDAO implements PKPPubIdPluginDAO {
 	 */
 	public function _fromRow($primaryRow) {
 		$publication = parent::_fromRow($primaryRow);
+
+		// Set the primary locale from the submission
+		$locale = Capsule::table('submissions as s')
+			->where('s.submission_id', '=', $publication->getData('submissionId'))
+			->value('locale');
+		$publication->setData('locale', $locale);
 
 		// Get authors
 		$publication->setData('authors', iterator_to_array(
@@ -218,12 +226,12 @@ class PKPPublicationDAO extends SchemaDAO implements PKPPubIdPluginDAO {
 	 */
 	public function pubIdExists($pubIdType, $pubId, $excludePubObjectId, $contextId) {
 		$result = $this->retrieve(
-			'SELECT COUNT(*)
+			'SELECT COUNT(*) AS row_count
 			FROM publication_settings ps
 			LEFT JOIN publications p ON p.publication_id = ps.publication_id
 			LEFT JOIN submissions s ON p.submission_id = s.submission_id
 			WHERE ps.setting_name = ? and ps.setting_value = ? and s.submission_id <> ? AND s.context_id = ?',
-			array(
+			[
 				'pub-id::'.$pubIdType,
 				$pubId,
 				// The excludePubObjectId refers to the submission id
@@ -231,26 +239,23 @@ class PKPPublicationDAO extends SchemaDAO implements PKPPubIdPluginDAO {
 				// are allowed to share a DOI.
 				(int) $excludePubObjectId,
 				(int) $contextId
-			)
+			]
 		);
-		$returner = $result->fields[0] ? true : false;
-		$result->Close();
-		return $returner;
+		$row = $result->current();
+		return $row ? (boolean) $row->row_count : false;
 	}
 
 	/**
 	 * @copydoc PKPPubIdPluginDAO::changePubId()
 	 */
 	function changePubId($pubObjectId, $pubIdType, $pubId) {
-		$idFields = array(
-			'publication_id', 'locale', 'setting_name'
-		);
-		$updateArray = array(
+		$idFields = ['publication_id', 'locale', 'setting_name'];
+		$updateArray = [
 			'publication_id' => (int) $pubObjectId,
 			'locale' => '',
-			'setting_name' => 'pub-id::'.$pubIdType,
-			'setting_value' => (string)$pubId
-		);
+			'setting_name' => 'pub-id::' . $pubIdType,
+			'setting_value' => (string) $pubId
+		];
 		$this->replace('publication_settings', $updateArray, $idFields);
 		$this->flushCache();
 	}
@@ -265,7 +270,7 @@ class PKPPublicationDAO extends SchemaDAO implements PKPPubIdPluginDAO {
 				AND ps.setting_name= ?',
 			[
 				$pubObjectId,
-				'pubid::' . $pubIdType,
+				'pub-id::' . $pubIdType,
 			]
 		);
 		$this->flushCache();
@@ -275,9 +280,8 @@ class PKPPublicationDAO extends SchemaDAO implements PKPPubIdPluginDAO {
 	 * @copydoc PKPPubIdPluginDAO::deleteAllPubIds()
 	 */
 	public function deleteAllPubIds($contextId, $pubIdType) {
-		switch ($this->getDriver()) {
+		switch (Capsule::connection()->getDriverName()) {
 			case 'mysql':
-			case 'mysqli':
 				$this->update(
 					'DELETE ps FROM publication_settings ps
 						LEFT JOIN publications p ON p.publication_id = ps.publication_id
@@ -290,11 +294,7 @@ class PKPPublicationDAO extends SchemaDAO implements PKPPubIdPluginDAO {
 					]
 				);
 				break;
-			case 'postgres':
-			case 'postgres64':
-			case 'postgres7':
-			case 'postgres8':
-			case 'postgres9':
+			case 'pgsql':
 				$this->update(
 					'DELETE FROM publication_settings
 					USING publication_settings ps
@@ -314,5 +314,40 @@ class PKPPublicationDAO extends SchemaDAO implements PKPPubIdPluginDAO {
 			default: fatalError("Unknown database type!");
 		}
 		$this->flushCache();
+	}
+
+	/**
+	 * Find publication ids by querying settings.
+	 * @param $settingName string
+	 * @param $settingValue mixed
+	 * @param $contextId int
+	 * @return array Publication.
+	 */
+	public function getIdsBySetting($settingName, $settingValue, $contextId) {
+		$q = Capsule::table('publications as p')
+			->join('publication_settings as ps', 'p.publication_id', '=', 'ps.publication_id')
+			->join('submissions as s', 'p.submission_id', '=', 's.submission_id')
+			->where('ps.setting_name', '=', $settingName)
+			->where('ps.setting_value', '=', $settingValue)
+			->where('s.context_id', '=', (int) $contextId);
+
+		return $q->select('p.publication_id')
+			->pluck('p.publication_id')
+			->toArray();
+	}
+
+	/**
+	 * Check if the publication ID exists.
+	 * @param $publicationId int
+	 * @param $submissionId int, optional
+	 * @return boolean
+	 */
+	function exists($publicationId, $submissionId = null) {
+		$q = Capsule::table('publications');
+		$q->where('publication_id', '=', $publicationId);
+		if ($submissionId) {
+			$q->where('submission_id', '=', $submissionId);
+		}
+		return $q->exists();
 	}
 }

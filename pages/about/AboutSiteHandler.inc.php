@@ -3,8 +3,8 @@
 /**
  * @file pages/about/AboutSiteHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AboutSiteHandler
@@ -34,13 +34,16 @@ class AboutSiteHandler extends Handler {
 		$version = $versionDao->getCurrentVersion();
 
 		$templateMgr = TemplateManager::getManager($request);
-		$templateMgr->assign('appVersion', $version->getVersionString(false));
-
-		foreach (array(AppLocale::getLocale(), $primaryLocale = AppLocale::getPrimaryLocale(), 'en_US') as $locale) {
-			$pubProcessFile = 'locale/'.$locale.'/pubprocesslarge.png';
-			if (file_exists($pubProcessFile)) break;
-		}
-		$templateMgr->assign('pubProcessFile', $pubProcessFile);
+		$templateMgr->assign([
+			'appVersion' => $version->getVersionString(false),
+			'contactUrl' => $request->getDispatcher()->url(
+				Application::get()->getRequest(),
+				PKPApplication::ROUTE_PAGE,
+				null,
+				'about',
+				'contact'
+			),
+		]);
 
 		$templateMgr->display('frontend/pages/aboutThisPublishingSystem.tpl');
 	}

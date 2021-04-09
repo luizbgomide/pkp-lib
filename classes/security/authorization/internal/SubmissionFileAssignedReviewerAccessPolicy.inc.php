@@ -2,8 +2,8 @@
 /**
  * @file classes/security/authorization/internal/SubmissionFileAssignedReviewerAccessPolicy.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionFileAssignedReviewerAccessPolicy
@@ -21,8 +21,8 @@ class SubmissionFileAssignedReviewerAccessPolicy extends SubmissionFileBaseAcces
 	 * Constructor
 	 * @param $request PKPRequest
 	 */
-	function __construct($request, $fileIdAndRevision = null) {
-		parent::__construct($request, $fileIdAndRevision);
+	function __construct($request, $submissionFileId = null) {
+		parent::__construct($request, $submissionFileId);
 	}
 
 
@@ -51,10 +51,11 @@ class SubmissionFileAssignedReviewerAccessPolicy extends SubmissionFileBaseAcces
 			if ($context->getData('restrictReviewerFileAccess') && !$reviewAssignment->getDateConfirmed()) continue;
 
 			if (
-				$submissionFile->getSubmissionId() == $reviewAssignment->getSubmissionId() &&
-				$submissionFile->getFileStage() == SUBMISSION_FILE_REVIEW_FILE &&
-				$reviewFilesDao->check($reviewAssignment->getId(), $submissionFile->getFileId())
+				$submissionFile->getData('submissionId') == $reviewAssignment->getSubmissionId() &&
+				$submissionFile->getData('fileStage') == SUBMISSION_FILE_REVIEW_FILE &&
+				$reviewFilesDao->check($reviewAssignment->getId(), $submissionFile->getId())
 			) {
+				$this->addAuthorizedContextObject(ASSOC_TYPE_REVIEW_ASSIGNMENT, $reviewAssignment);
 				return AUTHORIZATION_PERMIT;
 			}
 		}

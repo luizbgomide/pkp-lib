@@ -2,8 +2,8 @@
 /**
  * @file classes/components/listPanels/PKPAnnouncementsListPanel.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPAnnouncementsListPanel
@@ -64,7 +64,7 @@ class PKPAnnouncementsListPanel extends ListPanel {
 				'itemsMax' => $this->itemsMax,
 				'urlBase' => $request->getDispatcher()->url(
 					$request,
-					ROUTE_PAGE,
+					\PKPApplication::ROUTE_PAGE,
 					$request->getContext()->getPath(),
 					'announcement',
 					'view',

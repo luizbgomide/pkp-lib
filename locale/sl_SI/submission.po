@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:50:02+00:00\n"
-"PO-Revision-Date: 2020-06-08 14:06+0000\n"
+"PO-Revision-Date: 2020-12-14 10:13+0000\n"
 "Last-Translator: Primož Svetek <primoz.svetek@gmail.com>\n"
 "Language-Team: Slovenian <http://translate.pkp.sfu.ca/projects/pkp-lib/"
-"submission/sl/>\n"
+"submission/sl_SI/>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -402,9 +402,6 @@ msgstr "Sprejeto"
 msgid "submission.acknowledge"
 msgstr "Potrdi"
 
-msgid "submission.addSuppFile"
-msgstr "Dodaj dodatno datoteko"
-
 msgid "submission.ask"
 msgstr "Zaprošena"
 
@@ -550,7 +547,9 @@ msgid "submission.event.fileUploaded"
 msgstr "{$username} je naložil datoteko \"{$originalFileName}\" za prispevek {$submissionId}."
 
 msgid "submission.event.fileRevised"
-msgstr "Datoteka \"{$name}\" (ID datoteke {$fileId}-{$fileRevision}) je bila posodobljena."
+msgstr ""
+"Posodobljena datoteka \"{$name}\"  je bila naložena za datoteko "
+"{$submissionFileId}."
 
 msgid "submission.event.general.metadataUpdated"
 msgstr "Metapodatki prispevka so posodobljeni"
@@ -684,9 +683,6 @@ msgstr "Ste prepričani, da želite dokončno zbrisati ta prelom?"
 msgid "submission.layout.confirmDeleteGalleyImage"
 msgstr "Ste prepričani, da želite zbrisati to sliko iz preloma?"
 
-msgid "submission.layout.confirmDeleteSupplementaryFile"
-msgstr "Ste prepričani, da želite dokončno zbrisati to dodatno datoteko?"
-
 msgid "submission.layout.deleteGalleyStylesheet"
 msgstr "Zbriši to stilsko tablico."
 
@@ -750,14 +746,8 @@ msgstr "Verzija preloma"
 msgid "submission.layout.newGalley"
 msgstr "Ustvari nov prelom"
 
-msgid "submission.layout.newSupplementaryFile"
-msgstr "Oddaj novo dodatno datoteko"
-
 msgid "submission.layout.noStyleFile"
 msgstr "Temu prelomu ni bila dodana nobena tablica stila."
-
-msgid "submission.layout.supplementaryFiles"
-msgstr "Recenzija dodatne datoteke"
 
 msgid "submission.layout.viewingGalley"
 msgstr "Pregled preloma prispevka"
@@ -993,9 +983,6 @@ msgstr "Naloži datoteko za diskusijo"
 msgid "submission.summary"
 msgstr "Izvleček"
 
-msgid "submission.supplementaryFiles"
-msgstr "Dodatne datoteke"
-
 msgid "submission.supportingAgencies"
 msgstr "Podporne ustanove"
 
@@ -1181,9 +1168,6 @@ msgstr "Naloži datoteko"
 
 msgid "submission.upload.copyeditedVersion"
 msgstr "Naloži lektorirano datoteko"
-
-msgid "submission.upload.fairCopy"
-msgstr "Naloži Fair kopijo"
 
 msgid "submission.upload.uploadFiles"
 msgstr "Naloži datoteke"
@@ -1590,9 +1574,6 @@ msgstr "Recenzijska diskusija"
 msgid "submission.queries.editorial"
 msgstr "Lektorska diskusija"
 
-msgid "submission.queries.production"
-msgstr "Produkcijska diskusija"
-
 msgid "submission.query.subject"
 msgstr "Tema"
 
@@ -1639,10 +1620,10 @@ msgid "submission.list.infoCenter"
 msgstr "Dnevnik dogodkov & Opombe"
 
 msgid "submission.list.responseDue"
-msgstr "Rok za odziv"
+msgstr "Rok za odziv: {$date}"
 
 msgid "submission.list.reviewDue"
-msgstr "Rok za recenzijo"
+msgstr "Rok za recenzijo: {$date}"
 
 msgid "submission.list.reviewComplete"
 msgstr "Recenzija oddana"
@@ -1696,7 +1677,11 @@ msgid "editor.submission.roundStatus.submissionResubmitted"
 msgstr "Prispevek je bil poslan v nov recenzijski krog."
 
 msgid "editor.submission.addStageParticipant.form.reviewerWarning"
-msgstr "Izbrani udeleženec je bil dodeljen z opravljanje slepe recenzije.  Če ga boste dodali med udeležence, bo dobil dostop do identitete avtorja. Priporočamo, da tega ne storite, razen, če lahko neodvisno zagotovite integriteto recenzentskega postopka."
+msgstr ""
+"Izbrani udeleženec je bil dodeljen z opravljanje anonimne recenzije.  Če ga "
+"boste dodali med udeležence, bo dobil dostop do identitete avtorja. "
+"Priporočamo, da tega ne storite, razen, če lahko neodvisno zagotovite "
+"integriteto recenzentskega postopka."
 
 msgid "submission.list.currentStage"
 msgstr "Trenutno v fazi {$stage}."
@@ -1748,32 +1733,17 @@ msgstr ""
 "Izvleček je predolg. Največja dolžina je {$limit} besed. Trenutno je dolg  "
 "{$count} besed."
 
-msgid "publication.version.details"
-msgstr "Podrobnosti objave za verzijo {$version}"
-
 msgid "publication.version.confirm"
 msgstr "Ste prepričani, da želite ustvariti novo verzijo?"
 
 msgid "publication.version.all"
 msgstr "Vse verzije"
 
-msgid "publication.unschedule.confirm"
-msgstr "Ste prepričani, da ne želite načrtovati te objave?"
-
 msgid "publication.unschedule"
 msgstr "Odstrani načrtovanje"
 
-msgid "publication.unpublish.confirm"
-msgstr "Ste prepričani, da želite umakniti to objavo?"
-
-msgid "publication.unpublish"
-msgstr "Umakni objavo"
-
 msgid "publication.titleAbstract"
 msgstr "Naslov in izvleček"
-
-msgid "publication.status.unscheduled"
-msgstr "Ni načrtovano"
 
 msgid "publication.status.unpublished"
 msgstr "Neobjavljeno"
@@ -1781,71 +1751,20 @@ msgstr "Neobjavljeno"
 msgid "publication.status.scheduled"
 msgstr "Načrtovano"
 
-msgid "publication.status.published"
-msgstr "Objavljeno"
-
-msgid "publication.required.reviewStage"
-msgstr ""
-"Prispevek mora biti v fazi Lektoriranje ali Produkcija preden je lahko "
-"objavljen."
-
-msgid "publication.required.declined"
-msgstr "Zavrnjen prispevek ne more biti objavljen."
-
-msgid "publication.publish.requirements"
-msgstr "Spodnje zahteve morajo biti izpolnjene pred objavo."
-
-msgid "publication.publish"
-msgstr "Objavi"
-
 msgid "publication.publicationLicense"
 msgstr "Dovoljenja in razkritja"
-
-msgid "publication.invalidSubmission"
-msgstr "Prispevka za objavo ni bilo mogoče najti."
-
-msgid "publication.event.versionUnpublished"
-msgstr "Nova verzija ni več objavljena."
-
-msgid "publication.event.versionScheduled"
-msgstr "Nova verzija je bila načrtovana za objavo."
-
-msgid "publication.event.versionPublished"
-msgstr "Nova verzija je bila objavljena."
 
 msgid "publication.event.versionCreated"
 msgstr "Ustvarjena je bila nova verzija."
 
-msgid "publication.event.unpublished"
-msgstr "Prispevek ni več objavljen."
-
-msgid "publication.event.scheduled"
-msgstr "Prispevek je bil načrtovan za objavo."
-
-msgid "publication.event.published"
-msgstr "Prispevek je bil objavljen."
-
-msgid "publication.editDisabled"
-msgstr "Ta verzija je bila objavljena in je ni mogoče spremeniti."
-
 msgid "publication.datePublished.errorFormat"
 msgstr "Datum mora biti v formatu YYYY-MM-DD, kot na primer 2019-01-01."
-
-msgid "publication.datePublished"
-msgstr "Datum objave"
 
 msgid "publication.createVersion"
 msgstr "Ustvari novo verzijo"
 
-msgid "publication.copyrightYearBasis.issueDescription"
-msgstr ""
-"Leto avtorskih pravic bo določeno avtomatično, ko bo številka objavljena."
-
 msgid "publication.contributors"
 msgstr "Sodelujoči"
-
-msgid "submission.publication"
-msgstr "Objava"
 
 msgid "submission.list.reviewCancelled"
 msgstr "Recenzija preklicana"
@@ -1864,7 +1783,6 @@ msgstr ""
 msgid "submission.query.leaveQuery"
 msgstr "Zapusti diskusijo"
 
-#, fuzzy
 msgid "submission.license.cc.by-sa3.footer"
 msgstr ""
 "<a rel=\"license\" href=\"https://creativecommons.org/licenses/by-sa/3.0/\"><"
@@ -1873,7 +1791,6 @@ msgstr ""
 "https://creativecommons.org/licenses/by-sa/3.0/\">Creative Commons "
 "Attribution-ShareAlike 3.0 mednarodna licenca</a>.</p>"
 
-#, fuzzy
 msgid "submission.license.cc.by3.footer"
 msgstr ""
 "<a rel=\"license\" href=\"https://creativecommons.org/licenses/by/3.0/\"><"
@@ -1882,7 +1799,6 @@ msgstr ""
 "https://creativecommons.org/licenses/by/3.0/\">Creative Commons Attribution "
 "3.0 International licenca</a>.</p>"
 
-#, fuzzy
 msgid "submission.license.cc.by-nd3.footer"
 msgstr ""
 "<a rel=\"license\" href=\"https://creativecommons.org/licenses/by-nd/3.0/\"><"
@@ -1891,7 +1807,6 @@ msgstr ""
 "https://creativecommons.org/licenses/by-nd/3.0/\">Creative Commons "
 "Attribution-NoDerivatives 3.0 mednarodna licenca</a>.</p>"
 
-#, fuzzy
 msgid "submission.license.cc.by-nc-sa3.footer"
 msgstr ""
 "<a rel=\"license\" href=\"https://creativecommons.org/licenses/by-nc-sa/3.0/"
@@ -1901,7 +1816,6 @@ msgstr ""
 "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 mednarodna "
 "licenca</a>.</p>"
 
-#, fuzzy
 msgid "submission.license.cc.by-nc3.footer"
 msgstr ""
 "<a rel=\"license\" href=\"https://creativecommons.org/licenses/by-nc/3.0/\"><"
@@ -1910,7 +1824,6 @@ msgstr ""
 "https://creativecommons.org/licenses/by-nc/3.0/\">Creative Commons "
 "Attribution-NonCommercial 3.0 mednarodna licenca</a>.</p>"
 
-#, fuzzy
 msgid "submission.license.cc.by-nc-nd3.footer"
 msgstr ""
 "<a rel=\"license\" href=\"https://creativecommons.org/licenses/by-nc-nd/3.0/"
@@ -1949,9 +1862,6 @@ msgstr "Ne dovoli urejanja metapodatkov"
 msgid "editor.submission.editStageParticipant"
 msgstr "Uredi zadolžitev"
 
-msgid "submission.status.scheduled"
-msgstr "Načrtovano"
-
 msgid "submission.outdatedVersion"
 msgstr ""
 "To je stara verzija objvaljena {$datePublished}. Preberite <a href=\""
@@ -1986,22 +1896,6 @@ msgid "author.editPublishedDisabled"
 msgstr ""
 "Avtorji te objave ne morejo biti spremenjeni, ker je bila že objavljena."
 
-msgid "publication.copyrightYearBasis.submissionDescription"
-msgstr ""
-"Leto avtorskih pravic bo ob objavi avtomatično nastavljeno na datum izdaje."
-
-msgid "submission.copyrightHolder.description"
-msgstr ""
-"Avtorske pravice bodo ob objavi avtomatično nastavljene na {$copyright}."
-
-msgid "submission.license.description"
-msgstr ""
-"Licenca bo ob objavi avtomatično nastavljena na <a href='{$licenseUrl}' "
-"target='_blank'>{$licenseName}</a>."
-
-msgid "submission.copyrightOther.description"
-msgstr "Dodeli avtorske pravice za objavljene članke naslednji osebi."
-
 msgid "submission.copyrightOther"
 msgstr "Izjava o avtorskih pravicah"
 
@@ -2019,9 +1913,6 @@ msgstr "Neobvezna pot, ki se uporablja v URL namesto IDja."
 
 msgid "publication.urlPath"
 msgstr "URL pot"
-
-msgid "submission.publications"
-msgstr "Objave"
 
 msgid "submission.publisherId.enable"
 msgstr "Omogoči za {$objects}"
@@ -2052,3 +1943,50 @@ msgstr "Dodatne datoteke"
 
 msgid "submission.representationOfTitle"
 msgstr "{$representation} od {$title}"
+
+msgid "notification.type.revertDecline"
+msgstr "Odločitev o zavrnitvi je bila spremenjena."
+
+msgid "notification.type.submissionNewVersion"
+msgstr "Ustvarjena je bila nova verzija prispevka"
+
+msgid "notification.type.editorDecisionRevertDecline"
+msgstr "Zavrnjen prispevek je bil ponovno aktiviran."
+
+msgid "submission.event.fileEdited"
+msgstr ""
+"Uporabnik {$username} je spremenil metapodatke za datoteko \""
+"{$originalFileName}\"."
+
+msgid "editor.submission.decision.revertDecline"
+msgstr "Spremeni zavrnitev"
+
+msgid "submission.upload.percentComplete"
+msgstr "Nalaganje {$percent}% opravljeno"
+
+msgid "submission.upload.instructions"
+msgstr ""
+"Naložite datoteke, ki jih potrebuje uredništvo, da pregleda vaš prispevek."
+
+msgid "submission.file.notAllowedUploaderUserId"
+msgstr ""
+"Zapis o nalaganju datoteke je ustvarjen, ko je datoteka kreirana in ga ni "
+"mogoče spremeniti."
+
+msgid "submission.submit.removeConfirm"
+msgstr "Ste prepričani, da želite odstraniti to datoteko?"
+
+msgid "submission.submit.genre.error"
+msgstr "Prosimo izberite vrsto datoteke za vsako nalaganje."
+
+msgid "submission.submit.genre.description"
+msgstr "Izberite opcijo, ki najbolje opisuje datoteko."
+
+msgid "submission.submit.genre.label"
+msgstr "Kakšne vrste datoteka je to?"
+
+msgid "author.submission.roundStatus.reviewOverdue"
+msgstr ""
+"Eden ali več recenzentov zamuja z recenzijo. Uredništvo je bilo obveščeno o "
+"tem in bo reagiralo, da bo zagotovilo dokončanje recenzije. Ta trenutek vam "
+"ni potrebno storiti ničesar. Ko bo odločitev sprejeta boste obveščeni."

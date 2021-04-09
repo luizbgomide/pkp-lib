@@ -3,8 +3,8 @@
 /**
  * @file classes/core/PKPPageRouter.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPPageRouter
@@ -353,7 +353,7 @@ class PKPPageRouter extends PKPRouter {
 		//
 		// Anchor
 		//
-		$anchor = (empty($anchor) ? '' : '#'.rawurlencode($anchor));
+		$anchor = (empty($anchor) ? '' : '#'.preg_replace("/[^a-zA-Z0-9\-\_\/\.\~]/", '', $anchor));
 
 		//
 		// Assemble URL
@@ -396,7 +396,11 @@ class PKPPageRouter extends PKPRouter {
 	/**
 	 * @copydoc PKPRouter::handleAuthorizationFailure()
 	 */
-	function handleAuthorizationFailure($request, $authorizationMessage) {
+	function handleAuthorizationFailure(
+		$request,
+		$authorizationMessage,
+		array $messageParams = []
+	) {
 		// Redirect to the authorization denied page.
 		if (!$request->getUser()) Validation::redirectLogin();
 		$request->redirect(null, 'user', 'authorizationDenied', null, array('message' => $authorizationMessage));
@@ -422,22 +426,24 @@ class PKPPageRouter extends PKPRouter {
 		if ($context = $this->getContext($request, 1)) {
 			// The user is in the context, see if they have zero or one roles only
 			$userGroups = $userGroupDao->getByUserId($userId, $context->getId());
-			if($userGroups->getCount() <= 1) {
-				$userGroup = $userGroups->next();
-				if (!$userGroup || $userGroup->getRoleId() == ROLE_ID_READER) return $request->url(null, 'index');
+			$firstUserGroup = $userGroups->next();
+			$secondUserGroup = $userGroups->next();
+			if (!$secondUserGroup) {
+				if (!$firstUserGroup || $firstUserGroup->getRoleId() == ROLE_ID_READER) return $request->url(null, 'index');
 			}
 			return $request->url(null, 'submissions');
 		} else {
 			// The user is at the site context, check to see if they are
 			// only registered in one place w/ one role
 			$userGroups = $userGroupDao->getByUserId($userId, CONTEXT_ID_NONE);
+			$firstUserGroup = $userGroups->next();
+			$secondUserGroup = $userGroups->next();
 
-			if($userGroups->getCount() == 1) {
+			if($firstUserGroup && !$secondUserGroup) {
 				$contextDao = Application::getContextDAO();
-				$userGroup = $userGroups->next();
-				$context = $contextDao->getById($userGroup->getContextId());
+				$context = $contextDao->getById($firstUserGroup->getContextId());
 				if (!isset($context)) $request->redirect('index', 'index');
-				if ($userGroup->getRoleId() == ROLE_ID_READER) $request->redirect(null, 'index');
+				if ($firstUserGroup->getRoleId() == ROLE_ID_READER) $request->redirect(null, 'index');
 			}
 			return $request->url('index', 'index');
 		}

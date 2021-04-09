@@ -1,8 +1,8 @@
 {**
  * templates/dashboard/index.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Dashboard index.
@@ -14,7 +14,7 @@
 		{translate key="navigation.submissions"}
 	</h1>
 
-	<tabs>
+	<tabs :track-history="true">
 		<tab id="myQueue" label="{translate key="dashboard.myQueue"}" :badge="components.{$smarty.const.SUBMISSIONS_LIST_MY_QUEUE}.itemsMax">
 			{help file="submissions" class="pkp_help_tab"}
 			<submissions-list-panel

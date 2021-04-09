@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/context/PKPEmailSetupForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPEmailSetupForm
@@ -47,6 +47,9 @@ class PKPEmailSetupForm extends FormComponent {
 					'contextName' => $context->getLocalizedName(),
 					'senderName' => __('email.senderName'),
 					'senderEmail' => __('email.senderEmail'),
+					'mailingAddress' => htmlspecialchars(nl2br($context->getData('mailingAddress'))),
+					'contactEmail' => htmlspecialchars($context->getData('contactEmail')),
+					'contactName' => htmlspecialchars($context->getData('contactName')),
 				]
 			]));
 

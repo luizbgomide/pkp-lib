@@ -2,8 +2,8 @@
 /**
  * @file controllers/api/file/linkAction/EditFileLinkAction.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class EditFileLinkAction
@@ -28,7 +28,7 @@ class EditFileLinkAction extends FileLinkAction {
 		import('lib.pkp.classes.linkAction.request.AjaxModal');
 		$modal = new AjaxModal(
 			$dispatcher->url(
-				$request, ROUTE_COMPONENT, null,
+				$request, PKPApplication::ROUTE_COMPONENT, null,
 				'api.file.ManageFileApiHandler',
 				'editMetadata', null,
 				$this->getActionArgs($submissionFile, $stageId)

@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/files/SelectableSubmissionFileListCategoryGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SelectableSubmissionFileListCategoryGridHandler
@@ -190,7 +190,11 @@ class SelectableSubmissionFileListCategoryGridHandler extends CategoryGridHandle
 		if ($capabilities->canDownloadAll() && $this->hasGridDataElements($request)) {
 			$submission = $this->getSubmission();
 			$stageId = $this->getStageId();
-			$linkParams = array('submissionId' => $submission->getId(), 'stageId' => $stageId);
+			$linkParams = [
+				'nameLocaleKey' => $this->getTitle(),
+				'submissionId' => $submission->getId(),
+				'stageId' => $stageId,
+			];
 			$files = $this->getFilesToDownload($request);
 
 			$this->addAction($capabilities->getDownloadAllAction($request, $files, $linkParams), GRID_ACTION_POSITION_BELOW);

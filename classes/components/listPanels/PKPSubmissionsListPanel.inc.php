@@ -2,8 +2,8 @@
 /**
  * @file components/listPanels/PKPSubmissionsListPanel.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPSubmissionsListPanel
@@ -13,7 +13,10 @@
  */
 
 namespace PKP\components\listPanels;
+
 use PKP\components\listPanels\ListPanel;
+use PKP\components\forms\FieldSelectUsers;
+use PKP\components\forms\FieldAutosuggestPreset;
 
 import('lib.pkp.classes.submission.PKPSubmission');
 import('classes.core.Services');
@@ -34,6 +37,15 @@ abstract class PKPSubmissionsListPanel extends ListPanel {
 
 	/** @var integer Count of total items available for list */
 	public $itemsMax = 0;
+
+	/** @var boolean Whether to show assigned to editors filter */
+	public $includeAssignedEditorsFilter = false;
+
+	/** @var boolean Whether to show categories filter */
+	public $includeCategoriesFilter = false;
+
+	/** @var array List of all available categories */
+	public $categories = [];
 
 	/**
 	 * @copydoc ListPanel::getConfig()
@@ -58,7 +70,7 @@ abstract class PKPSubmissionsListPanel extends ListPanel {
 
 		$config['addUrl'] = $request->getDispatcher()->url(
 			$request,
-			ROUTE_PAGE,
+			\PKPApplication::ROUTE_PAGE,
 			null,
 			'submission',
 			'wizard'
@@ -67,7 +79,7 @@ abstract class PKPSubmissionsListPanel extends ListPanel {
 		// URL to view info center for a submission
 		$config['infoUrl'] = $request->getDispatcher()->url(
 			$request,
-			ROUTE_COMPONENT,
+			\PKPApplication::ROUTE_COMPONENT,
 			null,
 			'informationCenter.SubmissionInformationCenterHandler',
 			'viewInformationCenter',
@@ -78,7 +90,7 @@ abstract class PKPSubmissionsListPanel extends ListPanel {
 		// URL to assign a participant
 		$config['assignParticipantUrl'] = $request->getDispatcher()->url(
 			$request,
-			ROUTE_COMPONENT,
+			\PKPApplication::ROUTE_COMPONENT,
 			null,
 			'grid.users.stageParticipant.StageParticipantGridHandler',
 			'addParticipant',
@@ -119,6 +131,42 @@ abstract class PKPSubmissionsListPanel extends ListPanel {
 				]
 			]
 		];
+
+		if ($this->includeCategoriesFilter) {
+			$categoryFilter = array();
+			$categoryFilter = $this->getCategoryFilters($this->categories);
+			if ($categoryFilter) {
+				$config['filters'][] = $categoryFilter;
+			}
+		}
+
+		if ($this->includeAssignedEditorsFilter) {
+			$assignedEditorsField = new FieldSelectUsers('assignedTo', [
+				'label' => __('editor.submissions.assignedTo'),
+				'value' => [],
+				'apiUrl' => $request->getDispatcher()->url(
+					$request,
+					\PKPApplication::ROUTE_API,
+					$context->getPath(),
+					'users',
+					null,
+					null,
+					['roleIds' => [ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR]]
+				),
+			]);
+			$config['filters'][] = [
+				'filters' => [
+					[
+						'title' => __('editor.submissions.assignedTo'),
+						'param' => 'assignedTo',
+						'value' => [],
+						'filterType' => 'pkp-filter-autosuggest',
+						'component' => $assignedEditorsField->component,
+						'autosuggestProps' => $assignedEditorsField->getConfig(),
+					]
+				]
+			];
+		}
 
 		// Provide required constants
 		import('lib.pkp.classes.submission.reviewRound.ReviewRound');
@@ -227,5 +275,57 @@ abstract class PKPSubmissionsListPanel extends ListPanel {
 			),
 			$this->getParams
 		);
+	}
+
+	/**
+	 * Compile the categories for passing as filters
+	 *
+	 * @param $categories array
+	 * @return array
+	 */
+	public function getCategoryFilters($categories = array()) {
+		$request = \Application::get()->getRequest();
+		$context = $request->getContext();
+
+		if ($categories) {
+			// Use an autosuggest field if the list of categories is too long
+			if (count($categories) > 5) {
+				$autosuggestField = new FieldAutosuggestPreset('categoryIds', [
+					'label' => __('category.category'),
+					'value' => [],
+					'options' => array_map(function($category) {
+						return [
+							'value' => (int) $category['id'],
+							'label' => $category['title'],
+						];
+					}, $categories),
+				]);
+				return [
+					'filters' => [
+						[
+							'title' => __('category.category'),
+							'param' => 'categoryIds',
+							'filterType' => 'pkp-filter-autosuggest',
+							'component' => 'field-autosuggest-preset',
+							'value' => [],
+							'autosuggestProps' => $autosuggestField->getConfig(),
+						]
+					],
+				];
+			}
+
+			return [
+				'heading' => __('category.category'),
+				'filters' => array_map(function($category) {
+					return [
+						'param' => 'categoryIds',
+						'value' => (int) $category['id'],
+						'title' => $category['title'],
+					];
+				}, $categories),
+			];
+		}
+
+		return [];
 	}
 }

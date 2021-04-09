@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/reviewer/form/ReviewerForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewerForm
@@ -202,10 +202,10 @@ class ReviewerForm extends Form {
 			$dispatcher = $request->getDispatcher();
 			AppLocale::requireComponents(LOCALE_COMPONENT_PKP_REVIEWER); // reviewer.step1.requestBoilerplate
 			$template->assignParams(array(
-				'contextUrl' => $dispatcher->url($request, ROUTE_PAGE, $context->getPath()),
+				'contextUrl' => $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $context->getPath()),
 				'editorialContactSignature' => $user->getContactSignature(),
 				'signatureFullName' => $user->getFullname(),
-				'passwordResetUrl' => $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'login', 'lostPassword'),
+				'passwordResetUrl' => $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $context->getPath(), 'login', 'lostPassword'),
 				'messageToReviewer' => __('reviewer.step1.requestBoilerplate'),
 				'abstractTermIfEnabled' => ($submission->getLocalizedAbstract() == '' ? '' : __('common.abstract')), // Deprecated; for OJS 2.x templates
 			));
@@ -359,14 +359,19 @@ class ReviewerForm extends Form {
 		$reviewAssignmentDao->updateObject($reviewAssignment);
 
 		// Grant access for this review to all selected files.
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-		import('lib.pkp.classes.submission.SubmissionFile'); // File constants
-		$submissionFiles = $submissionFileDao->getLatestRevisionsByReviewRound($currentReviewRound, SUBMISSION_FILE_REVIEW_FILE);
-		$selectedFiles = (array) $this->getData('selectedFiles');
+		import('lib.pkp.classes.submission.SubmissionFile'); // SUBMISSION_FILE_
+		$submissionFilesIterator = Services::get('submissionFile')->getMany([
+			'submissionIds' => [$submission->getId()],
+			'reviewRoundIds' => [$currentReviewRound->getId()],
+			'fileStages' => [$stageId == WORKFLOW_STAGE_ID_INTERNAL_REVIEW ? SUBMISSION_FILE_INTERNAL_REVIEW_FILE : SUBMISSION_FILE_REVIEW_FILE],
+		]);
+		$selectedFiles = array_map(function($id) {
+			return (int) $id;
+		}, (array) $this->getData('selectedFiles'));
 		$reviewFilesDao = DAORegistry::getDAO('ReviewFilesDAO'); /* @var $reviewFilesDao ReviewFilesDAO */
-		foreach ($submissionFiles as $submissionFile) {
-			if (in_array($submissionFile->getFileId(), $selectedFiles)) {
-				$reviewFilesDao->grant($reviewAssignment->getId(), $submissionFile->getFileId());
+		foreach ($submissionFilesIterator as $submissionFile) {
+			if (in_array($submissionFile->getId(), $selectedFiles)) {
+				$reviewFilesDao->grant($reviewAssignment->getId(), $submissionFile->getId());
 			}
 		}
 
@@ -399,7 +404,7 @@ class ReviewerForm extends Form {
 				'responseDueDate' => $responseDueDate,
 				'reviewDueDate' => $reviewDueDate,
 				'reviewerUserName' => $reviewer->getUsername(),
-				'submissionReviewUrl' => $dispatcher->url($request, ROUTE_PAGE, null, 'reviewer', 'submission', null, $reviewUrlArgs)
+				'submissionReviewUrl' => $dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'reviewer', 'submission', null, $reviewUrlArgs)
 			));
 			if (!$mail->send($request)) {
 				import('classes.notification.NotificationManager');

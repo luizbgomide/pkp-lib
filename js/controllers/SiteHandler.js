@@ -4,8 +4,8 @@
 /**
  * @file js/controllers/SiteHandler.js
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SiteHandler
@@ -38,7 +38,7 @@
 
 		this.bind('redirectRequested', this.redirectToUrl);
 		this.bind('notifyUser', this.fetchNotificationHandler_);
-		this.bind('updateHeader', this.updateHeaderHandler_);
+		this.bind('reloadTab', this.reloadTabHandler_);
 		this.bind('callWhenClickOutside', this.callWhenClickOutsideHandler_);
 		this.bind('mousedown', this.mouseDownHandler_);
 
@@ -136,9 +136,6 @@
 			var contentCSS = $.pkp.app.tinyMceContentCSS,
 					tinymceParams,
 					tinymceParamDefaults;
-			if ($.pkp.app.cdnEnabled) {
-				contentCSS = contentCSS + ', ' + $.pkp.app.tinyMceContentFont;
-			}
 
 			tinymceParamDefaults = {
 				width: '100%',
@@ -150,7 +147,6 @@
 				forced_root_block: 'p',
 				paste_auto_cleanup_on_paste: true,
 				apply_source_formatting: false,
-				theme: 'modern',
 				toolbar: 'copy paste | bold italic underline | link unlink ' +
 						'code fullscreen | image | pkpTags',
 				richToolbar: 'copy paste | bold italic underline | bullist numlist | ' +
@@ -333,9 +329,9 @@
 			var target = e.target, $container = $(target.editorContainer);
 			if (target.plugins.fullscreen) {
 				if (target.plugins.fullscreen.isFullscreen()) {
-					$container.find('.mce-toolbar[role=\'menubar\']').show();
+					$container.find('.tox-menubar').show();
 				} else {
-					$container.find('.mce-toolbar[role=\'menubar\']').hide();
+					$container.find('.tox-menubar').hide();
 				}
 			}
 		});
@@ -464,16 +460,18 @@
 
 
 	/**
-	 * Fetch the header (e.g. on header configuration change).
+	 * Reload a tab.
 	 * @private
 	 * @param {HTMLElement} sourceElement The element that issued the
-	 *  update header event.
-	 * @param {Event} event The "fetch header" event.
+	 *  "reloadTab" event.
+	 * @param {Event} event The "reload tab" event.
+	 * @param {Object} jsonData The JSON content representing the
+	 *  reload request.
 	 */
-	$.pkp.controllers.SiteHandler.prototype.updateHeaderHandler_ =
-			function(sourceElement, event) {
-		var handler = $.pkp.classes.Handler.getHandler($('#navigationUserWrapper'));
-		handler.reload();
+	$.pkp.controllers.SiteHandler.prototype.reloadTabHandler_ =
+			function(sourceElement, event, jsonData) {
+
+		$(jsonData.tabsSelector).tabs('load', jsonData.tabSelector);
 	};
 
 

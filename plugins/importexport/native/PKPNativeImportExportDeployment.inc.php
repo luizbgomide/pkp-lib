@@ -6,8 +6,8 @@
 /**
  * @file plugins/importexport/native/PKPNativeImportExportDeployment.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPNativeImportExportDeployment
@@ -76,8 +76,6 @@ class PKPNativeImportExportDeployment extends PKPImportExportDeployment {
 			'review_file' => SUBMISSION_FILE_REVIEW_FILE,
 			'review_attachment' => SUBMISSION_FILE_REVIEW_ATTACHMENT,
 			'final' => SUBMISSION_FILE_FINAL,
-			'fair_copy' => SUBMISSION_FILE_FAIR_COPY,
-			'editor' => SUBMISSION_FILE_EDITOR,
 			'copyedit' => SUBMISSION_FILE_COPYEDIT,
 			'proof' => SUBMISSION_FILE_PROOF,
 			'production_ready' => SUBMISSION_FILE_PRODUCTION_READY,
