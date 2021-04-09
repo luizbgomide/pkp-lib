@@ -1666,7 +1666,7 @@ msgstr "{$creatorName} iniciou uma discussão: {$noteTitle}: {$noteContents}"
 
 msgid "submission.query.activity.contents"
 msgstr ""
-"Há novas atividades na discussão entitulada \"{$queryTitle}\" sobre a "
+"Há novas atividades na discussão intitulada \"{$queryTitle}\" sobre a "
 "submissão \"{$submissionTitle}\"."
 
 msgid "submission.query.new.contents"
