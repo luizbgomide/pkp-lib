@@ -3,8 +3,8 @@
 /**
  * @file pages/management/ManagementHandler.inc.php
  *
- * Copyright (c) 2013-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2013-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ManagementHandler
@@ -95,8 +95,8 @@ class ManagementHandler extends Handler {
 		$context = $request->getContext();
 		$dispatcher = $request->getDispatcher();
 
-		$apiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
-		$publicFileApiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), '_uploadPublicFile');
+		$apiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
+		$publicFileApiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), '_uploadPublicFile');
 
 		$supportedFormLocales = $context->getSupportedFormLocales();
 		$localeNames = AppLocale::getAllLocales();
@@ -114,20 +114,23 @@ class ManagementHandler extends Handler {
 			],
 		]);
 
-		// Display a warning message if there is a new version of OJS available
-		if (Config::getVar('general', 'show_upgrade_warning')) {
-			import('lib.pkp.classes.site.VersionCheck');
-			if ($latestVersion = VersionCheck::checkIfNewVersionExists()) {
-				$templateMgr->assign('newVersionAvailable', true);
-				$templateMgr->assign('latestVersion', $latestVersion);
-				$currentVersion = VersionCheck::getCurrentDBVersion();
-				$templateMgr->assign('currentVersion', $currentVersion->getVersionString());
+		// Interact with the beacon (if enabled) and determine if a new version exists
+		import('lib.pkp.classes.site.VersionCheck');
+		$latestVersion = VersionCheck::checkIfNewVersionExists();
 
-				// Get contact information for site administrator
-				$roleDao = DAORegistry::getDAO('RoleDAO'); /* @var $roleDao RoleDAO */
-				$siteAdmins = $roleDao->getUsersByRoleId(ROLE_ID_SITE_ADMIN);
-				$templateMgr->assign('siteAdmin', $siteAdmins->next());
-			}
+		// Display a warning message if there is a new version of OJS available
+		if (Config::getVar('general', 'show_upgrade_warning') && $latestVersion) {
+			$currentVersion = VersionCheck::getCurrentDBVersion();
+			$templateMgr->assign([
+				'newVersionAvailable' =>  true,
+				'currentVersion' => $currentVersion->getVersionString(),
+				'latestVersion' =>  $latestVersion,
+			]);
+
+			// Get contact information for site administrator
+			$roleDao = DAORegistry::getDAO('RoleDAO'); /* @var $roleDao RoleDAO */
+			$siteAdmins = $roleDao->getUsersByRoleId(ROLE_ID_SITE_ADMIN);
+			$templateMgr->assign('siteAdmin', $siteAdmins->next());
 		}
 
 		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION);
@@ -147,10 +150,10 @@ class ManagementHandler extends Handler {
 		$dispatcher = $request->getDispatcher();
 		$router = $request->getRouter();
 
-		$contextApiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
-		$themeApiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), 'contexts/' . $context->getId() . '/theme');
-		$temporaryFileApiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), 'temporaryFiles');
-		$publicFileApiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), '_uploadPublicFile');
+		$contextApiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
+		$themeApiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'contexts/' . $context->getId() . '/theme');
+		$temporaryFileApiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'temporaryFiles');
+		$publicFileApiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), '_uploadPublicFile');
 
 		import('classes.file.PublicFileManager');
 		$publicFileManager = new PublicFileManager();
@@ -208,8 +211,8 @@ class ManagementHandler extends Handler {
 		$context = $request->getContext();
 		$dispatcher = $request->getDispatcher();
 
-		$contextApiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
-		$emailTemplatesApiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), 'emailTemplates');
+		$contextApiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
+		$emailTemplatesApiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'emailTemplates');
 
 		AppLocale::requireComponents(
 			LOCALE_COMPONENT_PKP_SUBMISSION,
@@ -273,9 +276,9 @@ class ManagementHandler extends Handler {
 		$router = $request->getRouter();
 		$dispatcher = $request->getDispatcher();
 
-		$apiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
+		$apiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
 		$sitemapUrl = $router->url($request, $context->getPath(), 'sitemap');
-		$paymentsUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), '_payments');
+		$paymentsUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), '_payments');
 
 		$supportedFormLocales = $context->getSupportedFormLocales();
 		$localeNames = AppLocale::getAllLocales();
@@ -297,11 +300,6 @@ class ManagementHandler extends Handler {
 				FORM_SEARCH_INDEXING => $searchIndexingForm->getConfig(),
 				FORM_PAYMENT_SETTINGS => $paymentSettingsForm->getConfig(),
 			],
-			'paymentsNavLink' => [
-				'name' => __('common.payments'),
-				'url' => $router->url($request, null, 'payments'),
-				'isCurrent' => false,
-			],
 		]);
 		$templateMgr->assign('pageTitle', __('manager.distribution.title'));
 	}
@@ -315,7 +313,7 @@ class ManagementHandler extends Handler {
 		$templateMgr = TemplateManager::getManager($request);
 		$this->setupTemplate($request);
 
-		$apiUrl = $request->getDispatcher()->url($request, ROUTE_API, $request->getContext()->getPath(), 'announcements');
+		$apiUrl = $request->getDispatcher()->url($request, PKPApplication::ROUTE_API, $request->getContext()->getPath(), 'announcements');
 
 		$supportedFormLocales = $request->getContext()->getSupportedFormLocales();
 		$localeNames = AppLocale::getAllLocales();
@@ -375,17 +373,32 @@ class ManagementHandler extends Handler {
 		$context = $request->getContext();
 		$dispatcher = $request->getDispatcher();
 
-		$apiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
+		$apiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
+		$notifyUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), '_email');
+		$progressUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), '_email/{queueId}');
+		$userGroups = DAORegistry::getDAO('UserGroupDAO')->getByContextId($context->getId());
 
 		$userAccessForm = new \APP\components\forms\context\UserAccessForm($apiUrl, $context);
+		$notifyUsersForm = new \PKP\components\forms\context\PKPNotifyUsersForm($notifyUrl, $context, $userGroups);
+
+		$templateMgr->assign([
+			'pageComponent' => 'AccessPage',
+			'pageTitle' => __('navigation.access'),
+			'enableBulkEmails' => in_array($context->getId(), (array) $request->getSite()->getData('enableBulkEmails')),
+		]);
+
+		$templateMgr->setConstants([
+			'FORM_NOTIFY_USERS',
+		]);
 
 		$templateMgr->setState([
 			'components' => [
 				FORM_USER_ACCESS => $userAccessForm->getConfig(),
+				FORM_NOTIFY_USERS => $notifyUsersForm->getConfig(),
 			],
+			'progressUrl' => $progressUrl,
 		]);
 
-		$templateMgr->assign('pageTitle', __('navigation.access'));
 		$templateMgr->display('management/access.tpl');
 	}
 }

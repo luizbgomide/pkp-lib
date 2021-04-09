@@ -3,8 +3,8 @@
 /**
  * @file classes/plugins/ThemePlugin.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ThemePlugin
@@ -742,7 +742,7 @@ abstract class ThemePlugin extends LazyLoadPlugin {
 			if ($dispatcher && substr($data['style'], (strlen(LESS_FILENAME_SUFFIX) * -1)) == LESS_FILENAME_SUFFIX) {
 				$styles = $dispatcher->url(
 					$request,
-					ROUTE_COMPONENT,
+					PKPApplication::ROUTE_COMPONENT,
 					null,
 					'page.PageHandler',
 					'css',

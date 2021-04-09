@@ -3,8 +3,8 @@
 /**
  * @file classes/core/ArrayItemIterator.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArrayItemIterator
@@ -154,14 +154,14 @@ class ArrayItemIterator extends ItemIterator {
 	 * Convert this iterator to an array
 	 * @return array
 	 */
-	function &toArray() {
+	function toArray() {
 		return $this->theArray;
 	}
 
 	/**
 	 * Return this iterator as an associative array.
 	 */
-	function &toAssociativeArray() {
+	function toAssociativeArray() {
 		return $this->theArray;
 	}
 

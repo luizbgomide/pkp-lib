@@ -3,16 +3,19 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:39+00:00\n"
-"PO-Revision-Date: 2020-03-27 12:37+0000\n"
+"PO-Revision-Date: 2021-03-04 17:09+0000\n"
 "Last-Translator: Jordi LC <jordi.lacruz@uab.cat>\n"
 "Language-Team: Catalan <http://translate.pkp.sfu.ca/projects/pkp-lib/editor/"
-"ca/>\n"
+"ca_ES/>\n"
 "Language: ca_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.9.1\n"
+
+msgid "editor.submissionArchive.confirmDelete"
+msgstr "Esteu segur/a que voleu suprimir permanentment aquesta tramesa?"
 
 msgid "editor.submissionLibrary.description"
 msgstr "Carregueu documents que pertanyin a la revisió i publicació d'aquesta tramesa. Les plantilles per a molts d'aquests documents les podeu trobar fent clic a <em>Veure la biblioteca de documents</em>."
@@ -83,13 +86,11 @@ msgstr "No envieu un correu electrònic a l'autor"
 msgid "editor.submissionReview.open"
 msgstr "Oberts"
 
-#, fuzzy
 msgid "editor.submissionReview.anonymous"
-msgstr "Cegament"
+msgstr "Revisor/a anònim / Autor/a públic"
 
-#, fuzzy
 msgid "editor.submissionReview.doubleAnonymous"
-msgstr "Doble cegament"
+msgstr "Revisor/a anònim / Autor/a anònim"
 
 msgid "editor.submissionReview.restrictFiles"
 msgstr "Restringiu els fitxers disponibles"
@@ -538,3 +539,14 @@ msgstr "Decisió enregistrada"
 
 msgid "editor.activityLog"
 msgstr "Registre d'activitat"
+
+msgid "editor.submission.revertDeclineDescription"
+msgstr "Segur que voleu revertir la decisió de rebutjar la tramesa?"
+
+msgid "editor.discussion.errorNotStageParticipant"
+msgstr "Un dels participants seleccionats no està assignat a aquesta fase."
+
+msgid "editor.discussion.errorAnonymousParticipants"
+msgstr ""
+"No es pot crear una discussió amb els participants seleccionats perquè "
+"afectaria l'anonimat del procés de revisió."

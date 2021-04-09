@@ -3,8 +3,8 @@
 /**
  * @file classes/notification/PKPNotificationOperationManager.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPNotificationOperationManager
@@ -16,6 +16,7 @@
  * Subclasses can implement specific information.
  */
 
+use \Firebase\JWT\JWT;
 
 import('classes.notification.Notification');
 import('lib.pkp.classes.notification.INotificationInfoProvider');
@@ -80,23 +81,6 @@ abstract class PKPNotificationOperationManager implements INotificationInfoProvi
 	// Notification manager operations.
 	//
 	/**
-	 * Construct a set of notifications and return them as a formatted string
-	 * @param $request PKPRequest
-	 * @param $userId int
-	 * @param $level int optional
-	 * @param $contextId int optional
-	 * @param $rangeInfo object optional
-	 * @param $notificationTemplate string optional Template to use for constructing an individual notification for display
-	 * @return object DAOResultFactory containing matching Notification objects
-	 */
-	public function getFormattedNotificationsForUser($request, $userId, $level = NOTIFICATION_LEVEL_NORMAL, $contextId = null, $rangeInfo = null, $notificationTemplate = 'notification/notification.tpl') {
-		$notificationDao = DAORegistry::getDAO('NotificationDAO'); /* @var $notificationDao NotificationDAO */
-		$notifications = $notificationDao->getByUserId($userId, $level, null, $contextId, $rangeInfo);
-
-		return $this->formatNotifications($request, $notifications, $notificationTemplate);
-	}
-
-	/**
 	 * Iterate through the localized params for a notification's locale key.
 	 *  For each parameter, return (in preferred order) a value for the user's current locale,
 	 *  a param for the journal's default locale, or the first value (in case the value
@@ -145,9 +129,9 @@ abstract class PKPNotificationOperationManager implements INotificationInfoProvi
 	 * @param $params array
 	 * @param $suppressEmail boolean Whether or not to suppress the notification email.
 	 * @param $mailConfigurator callable Enables the customization of the Notification email
-	 * @return Notification object
+	 * @return Notification object|null
 	 */
-	public function createNotification($request, $userId = null, $notificationType, $contextId = null, $assocType = null, $assocId = null, $level = NOTIFICATION_LEVEL_NORMAL, $params = null, $suppressEmail = false, callable $mailConfigurator = null) {
+	public function createNotification($request, $userId = null, $notificationType = null, $contextId = null, $assocType = null, $assocId = null, $level = NOTIFICATION_LEVEL_NORMAL, $params = null, $suppressEmail = false, callable $mailConfigurator = null) {
 		$blockedNotifications = $this->getUserBlockedNotifications($userId, $contextId);
 
 		if (!in_array($notificationType, $blockedNotifications)) {
@@ -272,7 +256,7 @@ abstract class PKPNotificationOperationManager implements INotificationInfoProvi
 	 */
 	protected function getUserBlockedNotifications($userId, $contextId) {
 		$notificationSubscriptionSettingsDao = DAORegistry::getDAO('NotificationSubscriptionSettingsDAO'); /* @var $notificationSubscriptionSettingsDao NotificationSubscriptionSettingsDAO */
-		return $notificationSubscriptionSettingsDao->getNotificationSubscriptionSettings('blocked_notification', $userId, (int) $contextId);
+		return $notificationSubscriptionSettingsDao->getNotificationSubscriptionSettings(NotificationSubscriptionSettingsDAO::BLOCKED_NOTIFICATION_KEY, $userId, (int) $contextId);
 	}
 
 	/**
@@ -281,7 +265,7 @@ abstract class PKPNotificationOperationManager implements INotificationInfoProvi
 	 */
 	protected function getUserBlockedEmailedNotifications($userId, $contextId) {
 		$notificationSubscriptionSettingsDao = DAORegistry::getDAO('NotificationSubscriptionSettingsDAO'); /* @var $notificationSubscriptionSettingsDao NotificationSubscriptionSettingsDAO */
-		return $notificationSubscriptionSettingsDao->getNotificationSubscriptionSettings('blocked_emailed_notification', $userId, (int) $contextId);
+		return $notificationSubscriptionSettingsDao->getNotificationSubscriptionSettings(NotificationSubscriptionSettingsDAO::BLOCKED_EMAIL_NOTIFICATION_KEY, $userId, (int) $contextId);
 	}
 
 	/**
@@ -393,11 +377,30 @@ abstract class PKPNotificationOperationManager implements INotificationInfoProvi
 				$mail->setReplyTo($site->getLocalizedContactEmail(), $site->getLocalizedContactName());
 			}
 
-			$mail->assignParams(array(
+			$emailParams = [
 				'notificationContents' => $this->getNotificationContents($request, $notification),
 				'url' => $this->getNotificationUrl($request, $notification),
-				'siteTitle' => $context?$context->getLocalizedName():$site->getLocalizedTitle()
-			));
+				'siteTitle' => $context?$context->getLocalizedName():$site->getLocalizedTitle(),
+			];
+
+			$notificationManager = new NotificationManager();
+			if (array_key_exists($notification->getType(), $notificationManager->getNotificationSettingsMap())) {
+				$unsubscribeUrl = $this->getUnsubscribeNotificationUrl($request, $notification);
+
+				$unsubscribeLink = '<br /><a href=\'' . $unsubscribeUrl . '\'>' . __('notification.unsubscribeNotifications') . '</a>';
+				$emailParams = array_merge([
+					'unsubscribeLink' => $unsubscribeLink,
+				], $emailParams);
+			} else {
+				// Clear unsubscribe params that are not yet assigned
+				$body = $mail->getBody();
+				$body = str_replace('{$unsubscribeLink}', '', $body);
+
+				$mail->setBody($body);
+			}
+
+			$mail->assignParams($emailParams);
+
 			$mail->addRecipient($user->getEmail(), $user->getFullName());
 			if (is_callable($mailConfigurator)) {
 				$mail = $mailConfigurator($mail);
@@ -408,6 +411,69 @@ abstract class PKPNotificationOperationManager implements INotificationInfoProvi
 				$notificationMgr->createTrivialNotification($request->getUser()->getId(), NOTIFICATION_TYPE_ERROR, array('contents' => __('email.compose.error')));
 			}
 		}
+	}
+
+	/**
+	 * Creates and returns a unique string for the given notification, that will be encoded and validated against.
+	 * @param $notification Notification
+	 * @return string
+	 */
+	function createUnsubscribeUniqueKey($notification) {
+		$uniqueKey = 'unsubscribe' . '-' . $notification->getContextId() . '-' . $notification->getUserId() . '-' . $notification->getId();
+
+		return $uniqueKey;
+	}
+
+	/**
+	 * Creates and returns an encoded token that will be used to validate an unsubscribe url.
+	 * @param $notification Notification
+	 * @return string
+	 */
+	function createUnsubscribeToken($notification) {
+		$encodeString = $this->createUnsubscribeUniqueKey($notification);
+
+		$secret = Config::getVar('security', 'api_key_secret', '');
+		$jwt = '';
+		if ($secret !== '') {
+			$jwt = JWT::encode(json_encode($encodeString), $secret, 'HS256');
+		}
+
+		return $jwt;
+	}
+
+	/**
+	 * The given notification is validated against the requested token.
+	 * @param $token string
+	 * @param $notification Notification
+	 * @return bool
+	 */
+	function validateUnsubscribeToken($token, $notification) {
+		$encodeString = $this->createUnsubscribeUniqueKey($notification);
+
+		$secret = Config::getVar('security', 'api_key_secret', '');
+		$jwt = '';
+		if ($secret !== '') {
+			$jwt = json_decode(JWT::decode($token, $secret, array('HS256')));
+		}
+
+		if ($jwt == $encodeString) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns the unsubscribe url for the given notification.
+	 * @param $request PKPRequest
+	 * @param $notification Notification
+	 * @return string
+	 */
+	function getUnsubscribeNotificationUrl($request, $notification) {
+		$dispatcher = $request->getDispatcher();
+		$unsubscribeUrl = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'notification', 'unsubscribe', null, array('validate' => $this->createUnsubscribeToken($notification), 'id' => $notification->getId()));
+
+		return $unsubscribeUrl;
 	}
 }
 

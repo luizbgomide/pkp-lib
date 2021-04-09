@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/stageParticipant/StageParticipantGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class StageParticipantGridHandler
@@ -124,7 +124,7 @@ class StageParticipantGridHandler extends CategoryGridHandler {
 			$user = $request->getUser();
 			$redirectUrl = $dispatcher->url(
 				$request,
-				ROUTE_PAGE,
+				PKPApplication::ROUTE_PAGE,
 				null,
 				'workflow',
 				'access',
@@ -135,11 +135,11 @@ class StageParticipantGridHandler extends CategoryGridHandler {
 				new LinkAction(
 					'signOutAsUser',
 					new RedirectAction(
-						$dispatcher->url($request, ROUTE_PAGE, null, 'login', 'signOutAsUser', null, array('redirectUrl' => $redirectUrl))
+						$dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'login', 'signOutAsUser', null, array('redirectUrl' => $redirectUrl))
 					),
-					__('user.logOutAs').' '. $user->getUsername(),
+					__('user.logOutAs', ['username' => $user->getUsername()]),
 					null,
-					__('user.logOutAs')
+					__('user.logOutAs', ['username' => $user->getUsername()])
 				)
 			);
 		}
@@ -515,13 +515,11 @@ class StageParticipantGridHandler extends CategoryGridHandler {
 	 * @return JSONMessage JSON object
 	 */
 	function fetchTemplateBody($args, $request) {
-		$templateId = $request->getUserVar('template');
+		$templateKey = $request->getUserVar('template');
 		import('lib.pkp.classes.mail.SubmissionMailTemplate');
-		$template = new SubmissionMailTemplate($this->getSubmission(), $templateId);
+		$template = new SubmissionMailTemplate($this->getSubmission(), $templateKey);
 		if ($template) {
 			$user = $request->getUser();
-			$dispatcher = $request->getDispatcher();
-			$context = $request->getContext();
 			$template->assignParams(array(
 				'editorialContactSignature' => $user->getContactSignature(),
 				'signatureFullName' => $user->getFullname(),
@@ -534,7 +532,7 @@ class StageParticipantGridHandler extends CategoryGridHandler {
 				true,
 				array(
 					'body' => $template->getBody(),
-					'variables' => $notifyForm->getEmailVariableNames($templateId),
+					'variables' => $notifyForm->getEmailVariableNames($templateKey),
 				)
 			);
 		}

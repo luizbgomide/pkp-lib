@@ -3,8 +3,8 @@
 /**
  * @file pages/workflow/PKPWorkflowHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class WorkflowHandler
@@ -45,12 +45,12 @@ abstract class PKPWorkflowHandler extends Handler {
 			// Otherwise it will build an authorized object with all accessible
 			// workflow stages and authorize user operation access.
 			import('lib.pkp.classes.security.authorization.internal.UserAccessibleWorkflowStageRequiredPolicy');
-			$this->addPolicy(new UserAccessibleWorkflowStageRequiredPolicy($request, WORKFLOW_TYPE_EDITORIAL));
+			$this->addPolicy(new UserAccessibleWorkflowStageRequiredPolicy($request, PKPApplication::WORKFLOW_TYPE_EDITORIAL));
 
 			$this->markRoleAssignmentsChecked();
 		} else {
 			import('lib.pkp.classes.security.authorization.WorkflowStageAccessPolicy');
-			$this->addPolicy(new WorkflowStageAccessPolicy($request, $args, $roleAssignments, 'submissionId', $this->identifyStageId($request, $args), WORKFLOW_TYPE_EDITORIAL));
+			$this->addPolicy(new WorkflowStageAccessPolicy($request, $args, $roleAssignments, 'submissionId', $this->identifyStageId($request, $args), PKPApplication::WORKFLOW_TYPE_EDITORIAL));
 		}
 
 		return parent::authorize($request, $args, $roleAssignments);
@@ -72,7 +72,7 @@ abstract class PKPWorkflowHandler extends Handler {
 		$currentStageId = $submission->getStageId();
 		$accessibleWorkflowStages = $this->getAuthorizedContextObject(ASSOC_TYPE_ACCESSIBLE_WORKFLOW_STAGES);
 		$workflowRoles = Application::getWorkflowTypeRoles();
-		$editorialWorkflowRoles = $workflowRoles[WORKFLOW_TYPE_EDITORIAL];
+		$editorialWorkflowRoles = $workflowRoles[PKPApplication::WORKFLOW_TYPE_EDITORIAL];
 
 		// Get the closest workflow stage that user has an assignment.
 		$workingStageId = null;
@@ -119,14 +119,13 @@ abstract class PKPWorkflowHandler extends Handler {
 		$accessibleWorkflowStages = $this->getAuthorizedContextObject(ASSOC_TYPE_ACCESSIBLE_WORKFLOW_STAGES);
 
 		$workflowRoles = Application::getWorkflowTypeRoles();
-		$editorialWorkflowRoles = $workflowRoles[WORKFLOW_TYPE_EDITORIAL];
+		$editorialWorkflowRoles = $workflowRoles[PKPApplication::WORKFLOW_TYPE_EDITORIAL];
 
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
 		$result = $userGroupDao->getByContextId($submission->getData('contextId'));
 		$authorUserGroups = [];
 		$workflowUserGroups = [];
-		while (!$result->eof()) {
-			$userGroup = $result->next();
+		while ($userGroup = $result->next()) {
 			if ($userGroup->getRoleId() == ROLE_ID_AUTHOR) {
 				$authorUserGroups[] = $userGroup;
 			}
@@ -163,19 +162,18 @@ abstract class PKPWorkflowHandler extends Handler {
 				$submission->getId(),
 				$request->getUser()->getId(),
 				WORKFLOW_STAGE_ID_PRODUCTION
-			);
+			)->toArray();
 
 			// If they have no stage assignments, check the role they have been granted
 			// for the production workflow stage. An unassigned admin or manager may
 			// have been granted access and should be allowed to publish.
-			if ($result->wasEmpty() && is_array($accessibleWorkflowStages[WORKFLOW_STAGE_ID_PRODUCTION])) {
+			if (empty($result) && is_array($accessibleWorkflowStages[WORKFLOW_STAGE_ID_PRODUCTION])) {
 				$canPublish = (bool) array_intersect([ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER], $accessibleWorkflowStages[WORKFLOW_STAGE_ID_PRODUCTION]);
 
 			// Otherwise, check stage assignments
 			// "Recommend only" stage assignments can not publish
 			} else {
-				while (!$result->eof()) {
-					$stageAssignment = $result->next();
+				foreach ($result as $stageAssignment) {
 					foreach ($workflowUserGroups as $workflowUserGroup) {
 						if ($stageAssignment->getUserGroupId() == $workflowUserGroup->getId() &&
 								!$stageAssignment->getRecommendOnly()) {
@@ -198,12 +196,12 @@ abstract class PKPWorkflowHandler extends Handler {
 
 		$latestPublication = $submission->getLatestPublication();
 
-		$submissionApiUrl = $request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getData('urlPath'), 'submissions/' . $submission->getId());
-		$latestPublicationApiUrl = $request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getData('urlPath'), 'submissions/' . $submission->getId() . '/publications/' . $latestPublication->getId());
+		$submissionApiUrl = $request->getDispatcher()->url($request, PKPApplication::ROUTE_API, $submissionContext->getData('urlPath'), 'submissions/' . $submission->getId());
+		$latestPublicationApiUrl = $request->getDispatcher()->url($request, PKPApplication::ROUTE_API, $submissionContext->getData('urlPath'), 'submissions/' . $submission->getId() . '/publications/' . $latestPublication->getId());
 
 		$contributorsGridUrl = $request->getDispatcher()->url(
 			$request,
-			ROUTE_COMPONENT,
+			PKPApplication::ROUTE_COMPONENT,
 			null,
 			'grid.users.author.AuthorGridHandler',
 			'fetchGrid',
@@ -216,7 +214,7 @@ abstract class PKPWorkflowHandler extends Handler {
 
 		$editorialHistoryUrl = $request->getDispatcher()->url(
 			$request,
-			ROUTE_COMPONENT,
+			PKPApplication::ROUTE_COMPONENT,
 			null,
 			'informationCenter.SubmissionInformationCenterHandler',
 			'viewInformationCenter',
@@ -226,7 +224,7 @@ abstract class PKPWorkflowHandler extends Handler {
 
 		$submissionLibraryUrl = $request->getDispatcher()->url(
 			$request,
-			ROUTE_COMPONENT,
+			PKPApplication::ROUTE_COMPONENT,
 			null,
 			'modals.documentLibrary.DocumentLibraryHandler',
 			'documentLibrary',
@@ -236,7 +234,7 @@ abstract class PKPWorkflowHandler extends Handler {
 
 		$publishUrl = $request->getDispatcher()->url(
 			$request,
-			ROUTE_COMPONENT,
+			PKPApplication::ROUTE_COMPONENT,
 			null,
 			'modals.publish.PublishHandler',
 			'publish',
@@ -353,7 +351,8 @@ abstract class PKPWorkflowHandler extends Handler {
 			'unscheduleConfirmLabel' => __('publication.unschedule.confirm'),
 			'unscheduleLabel' => __('publication.unschedule'),
 			'versionLabel' => __('semicolon', ['label' => __('admin.version')]),
-			'versionConfirmLabel' => __('publication.version.confirm'),
+			'versionConfirmTitle' => __('publication.createVersion'),
+			'versionConfirmMessage' => __('publication.version.confirm'),
 			'workingPublication' => $workingPublicationProps,
 		];
 
@@ -366,8 +365,8 @@ abstract class PKPWorkflowHandler extends Handler {
 				break;
 			}
 		}
-		if ($metadataEnabled || in_array('publication', $submissionContext->getData('enablePublisherId'))) {
-			$vocabSuggestionUrlBase =$request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getData('urlPath'), 'vocabs', null, null, ['vocab' => '__vocab__']);
+		if ($metadataEnabled || in_array('publication', (array) $submissionContext->getData('enablePublisherId'))) {
+			$vocabSuggestionUrlBase =$request->getDispatcher()->url($request, PKPApplication::ROUTE_API, $submissionContext->getData('urlPath'), 'vocabs', null, null, ['vocab' => '__vocab__']);
 			$metadataForm = new PKP\components\forms\publication\PKPMetadataForm($latestPublicationApiUrl, $locales, $latestPublication, $submissionContext, $vocabSuggestionUrlBase);
 			$templateMgr->setConstants(['FORM_METADATA']);
 			$state['components'][FORM_METADATA] = $metadataForm->getConfig();
@@ -568,7 +567,7 @@ abstract class PKPWorkflowHandler extends Handler {
 							'recommendation',
 							new AjaxModal(
 								$dispatcher->url(
-									$request, ROUTE_COMPONENT, null,
+									$request, PKPApplication::ROUTE_COMPONENT, null,
 									'modals.editorDecision.EditorDecisionHandler',
 									'sendRecommendation', null, $actionArgs
 								),
@@ -601,7 +600,7 @@ abstract class PKPWorkflowHandler extends Handler {
 				}
 			}
 			// Get the possible editor decisions for this stage
-			$decisions = (new EditorDecisionActionsManager())->getStageDecisions($request->getContext(), $stageId, $makeDecision);
+			$decisions = (new EditorDecisionActionsManager())->getStageDecisions($request->getContext(), $submission, $stageId, $makeDecision);
 			// Iterate through the editor decisions and create a link action
 			// for each decision which as an operation associated with it.
 			foreach($decisions as $decision => $action) {
@@ -613,7 +612,7 @@ abstract class PKPWorkflowHandler extends Handler {
 					$action['name'],
 					new AjaxModal(
 						$dispatcher->url(
-							$request, ROUTE_COMPONENT, null,
+							$request, PKPApplication::ROUTE_COMPONENT, null,
 							'modals.editorDecision.EditorDecisionHandler',
 							$action['operation'], null, $actionArgs
 						),
@@ -760,14 +759,14 @@ abstract class PKPWorkflowHandler extends Handler {
 		$editorAssignments = $notificationDao->getByAssoc(ASSOC_TYPE_SUBMISSION, $submission->getId(), null, $editorAssignmentNotificationType, $contextId);
 
 		// if the User has assigned TASKs in this stage check, return true
-		if (!$editorAssignments->wasEmpty()) {
+		if ($editorAssignments->next()) {
 			return true;
 		}
 
 		// check for more specific notifications on those stages that have them.
 		if ($stageId == WORKFLOW_STAGE_ID_PRODUCTION) {
 			$submissionApprovalNotification = $notificationDao->getByAssoc(ASSOC_TYPE_SUBMISSION, $submission->getId(), null, NOTIFICATION_TYPE_APPROVE_SUBMISSION, $contextId);
-			if (!$submissionApprovalNotification->wasEmpty()) {
+			if ($submissionApprovalNotification->next()) {
 				return true;
 			}
 		}

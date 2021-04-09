@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/files/dependent/DependentFilesGridDataProvider.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DependentFilesGridDataProvider
@@ -41,9 +41,14 @@ class DependentFilesGridDataProvider extends SubmissionFilesGridDataProvider {
 	function loadData($filter = array()) {
 		// Retrieve all dependent files for the given file stage and original submission file id (i.e. the main galley/production file)
 		$submission = $this->getSubmission();
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-		$submissionFiles = $submissionFileDao->getLatestRevisionsByAssocId(ASSOC_TYPE_SUBMISSION_FILE, $this->getAssocId(), $submission->getId(), $this->getFileStage());
-		return $this->prepareSubmissionFileData($submissionFiles, $this->_viewableOnly, $filter);
+		$submissionFilesIterator = Services::get('submissionFile')->getMany([
+			'assocTypes' => [ASSOC_TYPE_SUBMISSION_FILE],
+			'assocIds' => [$this->getAssocId()],
+			'submissionIds' => [$submission->getId()],
+			'fileStages' => [$this->getFileStage()],
+			'includeDependentFiles' => true,
+		]);
+		return $this->prepareSubmissionFileData(iterator_to_array($submissionFilesIterator), $this->_viewableOnly, $filter);
 	}
 
 	/**

@@ -3,8 +3,8 @@
 /**
  * @file classes/query/Query.inc.php
  *
- * Copyright (c) 2016-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2016-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Query
@@ -104,9 +104,7 @@ class Query extends DataObject {
 	 */
 	function getHeadNote() {
 		$notes = $this->getReplies(null, NOTE_ORDER_DATE_CREATED, SORT_DIRECTION_ASC, true);
-		$note = $notes->next();
-		$notes->close();
-		return $note;
+		return $notes->next();
 	}
 
 	/**

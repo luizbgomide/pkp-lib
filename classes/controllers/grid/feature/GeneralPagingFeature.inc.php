@@ -3,8 +3,8 @@
 /**
  * @file classes/controllers/grid/feature/GeneralPagingFeature.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class GeneralPagingFeature
@@ -72,16 +72,14 @@ class GeneralPagingFeature extends GridFeature {
 			$currentItemsPerPage = $defaultItemsPerPage;
 		}
 
-		$options = array(
+		$this->addOptions([
 			'itemsPerPageParamName' => $this->_getItemsPerPageParamName($grid->getId()),
 			'defaultItemsPerPage' => $defaultItemsPerPage,
 			'currentItemsPerPage' => $currentItemsPerPage,
 			'itemsTotal' => $iterator->getCount(),
 			'pageParamName' => PKPHandler::getPageParamName($grid->getId()),
 			'currentPage' => $iterator->getPage()
-		);
-
-		$this->addOptions($options);
+		]);
 
 		parent::setOptions($request, $grid);
 	}
@@ -100,7 +98,7 @@ class GeneralPagingFeature extends GridFeature {
 		$filter = $args['filter'];
 
 		if (is_array($filter) && !empty($filter)) {
-			$this->addOptions(array('filter' => json_encode($filter)));
+			$this->addOptions(['filter' => json_encode($filter)]);
 		}
 	}
 
@@ -131,7 +129,7 @@ class GeneralPagingFeature extends GridFeature {
 		$grid = $args['grid'];
 		$requestArgs =& $args['requestArgs'];
 
-		// Add paging info so grid actions will not loose paging context.
+		// Add paging info so grid actions will not lose paging context.
 		// Only works if grid link actions use the getRequestArgs
 		// returned content.
 		$request = Application::get()->getRequest();

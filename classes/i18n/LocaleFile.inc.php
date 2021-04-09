@@ -3,8 +3,8 @@
 /**
  * @file classes/i18n/LocaleFile.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class LocaleFile
@@ -114,33 +114,14 @@ class LocaleFile {
 
 	/**
 	 * Static method: Load a locale array from a file. Not cached!
-	 * @param $filename string Filename to locale XML to load
+	 * @param $filename string Filename to locale .po file to load
 	 * @param array
 	 */
 	static function &load($filename) {
-		$localeData = array();
-		// This compatibility code for XML file fallback will eventually be removed.
-		// See https://github.com/pkp/pkp-lib/issues/5090.
-		if (file_exists($filename) && substr($filename, -3) == '.po') {
-			// Prefer a PO file, if one exists.
-			$translations = Gettext\Translations::fromPoFile($filename);
-			foreach ($translations as $translation) {
-				$localeData[$translation->getOriginal()] = $translation->getTranslation();
-			}
-		} else {
-			// Try a fallback to an old-style XML locale file.
-			$xmlFilename = preg_replace('/\.po$/', '.xml', $filename);
-			if ($xmlFilename && file_exists($xmlFilename)) {
-				$xmlDao = new XMLDAO();
-				$data = $xmlDao->parseStruct($filename, array('message'));
-
-				// Build array with ($key => $string)
-				if (isset($data['message'])) {
-					foreach ($data['message'] as $messageData) {
-						$localeData[$messageData['attributes']['key']] = $messageData['value'];
-					}
-				}
-			}
+		$localeData = [];
+		$loader = new Gettext\Loader\PoLoader();
+		foreach ($loader->loadFile($filename) as $translation) {
+			$localeData[$translation->getOriginal()] = $translation->getTranslation();
 		}
 		return $localeData;
 	}

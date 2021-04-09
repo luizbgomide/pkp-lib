@@ -3,8 +3,8 @@
 /**
  * @file api/v1/users/PKPUserHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPUserHandler
@@ -24,26 +24,31 @@ class PKPUserHandler extends APIHandler {
 	 */
 	public function __construct() {
 		$this->_handlerPath = 'users';
-		$roles = array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR);
-		$this->_endpoints = array(
-			'GET' => array (
-				array(
+		$roles = [ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR];
+		$this->_endpoints = [
+			'GET' => [
+				[
 					'pattern' => $this->getEndpointPattern(),
-					'handler' => array($this, 'getMany'),
+					'handler' => [$this, 'getMany'],
 					'roles' => $roles
-				),
-				array(
+				],
+				[
 					'pattern' => $this->getEndpointPattern() . '/reviewers',
-					'handler' => array($this, 'getReviewers'),
+					'handler' => [$this, 'getReviewers'],
 					'roles' => $roles
-				),
-				array(
-					'pattern' => $this->getEndpointPattern() . '/{userId}',
-					'handler' => array($this, 'get'),
+				],
+				[
+					'pattern' => $this->getEndpointPattern() . '/{userId:\d+}',
+					'handler' => [$this, 'get'],
 					'roles' => $roles
-				),
-			),
-		);
+				],
+				[
+					'pattern' => $this->getEndpointPattern() . '/report',
+					'handler' => [$this, 'getReport'],
+					'roles' => $roles
+				],
+			],
+		];
 		parent::__construct();
 	}
 
@@ -92,22 +97,18 @@ class PKPUserHandler extends APIHandler {
 
 		$items = [];
 		$usersItereator = Services::get('user')->getMany($params);
-		if (count($usersItereator)) {
-			$propertyArgs = [
-				'request' => $request,
-				'slimRequest' => $slimRequest,
-			];
-			foreach ($usersItereator as $user) {
-				$items[] = Services::get('user')->getSummaryProperties($user, $propertyArgs);
-			}
+		$propertyArgs = [
+			'request' => $request,
+			'slimRequest' => $slimRequest,
+		];
+		foreach ($usersItereator as $user) {
+			$items[] = Services::get('user')->getSummaryProperties($user, $propertyArgs);
 		}
 
-		$data = [
+		return $response->withJson([
 			'itemsMax' => Services::get('user')->getMax($params),
 			'items' => $items,
-		];
-
-		return $response->withJson($data, 200);
+		], 200);
 	}
 
 	/**
@@ -174,22 +175,18 @@ class PKPUserHandler extends APIHandler {
 
 		$items = [];
 		$usersIterator = Services::get('user')->getReviewers($params);
-		if (count($usersIterator)) {
-			$propertyArgs = [
-				'request' => $request,
-				'slimRequest' => $slimRequest,
-			];
-			foreach ($usersIterator as $user) {
-				$items[] = Services::get('user')->getReviewerSummaryProperties($user, $propertyArgs);
-			}
+		$propertyArgs = [
+			'request' => $request,
+			'slimRequest' => $slimRequest,
+		];
+		foreach ($usersIterator as $user) {
+			$items[] = Services::get('user')->getReviewerSummaryProperties($user, $propertyArgs);
 		}
 
-		$data = array(
+		return $response->withJson([
 			'itemsMax' => Services::get('user')->getReviewersMax($params),
 			'items' => $items,
-		);
-
-		return $response->withJson($data, 200);
+		], 200);
 	}
 
 	/**
@@ -235,7 +232,7 @@ class PKPUserHandler extends APIHandler {
 
 				// Always convert roleIds to array
 				case 'roleIds':
-					if (is_string($val) && strpos($val, ',') > -1) {
+					if (is_string($val)) {
 						$val = explode(',', $val);
 					} elseif (!is_array($val)) {
 						$val = [$val];
@@ -278,5 +275,54 @@ class PKPUserHandler extends APIHandler {
 		}
 
 		return $returnParams;
+	}
+
+	/**
+	 * Retrieve the user report
+	 *
+	 * @param Slim\Http\Request $slimRequest Slim request object
+	 * @param \APIResponse $response Response
+	 * @param array $args
+	 * @return ?\APIResponse Response
+	 */
+	public function getReport(\Slim\Http\Request $slimRequest, \APIResponse $response, array $args) : ?\APIResponse {
+		$request = $this->getRequest();
+
+		$context = $request->getContext();
+		if (!$context) {
+			return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
+		}
+
+		$params = ['contextId' => $context->getId()];
+		foreach ($slimRequest->getQueryParams() as $param => $value) {
+			switch ($param) {
+				case 'userGroupIds':
+					if (is_string($value) && strpos($value, ',') > -1) {
+						$value = explode(',', $value);
+					} elseif (!is_array($value)) {
+						$value = [$value];
+					}
+					$params[$param] = array_map('intval', $value);
+					break;
+				case 'mappings':
+					if (is_string($value) && strpos($value, ',') > -1) {
+						$value = explode(',', $value);
+					} elseif (!is_array($value)) {
+						$value = [$value];
+					}
+					$params[$param] = $value;
+					break;
+			}
+		}
+
+		\HookRegistry::call('API::users::user::report::params', [&$params, $slimRequest]);
+
+		$this->getApp()->getContainer()->get('settings')->replace(['outputBuffering' => false]);
+
+		$report = \Services::get('user')->getReport($params);
+		header('content-type: text/comma-separated-values');
+		header('content-disposition: attachment; filename="user-report-' . date('Y-m-d') . '.csv"');
+		$report->serialize(fopen('php://output', 'w+'));
+		exit;
 	}
 }

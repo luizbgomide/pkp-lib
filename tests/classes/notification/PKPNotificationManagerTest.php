@@ -3,8 +3,8 @@
 /**
  * @file tests/classes/notification/PKPNotificationManagerTest.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPNotificationManagerTest
@@ -22,7 +22,6 @@ import('lib.pkp.classes.mail.MailTemplate');
 define('NOTIFICATION_ID', 1);
 
 class PKPNotificationManagerTest extends PKPTestCase {
-
 	private $notificationMgr;
 
 	/**
@@ -185,6 +184,7 @@ class PKPNotificationManagerTest extends PKPTestCase {
 	 * @param $request mixed (optional)
 	 */
 	private function exerciseCreateNotification($notificationMgr, $notificationToCreate, $notificationToCreateParams = array(), $request = null) {
+
 		if (is_null($request)) {
 			$request = $this->getMockBuilder(PKPRequest::class)->getMock();
 		}
@@ -213,7 +213,7 @@ class PKPNotificationManagerTest extends PKPTestCase {
 
 		// Stub a PKPRequest object.
 		$requestStub = $this->getMockBuilder(PKPRequest::class)
-			->setMethods(array('getSite', 'getContext', 'getUserVar'))
+			->setMethods(array('getSite', 'getContext', 'getUserVar', 'getDispatcher'))
 			->getMock();
 
 		// Some site, user and notification data are required for composing the email.
@@ -240,6 +240,25 @@ class PKPNotificationManagerTest extends PKPTestCase {
 
 		// Stub context.
 		$application = Application::get();
+
+		$mockApplication = $this->getMockBuilder(Application::class)
+			->setMethods(array('getContextDepth', 'getContextList'))
+			->getMock();
+
+		// Set up the getContextDepth() method
+		$mockApplication->expects($this->any())
+		                ->method('getContextDepth')
+		                ->will($this->returnValue(2));
+
+		// Set up the getContextList() method
+		$mockApplication->expects($this->any())
+		                ->method('getContextList')
+		                ->will($this->returnValue(array('firstContext', 'secondContext')));
+
+		$dispatcher = $mockApplication->getDispatcher(); // this also adds the component router
+		$dispatcher->addRouterName('lib.pkp.classes.core.PKPPageRouter', 'page');
+		$dispatcher->setApplication($mockApplication);
+
 		$contextDao = $application->getContextDAO();
 		$contextStub = $this->getMockBuilder(get_class($contextDao->newDataObject()))
 			->setMethods(array('getLocalizedName', 'getContactName', 'getContactEmail'))
@@ -261,6 +280,9 @@ class PKPNotificationManagerTest extends PKPTestCase {
 		$requestStub->expects($this->any())
 			->method('getUserVar')
 			->will($this->returnValue(null));
+		$requestStub->expects($this->any())
+			->method('getDispatcher')
+			->will($this->returnValue($dispatcher));
 		Registry::set('request', $requestStub);
 
 		// Stub site.
@@ -299,7 +321,7 @@ class PKPNotificationManagerTest extends PKPTestCase {
 		                 ->with($this->equalTo($userEmail), $this->equalTo($userFullName));
 		$mailTemplateMock->expects($this->any())
 		                 ->method('assignParams')
-		                 ->with($this->logicalAnd($this->contains($notificationContents), $this->contains($contextTitle)));
+		                 ->with($this->logicalAnd($this->containsEqual($notificationContents), $this->containsEqual($contextTitle)));
 		$mailTemplateMock->expects($this->once())
 		                 ->method('send')
 			         ->will($this->returnValue(true));

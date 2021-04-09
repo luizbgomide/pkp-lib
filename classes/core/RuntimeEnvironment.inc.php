@@ -2,8 +2,8 @@
 /**
  * @file classes/core/RuntimeEnvironment.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class RuntimeEnvironment
@@ -26,7 +26,7 @@ class RuntimeEnvironment {
 	/** @var array */
 	var $_externalPrograms;
 
-	function __construct($phpVersionMin = PHP_REQUIRED_VERSION, $phpVersionMax = null, $phpExtensions = array(), $externalPrograms = array()) {
+	function __construct($phpVersionMin = PKPApplication::PHP_REQUIRED_VERSION, $phpVersionMax = null, $phpExtensions = [], $externalPrograms = []) {
 		$this->_phpVersionMin = $phpVersionMin;
 		$this->_phpVersionMax = $phpVersionMax;
 		$this->_phpExtensions = $phpExtensions;

@@ -3,8 +3,8 @@
 /**
  * @file classes/plugins/PKPPubIdPluginHelper.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPPubIdPluginHelper
@@ -197,7 +197,7 @@ class PKPPubIdPluginHelper {
 					$dao = $pubObject->getDAO();
 					$pubObjectId = $pubObject->getId();
 					if (is_a($pubObject, 'SubmissionFile')) {
-						$pubObjectId = $pubObject->getFileId();
+						$pubObjectId = $pubObject->getId();
 					}
 					$dao->deletePubId($pubObjectId, $pubIdPlugin->getPubIdType());
 					// set the object setting/data 'pub-id::...' to null, in order

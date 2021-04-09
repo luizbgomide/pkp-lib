@@ -3,8 +3,8 @@
 /**
  * @file controllers/tab/pubIds/form/PKPPublicIdentifiersForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPPublicIdentifiersForm
@@ -155,7 +155,7 @@ class PKPPublicIdentifiersForm extends Form {
 		$publisherId = $this->getData('publisherId');
 		$pubObjectId = $pubObject->getId();
 		if ($assocType == ASSOC_TYPE_SUBMISSION_FILE) {
-			$pubObjectId = $pubObject->getFileId();
+			$pubObjectId = $pubObject->getId();
 		}
 		$contextDao = Application::getContextDAO();
 		if ($publisherId) {

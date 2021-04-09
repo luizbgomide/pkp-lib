@@ -1,8 +1,8 @@
 /**
  * styles/rtl.less
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Stylesheet for flipping content to RTL (e.g. for Arabic, Persian and Hebrew)
@@ -17,29 +17,7 @@ body[dir="rtl"] {
 	.pkp_help_tab,
 	.pkp_help_modal {
 		right: auto;
-		left: 48px;
-	}
-
-	.pkp_form {
-
-		[data-pkp-editable] {
-
-			[data-pkp-editable-view="input"],
-			[data-pkp-editable-view="input"] label:not(.error),
-			&.isEditing [data-pkp-editable-view="display"] {
-				position: absolute;
-				top: auto;
-				left: auto;
-				right: -9999px;
-			}
-
-			[data-pkp-editable-view="display"],
-			&.isEditing [data-pkp-editable-view="input"] {
-				position: relative;
-				top: auto;
-				right: auto;
-			}
-		}
+		left: 3rem;
 	}
 
 	.pkp_help_panel {
@@ -123,7 +101,7 @@ body[dir="rtl"] {
 	.pkp_form .inline {
 		float: right;
 		padding-right: inherit;
-		padding-left: @base;
+		padding-left: 1rem;
 	}
 
 	// Grids
@@ -146,8 +124,8 @@ body[dir="rtl"] {
 
 		.has_extras td:first-child,
 		.row_controls td:first-child {
-			padding-left: @base;
-			padding-right: @double;
+			padding-left: 1rem;
+			padding-right: 2rem;
 		}
 
 		.show_extras,

@@ -3,8 +3,8 @@
 /**
  * @file controllers/modals/editorDecision/form/RecommendationForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class RecommendationForm
@@ -101,7 +101,7 @@ class RecommendationForm extends Form {
 		$router = $request->getRouter();
 		$dispatcher = $router->getDispatcher();
 		$user = $request->getUser();
-		$submissionUrl = $dispatcher->url($request, ROUTE_PAGE, null, 'workflow', 'index', array($submission->getId(), $this->getStageId()));
+		$submissionUrl = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'workflow', 'index', array($submission->getId(), $this->getStageId()));
 		$emailParams = array(
 			'editors' => $editorsStr,
 			'submissionUrl' => $submissionUrl,
@@ -195,7 +195,7 @@ class RecommendationForm extends Form {
 			$email->setEventType(SUBMISSION_EMAIL_EDITOR_RECOMMEND_NOTIFY);
 
 			$dispatcher = $router->getDispatcher();
-			$submissionUrl = $dispatcher->url($request, ROUTE_PAGE, null, 'workflow', 'index', array($submission->getId(), $this->getStageId()));
+			$submissionUrl = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'workflow', 'index', array($submission->getId(), $this->getStageId()));
 			$email->assignParams(array(
 				'editors' => $this->getData('editors'),
 				'editorialContactSignature' => $user->getContactSignature(),

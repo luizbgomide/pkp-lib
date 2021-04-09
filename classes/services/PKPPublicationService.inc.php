@@ -2,8 +2,8 @@
 /**
  * @file classes/services/PKPPublicationService.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPPublicationService
@@ -116,7 +116,7 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 			$publicationQB->offsetBy($args['count']);
 		}
 
-		HookRegistry::call('Publication::getMany::queryBuilder', [$publicationQB, $args]);
+		HookRegistry::call('Publication::getMany::queryBuilder', [&$publicationQB, $args]);
 
 		return $publicationQB;
 	}
@@ -155,7 +155,7 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 				case '_href':
 					$values[$prop] = $dispatcher->url(
 						$request,
-						ROUTE_API,
+						\PKPApplication::ROUTE_API,
 						$submissionContext->getData('urlPath'),
 						'submissions/' . $publication->getData('submissionId') . '/publications/' . $publication->getId()
 					);
@@ -254,11 +254,11 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 		$publicationQO = $this->getQueryBuilder($args)->getDateBoundaries();
 		$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
 		$result = $publicationDao->retrieve($publicationQO->toSql(), $publicationQO->getBindings());
-		if (!empty($result->fields)) {
-			return [$result->fields[0], $result->fields[1]];
-		}
+		$row = $result->current();
 		import('classes.statistics.StatisticsHelper');
-		return [STATISTICS_EARLIEST_DATE, date('Y-m-d', strtotime('yesterday'))];
+		return $row ?
+			[$row->min_date_published, $row->max_date_published] :
+			[STATISTICS_EARLIEST_DATE, date('Y-m-d', strtotime('yesterday'))];
 	}
 
 	/**
@@ -434,7 +434,7 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 			$publication = $this->edit($publication, ['coverImage' => $value], $request);
 		}
 
-		HookRegistry::call('Publication::add', [$publication, $request]);
+		HookRegistry::call('Publication::add', [&$publication, $request]);
 
 		// Update a submission's status based on the status of its publications
 		$submission = Services::get('submission')->updateStatus($submission);
@@ -455,7 +455,7 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 	public function version($publication, $request) {
 		$newPublication = clone $publication;
 		$newPublication->setData('id', null);
-		$newPublication->setData('datePublished', '');
+		$newPublication->setData('datePublished', null);
 		$newPublication->setData('status', STATUS_QUEUED);
 		$newPublication->setData('version', $publication->getData('version') + 1);
 		$newPublication->stampModified();
@@ -521,16 +521,18 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 		$newPublication->_data = array_merge($publication->_data, $params);
 		$newPublication->stampModified();
 
-		HookRegistry::call('Publication::edit', [$newPublication, $publication, $params, $request]);
+		HookRegistry::call('Publication::edit', [&$newPublication, $publication, $params, $request]);
 
 		$publicationDao->updateObject($newPublication);
 		$newPublication = $this->get($newPublication->getId());
 
 		// Parse the citations
-		if (array_key_exists('citationsRaw', $params)) {
-			$citationDao = DAORegistry::getDAO('CitationDAO'); /* @var $citationDao CitationDAO */
+		if (array_key_exists('citationsRaw', $params) && $publication->getData('citationsRaw') != $newPublication->getData('citationsRaw')) {
+			$citationDao = DAORegistry::getDAO('CitationDAO'); /** @var $citationDao \CitationDAO */
 			$citationDao->importCitations($newPublication->getId(), $newPublication->getData('citationsRaw'));
 		}
+
+		$submission = Services::get('submission')->get($newPublication->getData('submissionId'));
 
 		// Log an event when publication data is updated
 		import('lib.pkp.classes.log.SubmissionLog');
@@ -576,7 +578,7 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 			}
 		}
 
-		HookRegistry::call('Publication::publish::before', [$newPublication, $publication]);
+		HookRegistry::call('Publication::publish::before', [&$newPublication, $publication]);
 
 		$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
 		$publicationDao->updateObject($newPublication);
@@ -600,7 +602,7 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 		import('classes.log.SubmissionEventLogEntry');
 		SubmissionLog::logEvent(Application::get()->getRequest(), $submission, SUBMISSION_LOG_METADATA_PUBLISH, $msg);
 
-		HookRegistry::call('Publication::publish', [$newPublication, $publication, $submission]);
+		HookRegistry::call('Publication::publish', [&$newPublication, $publication, $submission]);
 
 		// Update the search index.
 		if ($newPublication->getData('status') === STATUS_PUBLISHED) {
@@ -624,7 +626,7 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 		$newPublication->setData('status', STATUS_QUEUED);
 		$newPublication->stampModified();
 
-		HookRegistry::call('Publication::unpublish::before', [$newPublication, $publication]);
+		HookRegistry::call('Publication::unpublish::before', [&$newPublication, $publication]);
 
 		$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
 		$publicationDao->updateObject($newPublication);
@@ -643,7 +645,7 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 		import('classes.log.SubmissionEventLogEntry');
 		SubmissionLog::logEvent(Application::get()->getRequest(), $submission, SUBMISSION_LOG_METADATA_UNPUBLISH, $msg);
 
-		HookRegistry::call('Publication::unpublish', [$newPublication, $publication, $submission]);
+		HookRegistry::call('Publication::unpublish', [&$newPublication, $publication, $submission]);
 
 		// Update the metadata in the search index.
 		if ($submission->getData('status') !== STATUS_PUBLISHED) {
@@ -663,7 +665,7 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 	 * @copydoc \PKP\Services\EntityProperties\EntityWriteInterface::delete()
 	 */
 	public function delete($publication) {
-		HookRegistry::call('Publication::delete::before', [$publication]);
+		HookRegistry::call('Publication::delete::before', [&$publication]);
 
 		$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
 		$publicationDao->deleteObject($publication);
@@ -672,7 +674,7 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 		$submission = Services::get('submission')->get($publication->getData('submissionId'));
 		$submission = $submission = Services::get('submission')->updateStatus($submission);
 
-		HookRegistry::call('Publication::delete', [$publication]);
+		HookRegistry::call('Publication::delete', [&$publication]);
 	}
 
 	/**
@@ -703,7 +705,7 @@ class PKPPublicationService implements EntityPropertyInterface, EntityReadInterf
 		if (is_null($value)) {
 			$oldPublication = Services::get('publication')->get($publication->getId());
 			$oldValue = $oldPublication->getData($settingName, $localeKey);
-			$fileName = $oldValue['uploadName'];
+			$fileName = $oldValue['uploadName'] ?? null;
 			if ($fileName) {
 				// File may be in use by other publications
 				$fileInUse = false;

@@ -3,8 +3,8 @@
 /**
  * @file controllers/modals/editorDecision/form/SendReviewsForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SendReviewsForm
@@ -49,7 +49,7 @@ class SendReviewsForm extends EditorDecisionWithEmailForm {
 	 */
 	function initData($actionLabels = array()) {
 		$request = Application::get()->getRequest();
-		$actionLabels = (new EditorDecisionActionsManager())->getActionLabels($request->getContext(), $this->getStageId(), $this->_getDecisions());
+		$actionLabels = (new EditorDecisionActionsManager())->getActionLabels($request->getContext(), $this->getSubmission(), $this->getStageId(), $this->_getDecisions());
 
 		return parent::initData($actionLabels);
 	}
@@ -79,7 +79,7 @@ class SendReviewsForm extends EditorDecisionWithEmailForm {
 		foreach (array($revisionsEmail, $resubmitEmail) as &$email) {
 			$email->assignParams(array(
 				'authorName' => $submission->getAuthorString(),
-				'submissionUrl' => $dispatcher->url($request, ROUTE_PAGE, null, 'authorDashboard', 'submission', $submission->getId()),
+				'submissionUrl' => $dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'authorDashboard', 'submission', $submission->getId()),
 			));
 			$email->replaceParams();
 		}
@@ -102,7 +102,7 @@ class SendReviewsForm extends EditorDecisionWithEmailForm {
 		$submission = $this->getSubmission();
 
 		// Get this form decision actions labels.
-		$actionLabels = (new EditorDecisionActionsManager())->getActionLabels($request->getContext(), $this->getStageId(), $this->_getDecisions());
+		$actionLabels = (new EditorDecisionActionsManager())->getActionLabels($request->getContext(), $submission, $this->getStageId(), $this->_getDecisions());
 
 		// Record the decision.
 		$reviewRound = $this->getReviewRound();

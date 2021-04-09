@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/files/review/ReviewerReviewFilesGridDataProvider.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewerReviewFilesGridDataProvider
@@ -20,7 +20,9 @@ class ReviewerReviewFilesGridDataProvider extends ReviewGridDataProvider {
 	 * Constructor
 	 */
 	function __construct() {
-		parent::__construct(SUBMISSION_FILE_REVIEW_FILE);
+		$stageId = (int) Application::get()->getRequest()->getUserVar('stageId');
+		$fileStage = $stageId === WORKFLOW_STAGE_ID_INTERNAL_REVIEW ? SUBMISSION_FILE_INTERNAL_REVIEW_FILE : SUBMISSION_FILE_REVIEW_FILE;
+		parent::__construct($fileStage);
 	}
 
 
@@ -62,10 +64,10 @@ class ReviewerReviewFilesGridDataProvider extends ReviewGridDataProvider {
 		$submissionFileData = parent::loadData();
 		$reviewFilesDao = DAORegistry::getDAO('ReviewFilesDAO'); /* @var $reviewFilesDao ReviewFilesDAO */
 		$reviewAssignment = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ASSIGNMENT);
-		foreach ($submissionFileData as $fileId => $fileData) {
-			if (!$reviewFilesDao->check($reviewAssignment->getId(), $fileId)) {
+		foreach ($submissionFileData as $submissionFileId => $fileData) {
+			if (!$reviewFilesDao->check($reviewAssignment->getId(), $submissionFileId)) {
 				// Not permitted; remove from list.
-				unset($submissionFileData[$fileId]);
+				unset($submissionFileData[$submissionFileId]);
 			}
 		}
 		return $submissionFileData;

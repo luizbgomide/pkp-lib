@@ -3,8 +3,8 @@
 /**
  * @file classes/plugins/PKPPubIdPlugin.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPPubIdPlugin
@@ -35,13 +35,6 @@ abstract class PKPPubIdPlugin extends LazyLoadPlugin {
 				} else {
 					// For non-schema-backed DAOs, DAOName::getAdditionalFieldNames can be used.
 					HookRegistry::register(strtolower_codesafe(get_class($dao)).'::getAdditionalFieldNames', array($this, 'getAdditionalFieldNames'));
-					if (strtolower_codesafe(get_class($dao)) == 'submissionfiledao') {
-						// if it is a file, consider all file delegates
-						$fileDAOdelegates = $this->getFileDAODelegates();
-						foreach ($fileDAOdelegates as $fileDAOdelegate) {
-							HookRegistry::register(strtolower_codesafe($fileDAOdelegate).'::getAdditionalFieldNames', array($this, 'getAdditionalFieldNames'));
-						}
-					}
 				}
 			}
 		}
@@ -294,14 +287,6 @@ abstract class PKPPubIdPlugin extends LazyLoadPlugin {
 			Application::getRepresentationDAO(),
 			DAORegistry::getDAO('SubmissionFileDAO'),
 		);
-	}
-
-	/**
-	 * Get the possible submission file DAO delegates.
-	 * @return array
-	 */
-	function getFileDAODelegates()  {
-		return array('SubmissionFileDAODelegate', 'SupplementaryFileDAODelegate', 'SubmissionArtworkFileDAODelegate');
 	}
 
 	/**

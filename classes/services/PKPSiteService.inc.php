@@ -2,8 +2,8 @@
 /**
  * @file classes/services/PKPSiteService.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPSiteService
@@ -18,6 +18,7 @@ use \Application;
 use \DAORegistry;
 use \Services;
 use \PKP\Services\interfaces\EntityPropertyInterface;
+use \PKP\Services\interfaces\EntityWriteInterface;
 
 class PKPSiteService implements EntityPropertyInterface {
 
@@ -191,7 +192,7 @@ class PKPSiteService implements EntityPropertyInterface {
 		$newSite = $siteDao->newDataObject();
 		$newSite->_data = array_merge($site->_data, $params);
 
-		\HookRegistry::call('Site::edit', array($newSite, $site, $params, $request));
+		\HookRegistry::call('Site::edit', array(&$newSite, $site, $params, $request));
 
 		$siteDao->updateObject($newSite);
 		$newSite = $siteDao->getSite();

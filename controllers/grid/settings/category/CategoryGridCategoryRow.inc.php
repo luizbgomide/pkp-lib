@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/settings/category/CategoryGridCategoryRow.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CategoryGridCategoryRow
@@ -38,7 +38,7 @@ class CategoryGridCategoryRow extends GridCategoryRow {
 
 			$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 			$childCategories = $categoryDao->getByParentId($categoryId);
-			if ($childCategories->getCount() == 0) {
+			if (!$childCategories->next()) {
 				import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
 				$this->addAction(
 					new LinkAction(

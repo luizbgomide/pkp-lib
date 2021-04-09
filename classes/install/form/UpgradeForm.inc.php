@@ -3,8 +3,8 @@
 /**
  * @file classes/install/form/UpgradeForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class UpgradeForm
@@ -33,6 +33,7 @@ class UpgradeForm extends MaintenanceForm {
 
 		define('RUNNING_UPGRADE', 1);
 		$templateMgr = TemplateManager::getManager($this->_request);
+		Application::get()->initializeDatabaseConnection();
 		$installer = new Upgrade($this->_data);
 
 		// FIXME Use logger?

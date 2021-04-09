@@ -2,8 +2,8 @@
 /**
  * @file classes/security/authorization/internal/UserAccessibleWorkflowStageRequiredPolicy.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class UserAccessibleWorkflowStageRequiredPolicy
@@ -20,14 +20,14 @@ class UserAccessibleWorkflowStageRequiredPolicy extends AuthorizationPolicy {
 	/** @var PKPRequest */
 	var $_request;
 
-	/** @var string Workflow type. One of WORKFLOW_TYPE_... **/
+	/** @var string Workflow type. One of PKPApplication::WORKFLOW_TYPE_... **/
 	var $_workflowType;
 
 	/**
 	 * Constructor
 	 * @param $request PKPRequest
 	 * @param $workflowType string Which workflow the stage access must be granted
-	 *  for. One of WORKFLOW_TYPE_*.
+	 *  for. One of PKPApplication::WORKFLOW_TYPE_*.
 	 */
 	function __construct($request, $workflowType = null) {
 		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_USER);
@@ -52,7 +52,7 @@ class UserAccessibleWorkflowStageRequiredPolicy extends AuthorizationPolicy {
 		$userId = $user->getId();
 		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
 
-		$accessibleWorkflowStages = array();
+		$accessibleWorkflowStages = [];
 		$workflowStages = Application::get()->getApplicationStages();
 		$userService = Services::get('user');
 		foreach ($workflowStages as $stageId) {

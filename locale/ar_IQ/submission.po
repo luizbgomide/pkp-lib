@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:39+00:00\n"
-"PO-Revision-Date: 2020-07-23 05:47+0000\n"
+"PO-Revision-Date: 2020-12-18 16:52+0000\n"
 "Last-Translator: M. Ali <vorteem@gmail.com>\n"
 "Language-Team: Arabic <http://translate.pkp.sfu.ca/projects/pkp-lib/"
 "submission/ar_IQ/>\n"
@@ -420,9 +420,6 @@ msgstr "مقبول"
 msgid "submission.acknowledge"
 msgstr "إقرار"
 
-msgid "submission.addSuppFile"
-msgstr "أضف ملفاً تكميلياً"
-
 msgid "submission.ask"
 msgstr "إسأل"
 
@@ -571,7 +568,7 @@ msgid "submission.event.submissionSubmitted"
 msgstr "طلب النشر الأساسي إكتمل."
 
 msgid "submission.event.fileRevised"
-msgstr "التنقيح \"{$name}\" (رمز الملف {$fileId}-{$fileRevision}) قد رُفع إلى الموقع."
+msgstr "التنقيح \"{$name}\" قد رُفع للملف {$submissionFileId}."
 
 msgid "submission.event.general.metadataUpdated"
 msgstr "البيانات الوصفية للمؤلَّف تم تحديثها"
@@ -729,9 +726,6 @@ msgstr "هل أنت متأكد من رغبتك في حذف هذا اللوح ا�
 msgid "submission.layout.confirmDeleteGalleyImage"
 msgstr "هل أنت متأكد من رغبتك في إزالة هذه الصورة من اللوح الطباعي؟"
 
-msgid "submission.layout.confirmDeleteSupplementaryFile"
-msgstr "هل أنت متأكد من رغبتك في حذف هذا الملف التكميلي نهائياً؟"
-
 msgid "submission.layout.deleteGalleyStylesheet"
 msgstr "حذف ملف الأنماط هذا."
 
@@ -795,14 +789,8 @@ msgstr "نسخة التصميم"
 msgid "submission.layout.newGalley"
 msgstr "إنشاء لوح طباعي جديد"
 
-msgid "submission.layout.newSupplementaryFile"
-msgstr "رفع ملف تكميلي جديد"
-
 msgid "submission.layout.noStyleFile"
 msgstr "لم تتم إضافة ملف أنماط إلى هذا اللوح الطباعي."
-
-msgid "submission.layout.supplementaryFiles"
-msgstr "تحكيم الملف التكميلي"
 
 msgid "submission.layout.viewingGalley"
 msgstr "معاينة اللوح الطباعي للمؤلَّف"
@@ -1038,9 +1026,6 @@ msgstr "إرفع ملف مناقشة"
 msgid "submission.summary"
 msgstr "الموجز"
 
-msgid "submission.supplementaryFiles"
-msgstr "الملفات التكميلية"
-
 msgid "submission.supportingAgencies"
 msgstr "الوكالات الداعمة"
 
@@ -1164,9 +1149,6 @@ msgstr "مرفوض"
 msgid "submission.status.published"
 msgstr "منشور"
 
-msgid "submission.status.scheduled"
-msgstr "مجدول"
-
 msgid "submission.submit.uploadStep"
 msgstr "1. رفع الملف"
 
@@ -1220,9 +1202,6 @@ msgstr "رفع الملف"
 
 msgid "submission.upload.copyeditedVersion"
 msgstr "إرفع ملفاً مدققاً"
-
-msgid "submission.upload.fairCopy"
-msgstr "رفع نسخة مصفاة"
 
 msgid "submission.upload.uploadFiles"
 msgstr "رفع الملفات"
@@ -1315,7 +1294,10 @@ msgid "editor.submission.addStageParticipant.form.userRequired"
 msgstr "عليك أن تختار مستخدماً لهذه المجموعة."
 
 msgid "editor.submission.addStageParticipant.form.reviewerWarning"
-msgstr "المشارك الذي اخترته قد سبق تعيينه لإجراء التحكيم السري. إذا عينته بدور مشارك، سيكون له إمكانية التعرف على هوية المؤلف. من الأفضل تجنب تعيين هذا المشارك إلا إذا كان بإمكانك وبشكل مستقل ضمان نزاهة عملية التحكيم السري."
+msgstr ""
+"المشارك الذي اخترته قد سبق تعيينه لإجراء التحكيم غير المشخصن. إذا عينته بدور "
+"مشارك، سيكون له إمكانية التعرف على هوية المؤلف. من الأفضل تجنب تعيين هذا "
+"المشارك إلا إذا كان بإمكانك وبشكل مستقل ضمان نزاهة عملية التحكيم المناظر."
 
 msgid "editor.submission.removePermissionToEdit"
 msgstr "منع تعديل البيانات الوصفية"
@@ -1608,26 +1590,17 @@ msgstr "إرفق الصلاحيات الآتية بالمؤلَّف:"
 msgid "submission.license"
 msgstr "الرخصة"
 
-msgid "submission.license.description"
-msgstr "الرخصة سيتم ضبطها تلقائياً لتكون <a href='{$licenseUrl}' target='_blank'>{$licenseName}</a> عند النشر."
-
 msgid "submission.copyright"
 msgstr "الحقوق الفكرية"
 
 msgid "submission.copyrightHolder"
 msgstr "مالك الحقوق الفكرية"
 
-msgid "submission.copyrightHolder.description"
-msgstr "الحقوق الفكرية سيتم تعيينها تلقائياً إلى {$copyright} عند النشر."
-
 msgid "submission.copyrightHolder.other"
 msgstr "بيان الحقوق الفكرية المخصص"
 
 msgid "submission.copyrightOther"
 msgstr "بيان الحقوق الفكرية"
-
-msgid "submission.copyrightOther.description"
-msgstr "أعط الحقوق الفكرية لطلبات التقديم المنشورة إلى الجهة الآتية."
 
 msgid "submission.copyrightYear"
 msgstr "سنة الحقوق الفكرية"
@@ -1704,9 +1677,6 @@ msgstr "مناقشات التحكيم"
 msgid "submission.queries.editorial"
 msgstr "مناقشات التدقيق"
 
-msgid "submission.queries.production"
-msgstr "مناقشات الإنتاج"
-
 msgid "submission.query.subject"
 msgstr "الموضوع"
 
@@ -1762,13 +1732,13 @@ msgid "submission.list.empty"
 msgstr "لا طلبات تقديم هنا."
 
 msgid "submission.list.responseDue"
-msgstr "موعد الإجابة"
+msgstr "استحقاق الإجابة: {$date}"
 
 msgid "submission.list.reviewAssignment"
 msgstr "تعيينات التحكيم"
 
 msgid "submission.list.reviewDue"
-msgstr "استيجاب التحكيم"
+msgstr "استحقاق التحكيم: {$date}"
 
 msgid "submission.list.reviewComplete"
 msgstr "التحكيم مسَلم"
@@ -1851,74 +1821,20 @@ msgstr "لم يتم نشر أي شيء من هذه الفئة بعد."
 msgid "catalog.category.subcategories"
 msgstr "الفئات الفرعية"
 
-msgid "submission.publication"
-msgstr "المنشور"
-
-msgid "submission.publications"
-msgstr "المنشورات"
-
 msgid "publication.contributors"
 msgstr "المساهمون"
-
-msgid "publication.copyrightYearBasis.issueDescription"
-msgstr "سنة الحقوق الفكرية سيتم ضبطها تلقائياً عند النشر في أحد الأعداد."
-
-msgid "publication.copyrightYearBasis.submissionDescription"
-msgstr "سنة الحقوق الفكرية سيتم ضبطها تلقائياً استناداً إلى تأريخ النشر."
 
 msgid "publication.createVersion"
 msgstr "إنشاء نسخة جديدة"
 
-msgid "publication.datePublished"
-msgstr "تأريخ النشر"
-
 msgid "publication.datePublished.errorFormat"
 msgstr "التأريخ لا بد أن يكون بتنسيق YYYY-MM-DD، مثلاً 2020-01-01."
-
-msgid "publication.editDisabled"
-msgstr "هذه النسخة سبق وأن نُشرت ولا يمكن تعديلها."
-
-msgid "publication.event.published"
-msgstr "طلب التقديم نُشر."
-
-msgid "publication.event.scheduled"
-msgstr "طلب التقديم تمت جدولته للنشر."
-
-msgid "publication.event.unpublished"
-msgstr "طلب التقديم لم يُنشر."
 
 msgid "publication.event.versionCreated"
 msgstr "نسخة جديدة قد تم إنشاؤها."
 
-msgid "publication.event.versionPublished"
-msgstr "نسخة جديدة قد تم نشرها."
-
-msgid "publication.event.versionScheduled"
-msgstr "نسخة جديدة قد تمت جدولتها للنشر."
-
-msgid "publication.event.versionUnpublished"
-msgstr "إحدى النسخ قد تمت إزالتها عن النشر."
-
-msgid "publication.invalidSubmission"
-msgstr "تعذر العثور على طلب التقديم المتعلق بهذا المنشور."
-
 msgid "publication.publicationLicense"
 msgstr "الصلاحيات والإفصاح"
-
-msgid "publication.publish"
-msgstr "النشر"
-
-msgid "publication.publish.requirements"
-msgstr "لا بد من تلبية المتطلبات الآتية قبل الشروع بالنشر."
-
-msgid "publication.required.declined"
-msgstr "طلب التقديم المرفوض لا يمكن له أن يُنشر."
-
-msgid "publication.required.reviewStage"
-msgstr "طلب التقديم لا بد أن يكون في مرحلة التدقيق أو الانتاج قبل أن يتسنى نشره."
-
-msgid "publication.status.published"
-msgstr "منشور"
 
 msgid "publication.status.scheduled"
 msgstr "مجدول"
@@ -1926,23 +1842,11 @@ msgstr "مجدول"
 msgid "publication.status.unpublished"
 msgstr "غير منشور"
 
-msgid "publication.status.unscheduled"
-msgstr "غير مجدول"
-
 msgid "publication.titleAbstract"
 msgstr "العنوان والملخص"
 
-msgid "publication.unpublish"
-msgstr "لا تنشر"
-
-msgid "publication.unpublish.confirm"
-msgstr "هل أنت متأكد من رغبتك في عدم النشر؟"
-
 msgid "publication.unschedule"
 msgstr "لا تجدول"
-
-msgid "publication.unschedule.confirm"
-msgstr "هل أنت متأكد من رغبتك في عدم جدولته للنشر؟"
 
 msgid "publication.urlPath"
 msgstr "مسار الرابط"
@@ -1962,9 +1866,6 @@ msgstr "كل النسخ"
 msgid "publication.version.confirm"
 msgstr "هل أنت متأكد من رغبتك في إنشاء نسخة جديدة؟"
 
-msgid "publication.version.details"
-msgstr "تفاصيل النشر للنسخة {$version}"
-
 msgid "publication.wordCountLong"
 msgstr "الملخص طويل للغاية. لا بد أن يقتصر على {$limit} كلمة أو أقل. طوله الحالي {$count} كلمة."
 
@@ -1973,3 +1874,45 @@ msgstr "عدد الكلمات: {$count}/{$limit}"
 
 msgid "notification.type.submissionNewVersion"
 msgstr "تم إنشاء نسخة جديدة من طلب تقديم"
+
+msgid "submission.submit.genre.label"
+msgstr "أي نوع من الملفات هذا؟"
+
+msgid "author.submission.roundStatus.reviewOverdue"
+msgstr ""
+"واحد أو أكثر من المحكمين قد تأخروا عن موعدهم. تم إشعار فريق هيئة التحرير "
+"وسيقومون باتخاذ الإجراء الذي يضمن إكمال التحكيمات. لست بحاجة إلى القيام بأي "
+"شيء حالياً. سيتم إشعارك عند التوصل إلى قرار."
+
+msgid "submission.event.fileEdited"
+msgstr ""
+"البيانات الوصفية للملف \"{$originalFileName}\" قد تم تعديلها من قبل "
+"{$username}."
+
+msgid "submission.upload.percentComplete"
+msgstr "يجري الرفع، {$percent}% مكتمل"
+
+msgid "submission.upload.instructions"
+msgstr "قم برفع أي ملفات سيحتاج إليها أعضاء هيئة التحرير لتقييم طلب تقديمك."
+
+msgid "submission.file.notAllowedUploaderUserId"
+msgstr ""
+"لقد تم حفظ سجل عن من قام برفع الملف عند إنشائه ولا يمكن تغيير هذا السجل."
+
+msgid "submission.submit.removeConfirm"
+msgstr "هل أنت متأكد من رغبتك في إزالة هذا الملف؟"
+
+msgid "submission.submit.genre.error"
+msgstr "لطفاً، إختر نوع الملف لكل عملية رفع."
+
+msgid "submission.submit.genre.description"
+msgstr "حدد الخيار الأنسب لوصف هذا الملف."
+
+msgid "notification.type.revertDecline"
+msgstr "قرار رفض طلب التقديم هذا تم التراجع عنه."
+
+msgid "notification.type.editorDecisionRevertDecline"
+msgstr "طلب التقديم المرفوض أعيد تنشيطه."
+
+msgid "editor.submission.decision.revertDecline"
+msgstr "التراجع عن الرفض"

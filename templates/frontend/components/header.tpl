@@ -1,8 +1,8 @@
 {**
  * lib/pkp/templates/frontend/components/header.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Common frontend site header.
@@ -14,7 +14,7 @@
 {strip}
 	{* Determine whether a logo or title string is being displayed *}
 	{assign var="showingLogo" value=true}
-	{if $displayPageHeaderTitle && !$displayPageHeaderLogo && is_string($displayPageHeaderTitle)}
+	{if !$displayPageHeaderLogo}
 		{assign var="showingLogo" value=false}
 	{/if}
 {/strip}
@@ -48,18 +48,14 @@
 					{/if}
 					<div class="pkp_site_name">
 					{capture assign="homeUrl"}
-						{url page="index" router=$smarty.const.ROUTE_PAGE}
+						{url page="index" router=PKPApplication::ROUTE_PAGE}
 					{/capture}
-					{if $displayPageHeaderLogo && is_array($displayPageHeaderLogo)}
+					{if $displayPageHeaderLogo}
 						<a href="{$homeUrl}" class="is_img">
 							<img src="{$publicFilesDir}/{$displayPageHeaderLogo.uploadName|escape:"url"}" width="{$displayPageHeaderLogo.width|escape}" height="{$displayPageHeaderLogo.height|escape}" {if $displayPageHeaderLogo.altText != ''}alt="{$displayPageHeaderLogo.altText|escape}"{/if} />
 						</a>
-					{elseif $displayPageHeaderTitle && !$displayPageHeaderLogo && is_string($displayPageHeaderTitle)}
+					{elseif $displayPageHeaderTitle}
 						<a href="{$homeUrl}" class="is_text">{$displayPageHeaderTitle|escape}</a>
-					{elseif $displayPageHeaderTitle && !$displayPageHeaderLogo && is_array($displayPageHeaderTitle)}
-						<a href="{$homeUrl}" class="is_img">
-							<img src="{$publicFilesDir}/{$displayPageHeaderTitle.uploadName|escape:"url"}" alt="{$displayPageHeaderTitle.altText|escape}" width="{$displayPageHeaderTitle.width|escape}" height="{$displayPageHeaderTitle.height|escape}" />
-						</a>
 					{else}
 						<a href="{$homeUrl}" class="is_img">
 							<img src="{$baseUrl}/templates/images/structure/logo.png" alt="{$applicationName|escape}" title="{$applicationName|escape}" width="180" height="90" />
@@ -80,18 +76,19 @@
 							{$primaryMenu}
 
 							{* Search form *}
-							{if $currentContext}
-								{include file="frontend/components/searchForm_simple.tpl" className="pkp_search_desktop"}
+							{if $currentContext && $requestedPage !== 'search'}
+								<div class="pkp_navigation_search_wrapper">
+									<a href="{url page="search"}" class="pkp_search pkp_search_desktop">
+										<span class="fa fa-search" aria-hidden="true"></span>
+										{translate key="common.search"}
+									</a>
+								</div>
 							{/if}
 						</div>
 					</div>
 					<div class="pkp_navigation_user_wrapper" id="navigationUserWrapper">
 						{load_menu name="user" id="navigationUser" ulClass="pkp_navigation_user" liClass="profile"}
 					</div>
-					{* Search form *}
-					{if $currentContext}
-						{include file="frontend/components/searchForm_simple.tpl" className="pkp_search_mobile"}
-					{/if}
 				</nav>
 			</div><!-- .pkp_head_wrapper -->
 		</header><!-- .pkp_structure_head -->

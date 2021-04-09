@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-30T11:54:13-07:00\n"
-"PO-Revision-Date: 2020-07-20 18:12+0000\n"
+"PO-Revision-Date: 2021-03-03 20:34+0000\n"
 "Last-Translator: Diego José Macêdo <diegojmacedo@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <http://translate.pkp.sfu.ca/projects/"
 "pkp-lib/manager/pt_BR/>\n"
@@ -24,13 +24,13 @@ msgid "manager.website.imageFileRequired"
 msgstr "Um arquivo de imagem é requerido. Certifique-se de que escolheu e enviou um arquivo."
 
 msgid "manager.announcements"
-msgstr "Notícias"
+msgstr "Anúncios"
 
 msgid "manager.announcements.confirmDelete"
-msgstr "Deseja realmente excluir permanentemente esta notícia?"
+msgstr "Deseja realmente excluir permanentemente o anúncio {$title}?"
 
 msgid "manager.announcements.create"
-msgstr "Criar nova notícia"
+msgstr "Criar novo anúncio"
 
 msgid "manager.announcements.createTitle"
 msgstr "Criar"
@@ -63,7 +63,7 @@ msgid "manager.announcements.form.dateExpireYearIncompleteDate"
 msgstr "Escolha o mês e/ou dia além do ano de expiração."
 
 msgid "manager.announcements.form.description"
-msgstr "Corpo da notícia"
+msgstr "Notícia"
 
 msgid "manager.announcements.form.descriptionInstructions"
 msgstr "O texto completo da notícia."
@@ -96,7 +96,7 @@ msgid "manager.announcements.form.typeIdValid"
 msgstr "Escolha um tipo válido de notícia."
 
 msgid "manager.announcements.noneCreated"
-msgstr "Não há notícias."
+msgstr "Não há anúncios criados."
 
 msgid "manager.announcements.title"
 msgstr "Título"
@@ -108,10 +108,12 @@ msgid "manager.announcementTypes"
 msgstr "Tipos de notícia"
 
 msgid "manager.announcementTypes.confirmDelete"
-msgstr "Aviso! Todas as notícias deste tipo serão excluídas. Deseja realmente continuar e excluir este tipo de notícia?"
+msgstr ""
+"Aviso! Todos os anúncios deste tipo serão excluídos. Deseja realmente "
+"continuar e excluir este tipo de anúncio?"
 
 msgid "manager.announcementTypes.create"
-msgstr "Criar Tipo de notícia"
+msgstr "Criar Tipo de Anúncio"
 
 msgid "manager.announcementTypes.createTitle"
 msgstr "Criar"
@@ -413,6 +415,7 @@ msgstr "Formato de imagem inválido ou falha no envio para logo no cabeçalho de
 msgid "manager.statistics"
 msgstr "Estatísticas &amp; Relatórios"
 
+#, fuzzy
 msgid "manager.statistics.reports"
 msgstr "Gerador de Relatórios"
 
@@ -644,9 +647,6 @@ msgstr "Restringir resultados por país, região e / ou cidade."
 
 msgid "manager.setup.competingInterests"
 msgstr "Conflito de Interesses"
-
-msgid "manager.setup.groupType"
-msgstr "Agrupamento por tipo de arquivo"
 
 msgid "manager.setup.reviewOptions.numWeeksPerResponse"
 msgstr "Número de semanas para aceitar ou recusar um convite de avaliação."
@@ -1117,14 +1117,8 @@ msgstr "Informe a URL da página da licença, se disponível."
 msgid "manager.setup.metadata.submission"
 msgstr "Formulário de Submissão"
 
-msgid "manager.setup.genres.dependent"
-msgstr "Marque os arquivos deste tipo como arquivos dependentes (por exemplo, não submissões primárias)"
-
 msgid "manager.reviewerSearch.change"
 msgstr "Mudar"
-
-msgid "manager.setup.genres.supplementary"
-msgstr "Marcar arquivos deste tipo como arquivos suplementares (por exemplo conteúdos que não sejam primários à submissão)"
 
 msgid "manager.reviewForms.confirmActivate"
 msgstr "Ter certeza que deseja ativar este formulário de avaliação? Uma vez designado a um avaliador você não poderá mais desativa-lo."
@@ -1420,10 +1414,12 @@ msgid "manager.navigationMenus.archives.description"
 msgstr "Link para sua edição anteriore."
 
 msgid "manager.navigationMenus.announcements.description"
-msgstr "Link para a página exibindo suas notícias."
+msgstr "Link para a página exibindo seus anúncios."
 
 msgid "manager.navigationMenus.announcements.conditionalWarning"
-msgstr "Este link apenas será exibido se você tiver habilitado a aba notícias em Configurações > Website."
+msgstr ""
+"Este link apenas será exibido se você tiver habilitado a aba anúncios em "
+"Configurações > Website."
 
 msgid "manager.navigationMenus.login.description"
 msgstr "Link para a página de login de usuário."
@@ -1482,11 +1478,10 @@ msgstr "Usuários cadastrados"
 msgid "manager.setup.theme.notFound"
 msgstr "O tema selecionado não está instalado ou habilitado."
 
-#, fuzzy
 msgid "manager.setup.reviewOptions.showAnonymousReviewLink"
 msgstr ""
-"Apresentar link <button type=\"button\">Garantindo uma Avaliação "
-"Cega</button> durante a transferência"
+"Apresentar um link para <button type=\"button\">Garantindo uma Avaliação "
+"Anônima</button> durante a transferência"
 
 msgid "manager.setup.reviewOptions.reviewMode"
 msgstr "Modo de Avaliação Padrão"
@@ -2059,3 +2054,131 @@ msgstr "Licença"
 
 msgid "stats.countWithYearlyAverage"
 msgstr "{$count} ({$average}/ano)"
+
+msgid "plugins.importexport.native.error.submissionFileSkipped"
+msgstr ""
+"O arquivo de submissão {$id} foi ignorado por que está anexado a um registro "
+"que não será importado, como uma designação de avaliação ou discussão."
+
+msgid "manager.setup.genres.metatadata.description"
+msgstr ""
+"Selecione o tipo de metadados que estes arquivos podem receber. \"Documento\""
+" deve ser selecionado para os arquivos principais de publicação, como o "
+"arquivo PDF baixável, portanto estes arquivos herdam os metadados da "
+"publicação. Do contrário, escolha \"Conteúdo Suplementar\" para a maioria "
+"dos tipos de aquivos. \"Arte\" é apropriado para arquivos que requerem "
+"metadados de créditos, legenda e licenciamento distintos."
+
+msgid "manager.setup.genres.metatadata"
+msgstr "Metadados do Arquivo"
+
+msgid "manager.setup.genres.supplementary"
+msgstr ""
+"Estes são arquivos suplementares, como datasets e materiais de pesquisa, e "
+"serão exibidos separadamente dos arquivos principais de publicação."
+
+msgid "manager.setup.genres.dependent"
+msgstr ""
+"Estes são arquivos dependentes, como imagens exibidas por um arquivo HTML, e "
+"não serão exibidas com conteúdos publicados."
+
+msgid "manager.setup.genres.label"
+msgstr "Tipo de Arquivo"
+
+msgid "manager.sections.confirmActivateSection"
+msgstr "Tem certeza que deseja ativar esta seção?"
+
+msgid "manager.sections.confirmDeactivateSection"
+msgstr "Tem certeza que deseja desativar esta seção?"
+
+msgid "manager.sections.form.deactivateSection"
+msgstr ""
+"Desativar esta seção e não permitir que novas submissões sejam feitas a ela."
+
+msgid "manager.setup.dateTime.custom"
+msgstr "Customizado"
+
+msgid "manager.setup.dateTime.shortDateTime"
+msgstr "Data e Hora (Curto)"
+
+msgid "manager.setup.dateTime.longDateTime"
+msgstr "Data e Hora"
+
+msgid "manager.setup.dateTime.time"
+msgstr "Hora"
+
+msgid "manager.setup.dateTime.shortDate"
+msgstr "Data (curto)"
+
+msgid "manager.setup.dateTime.longDate"
+msgstr "Data"
+
+msgid "manager.setup.dateTime.description"
+msgstr ""
+"Escolha o formato de preferência para datas e horas. Um formato customizado "
+"pode ser inserido usando os <a href='https://www.php.net/manual/pt_BR/"
+"function.strftime.php#refsect1-function.strftime-parameters'>caracteres de "
+"formato</a> especiais."
+
+msgid "manager.setup.dateTime.descriptionTitle"
+msgstr "Formatos de Data e Hora"
+
+msgid "manager.setup.dateTime"
+msgstr "Data e Hora"
+
+msgid "manager.setup.notifyUsers.sendAnother"
+msgstr "Enviar outro email"
+
+msgid "manager.setup.notifyUsers.sent"
+msgstr "O email foi enviado com sucesso a todos os destinatários."
+
+msgid "manager.setup.notifyUsers.sending"
+msgstr ""
+"Enviando o email. Por favor não feche o navegador até que o envio seja "
+"finalizado."
+
+msgid "manager.setup.notifyUsers.confirm"
+msgstr ""
+"Você está prestes a enviar um email para um total de {$total} usuários. Tem "
+"certeza que deseja enviar este email?"
+
+msgid "manager.setup.notifyUsers.send"
+msgstr "Enviar Email"
+
+msgid "manager.setup.notifyUsers.copyDetails"
+msgstr "Enviar uma cópia deste email para mim em {$email}."
+
+msgid "manager.setup.notifyUsers.description"
+msgstr "Selecione os usuários que devem receber a sua notificação por email."
+
+msgid "manager.setup.notifyUsers"
+msgstr "Notificar"
+
+msgid "manager.setup.disableSubmissions"
+msgstr "Desabilitar Submissões"
+
+msgid "manager.statistics.reports.customReportGenerator"
+msgstr "Gerador de Relatórios Customizados"
+
+msgid "manager.people.signedInAs"
+msgstr "Você está atualmente logado como {$username}"
+
+msgid "manager.export.usersToCsv.description"
+msgstr "Selecione os usuários para serem exportados para um arquivo Excel/CSV."
+
+msgid "manager.export.usersToCsv.label"
+msgstr "Exportar para Excel/CSV"
+
+msgid "manager.emails.resetComplete"
+msgstr "O modelo de email foi redefinido com sucesso."
+
+msgid "manager.emails.resetAll.complete"
+msgstr "Os modelos de email padrão foram restaurados."
+
+msgid "manager.announcements.deleteAnnouncement"
+msgstr "Excluir Notícia"
+
+msgid "notification.localeSettingsCannotBeSaved"
+msgstr ""
+"Não foi possível salvar a configuração de idioma. Pelo menos um idioma deve "
+"ser habilitado para cada opção"

@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/site/PKPSiteConfigForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPSiteConfigForm
@@ -45,21 +45,19 @@ class PKPSiteConfigForm extends FormComponent {
 			'value' => $site->getData('title'),
 		]));
 
-		if (count($contextsIterator)) {
-			$options = [['value' => '', 'label' => '']];
-			foreach ($contextsIterator as $context) {
-				$options[] = [
-					'value' => $context->getId(),
-					'label' => $context->getLocalizedData('name'),
-				];
-			}
-			$this->addField(new FieldSelect('redirect', [
-				'label' => __('admin.settings.redirect'),
-				'description' => __('admin.settings.redirectInstructions'),
-				'options' => $options,
-				'value' => $site->getData('redirect'),
-			]));
+		$options = [['value' => '', 'label' => '']];
+		foreach ($contextsIterator as $context) {
+			$options[] = [
+				'value' => $context->getId(),
+				'label' => $context->getLocalizedData('name'),
+			];
 		}
+		if (count($options) > 1) $this->addField(new FieldSelect('redirect', [
+			'label' => __('admin.settings.redirect'),
+			'description' => __('admin.settings.redirectInstructions'),
+			'options' => $options,
+			'value' => $site->getData('redirect'),
+		]));
 
 		$this->addField(new FieldText('minPasswordLength', [
 			'label' => __('admin.settings.minPasswordLength'),

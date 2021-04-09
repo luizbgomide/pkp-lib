@@ -8,8 +8,8 @@
 /**
  * @file classes/form/FormBuilderVocabulary.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Fbv
@@ -162,7 +162,7 @@ class FormBuilderVocabulary {
 				'FBV_translate' => isset($params['translate']) ? $params['translate'] : true,
 			));
 
-			$class = $params['class'];
+			$class = $params['class'] ?? null;
 
 			// Check if we are using the Form class and if there are any errors
 			if (isset($form) && !empty($form->formSectionErrors)) {
@@ -214,7 +214,6 @@ class FormBuilderVocabulary {
 			'FBV_cancelUrlTarget' => isset($params['cancelUrlTarget']) ? $params['cancelUrlTarget'] : '',
 			'FBV_translate' => isset($params['translate']) ? $params['translate'] : true,
 			'FBV_saveText' => isset($params['saveText']) ? $params['saveText'] : null,
-			'FBV_saveValue' => isset($params['saveValue']) ? (boolean)$params['saveValue'] : null,
 		));
 		return $smarty->fetch('form/formButtons.tpl');
 	}

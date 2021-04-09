@@ -3,8 +3,8 @@
 /**
  * @file classes/mail/MailTemplate.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class MailTemplate
@@ -149,7 +149,10 @@ class MailTemplate extends Mail {
 			$params = array_merge(array(
 				'principalContactSignature' => $this->context->getData('contactName'),
 				'contextName' => $this->context->getLocalizedName(),
-				'contextUrl' => $dispatcher->url($request, ROUTE_PAGE, $this->context->getPath()),
+				'contextUrl' => $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $this->context->getPath()),
+				'mailingAddress' => htmlspecialchars(nl2br($this->context->getData('mailingAddress'))),
+				'contactEmail' => htmlspecialchars($this->context->getData('contactEmail')),
+				'contactName' => htmlspecialchars($this->context->getData('contactName')),
 			), $params);
 		} else {
 			// No context available

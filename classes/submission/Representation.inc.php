@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/Representation.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Representation
@@ -140,18 +140,6 @@ class Representation extends DataObject {
 	 */
 	function getDAO() {
 		return Application::getRepresentationDAO();
-	}
-
-	function getRepresentationFiles($fileStage = null) {
-		$publication = Services::get('publication')->get($this->getData('publicationId'));
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /** @var $submissionFileDao SubmissionFileDAO */
-		return $submissionFileDao->getLatestRevisionsByAssocId(
-			ASSOC_TYPE_REPRESENTATION,
-			$this->getId(),
-			$publication->getData('submissionId'),
-			$fileStage,
-			null
-		);
 	}
 }
 

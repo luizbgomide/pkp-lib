@@ -1,8 +1,8 @@
 {**
  * templates/controllers/grid/settings/genre/form/genreForm.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Genre form under context management.
@@ -15,7 +15,7 @@
 	{rdelim});
 </script>
 
-<form class="pkp_form" id="genreForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT component="grid.settings.genre.GenreGridHandler" op="updateGenre"}">
+<form class="pkp_form" id="genreForm" method="post" action="{url router=PKPApplication::ROUTE_COMPONENT component="grid.settings.genre.GenreGridHandler" op="updateGenre"}">
 {csrf}
 {include file="controllers/notification/inPlaceNotification.tpl" notificationId="genreFormNotification"}
 
@@ -23,11 +23,11 @@
 {fbvFormSection title="common.name" for="name" required="true"}
 	{fbvElement type="text" multilingual="true" id="name" value=$name maxlength="80" required="true"}
 {/fbvFormSection}
-{fbvFormSection list="true" title="common.options"}
+{fbvFormSection list="true" title="manager.setup.genres.label"}
 	{fbvElement type="checkbox" id="dependent" checked=$dependent label="manager.setup.genres.dependent"}
 	{fbvElement type="checkbox" id="supplementary" checked=$supplementary label="manager.setup.genres.supplementary"}
 {/fbvFormSection}
-{fbvFormSection title="manager.setup.groupType" for="category"}
+{fbvFormSection label="manager.setup.genres.metatadata" description="manager.setup.genres.metatadata.description" for="category"}
 	{fbvElement type="select" id="category" from=$submissionFileCategories selected=$category translate=false}
 {/fbvFormSection}
 {fbvFormSection label="manager.setup.genres.key" description="manager.setup.genres.key.description" for="key"}

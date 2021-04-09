@@ -3,8 +3,8 @@
 /**
  * @file classes/security/authorization/internal/SubmissionFileUploaderAccessPolicy.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionFileUploaderAccessPolicy
@@ -21,8 +21,8 @@ class SubmissionFileUploaderAccessPolicy extends SubmissionFileBaseAccessPolicy 
 	 * Constructor
 	 * @param $request PKPRequest
 	 */
-	function __construct($request, $fileIdAndRevision = null) {
-		parent::__construct($request, $fileIdAndRevision);
+	function __construct($request, $submissionFileId = null) {
+		parent::__construct($request, $submissionFileId);
 	}
 
 

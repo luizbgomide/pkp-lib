@@ -3,8 +3,8 @@
 /**
  * @file controllers/tab/authorDashboard/AuthorDashboardReviewRoundTabHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AuthorDashboardReviewRoundTabHandler
@@ -18,6 +18,9 @@ import('pages.authorDashboard.AuthorDashboardHandler');
 import('lib.pkp.classes.core.JSONMessage');
 
 class AuthorDashboardReviewRoundTabHandler extends AuthorDashboardHandler {
+
+	/** @var boolean Overwrite backend page handling of AuthorDashboardHandler */
+	public $_isBackendPage = false;
 
 	/**
 	 * Constructor
@@ -91,10 +94,10 @@ class AuthorDashboardReviewRoundTabHandler extends AuthorDashboardHandler {
 		if((new EditorDecisionActionsManager())->getEditorTakenActionInReviewRound($request->getContext(), $reviewRound)) {
 			$submissionEmailLogDao = DAORegistry::getDAO('SubmissionEmailLogDAO'); /* @var $submissionEmailLogDao SubmissionEmailLogDAO */
 			$user = $request->getUser();
-			$templateMgr->assign(array(
+			$templateMgr->assign([
 				'submissionEmails' => $submissionEmailLogDao->getByEventType($submission->getId(), SUBMISSION_EMAIL_EDITOR_NOTIFY_AUTHOR, $user->getId()),
 				'showReviewAttachments' => true,
-			));
+			]);
 		}
 
 		return $templateMgr->fetchJson('authorDashboard/reviewRoundInfo.tpl');

@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/files/form/ManageSubmissionFilesForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ManageSubmissionFilesForm
@@ -69,32 +69,37 @@ class ManageSubmissionFilesForm extends Form {
 	 * that is currently being used by a grid inside this form.
 	 * @param $fileStage int SUBMISSION_FILE_...
 	 */
-	function execute($stageSubmissionFiles, $fileStage = null) {
+	function execute($stageSubmissionFiles = null, $fileStage = null, ...$functionArgs) {
+		$request = Application::get()->getRequest();
 		$selectedFiles = (array)$this->getData('selectedFiles');
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-		$submissionFiles = $submissionFileDao->getLatestRevisions($this->getSubmissionId());
+		$submissionFilesIterator = Services::get('submissionFile')->getMany([
+			'submissionIds' => [$this->getSubmissionId()],
+		]);
 
-		foreach ($submissionFiles as $submissionFile) {
+		foreach ($submissionFilesIterator as $submissionFile) {
 			// Get the viewable flag value.
 			$isViewable = in_array(
-				$submissionFile->getFileId(),
+				$submissionFile->getId(),
 				$selectedFiles
 			);
 
 			// If this is a submission file that's already in this listing...
 			if ($this->fileExistsInStage($submissionFile, $stageSubmissionFiles, $fileStage)) {
 				// ...update the "viewable" flag accordingly.
-				if ($isViewable != $submissionFile->getViewable()) {
-					$submissionFile->setViewable($isViewable);
-					$submissionFileDao->updateObject($submissionFile);
+				if ($isViewable != $submissionFile->getData('viewable')) {
+					$submissionFile = Services::get('submissionFile')->edit(
+						$submissionFile,
+						['viewable' => $isViewable],
+						$request
+					);
 				}
 			} elseif ($isViewable) {
 				// Import a file from a different workflow area
-				$request = Application::get()->getRequest();
-				$context = $request->getContext();
-				$submissionFile = $this->importFile($context, $submissionFile, $fileStage);
+				$submissionFile = $this->importFile($submissionFile, $fileStage);
 			}
 		}
+
+		parent::execute($stageSubmissionFiles = null, $fileStage = null, ...$functionArgs);
 	}
 
 	/**
@@ -104,8 +109,8 @@ class ManageSubmissionFilesForm extends Form {
 	 * @param $fileStage int FILE_STAGE_...
 	 */
 	protected function fileExistsInStage($submissionFile, $stageSubmissionFiles, $fileStage) {
-		if (!isset($stageSubmissionFiles[$submissionFile->getFileId()])) return false;
-		foreach ($stageSubmissionFiles[$submissionFile->getFileId()] as $stageFile) {
+		if (!isset($stageSubmissionFiles[$submissionFile->getId()])) return false;
+		foreach ($stageSubmissionFiles[$submissionFile->getId()] as $stageFile) {
 			if ($stageFile->getFileStage() == $submissionFile->getFileStage() && $stageFile->getFileStage() == $fileStage) return true;
 		}
 		return false;
@@ -113,20 +118,16 @@ class ManageSubmissionFilesForm extends Form {
 
 	/**
 	 * Make a copy of the file to the specified file stage.
-	 * @param $context Context
 	 * @param $submissionFile SubmissionFile
 	 * @param $fileStage int SUBMISSION_FILE_...
 	 * @return SubmissionFile Resultant new submission file
 	 */
-	protected function importFile($context, $submissionFile, $fileStage) {
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-		import('lib.pkp.classes.file.SubmissionFileManager');
-		$submissionFileManager = new SubmissionFileManager($context->getId(), $submissionFile->getSubmissionId());
-		// Split the file into file id and file revision.
-		$fileId = $submissionFile->getFileId();
-		$revision = $submissionFile->getRevision();
-		list($newFileId, $newRevision) = $submissionFileManager->copyFileToFileStage($fileId, $revision, $fileStage, null, true);
-		return $submissionFileDao->getRevision($newFileId, $newRevision);
+	protected function importFile($submissionFile, $fileStage) {
+		$newSubmissionFile = clone $submissionFile;
+		$newSubmissionFile->setData('fileStage', $fileStage);
+		$newSubmissionFile->setData('sourceSubmissionFileId', $submissionFile->getId());
+		$newSubmissionFile = Services::get('submissionFile')->add($newSubmissionFile, Application::get()->getRequest());
+		return $newSubmissionFile;
 	}
 }
 

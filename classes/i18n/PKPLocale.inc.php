@@ -8,8 +8,8 @@
 /**
  * @file classes/i18n/PKPLocale.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPLocale
@@ -69,6 +69,8 @@ define('LOCALE_COMPONENT_APP_ADMIN',		0x00000105);
 define('LOCALE_COMPONENT_APP_DEFAULT',		0x00000106);
 define('LOCALE_COMPONENT_APP_API',		0x00000107);
 define('LOCALE_COMPONENT_APP_EMAIL',		0x00000108);
+
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 class PKPLocale {
 	static $request;
@@ -309,19 +311,17 @@ class PKPLocale {
 			$mins -= $hrs * 60;
 			$offset = sprintf('%+d:%02d', $hrs*$sgn, $mins);
 
-			$conn = DBConnection::getInstance();
-			$dbconn =& $conn->getDBConn();
-			switch($conn->getDriver()) {
+			switch(Config::getVar('database', 'driver')) {
 				case 'mysql':
 				case 'mysqli':
-					$dbconn->execute('SET time_zone = \''.$offset.'\'');
+					Capsule::statement('SET time_zone = \''.$offset.'\'');
 					break;
 				case 'postgres':
 				case 'postgres64':
 				case 'postgres7':
 				case 'postgres8':
 				case 'postgres9':
-					$dbconn->execute('SET TIME ZONE INTERVAL \''.$offset.'\' HOUR TO MINUTE');
+					Capsule::statement('SET TIME ZONE INTERVAL \''.$offset.'\' HOUR TO MINUTE');
 					break;
 				default: assert(false);
 			}
@@ -902,7 +902,6 @@ class PKPLocale {
 	}
 }
 
-
 /**
  * Wrapper around PKPLocale::translate().
  *
@@ -923,3 +922,4 @@ class PKPLocale {
 function __($key, $params = array(), $locale = null, $missingKeyHandler = array('PKPLocale', 'addOctothorpes')) {
 	return AppLocale::translate($key, $params, $locale, $missingKeyHandler);
 }
+

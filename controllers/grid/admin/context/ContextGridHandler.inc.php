@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/admin/context/ContextGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ContextGridHandler
@@ -205,10 +205,10 @@ class ContextGridHandler extends GridHandler {
 
 		$dispatcher = $request->getDispatcher();
 		if ($context) {
-			$apiUrl = $dispatcher->url($request, ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
+			$apiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, $context->getPath(), 'contexts/' . $context->getId());
 			$supportedLocales = $context->getSupportedFormLocales();
 		} else {
-			$apiUrl = $dispatcher->url($request, ROUTE_API, CONTEXT_ID_ALL, 'contexts');
+			$apiUrl = $dispatcher->url($request, PKPApplication::ROUTE_API, CONTEXT_ID_ALL, 'contexts');
 			$supportedLocales = $request->getSite()->getSupportedLocales();
 		}
 
@@ -223,7 +223,7 @@ class ContextGridHandler extends GridHandler {
 		// Pass the URL to the context settings wizard so that the AddContextForm
 		// component can redirect to it when a new context is added.
 		if (!$context) {
-			$contextFormConfig['editContextUrl'] = $request->getDispatcher()->url($request, ROUTE_PAGE, 'index', 'admin', 'wizard', '__id__');
+			$contextFormConfig['editContextUrl'] = $request->getDispatcher()->url($request, PKPApplication::ROUTE_PAGE, 'index', 'admin', 'wizard', '__id__');
 		}
 
 		$containerData = [

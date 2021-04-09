@@ -6,8 +6,8 @@
 /**
  * @file classes/submission/reviewRound/ReviewRound.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewRound
@@ -280,7 +280,7 @@ class ReviewRound extends DataObject {
 			case REVIEW_ROUND_STATUS_REVIEWS_COMPLETED:
 				return 'editor.submission.roundStatus.reviewsCompleted';
 			case REVIEW_ROUND_STATUS_REVIEWS_OVERDUE:
-				return 'editor.submission.roundStatus.reviewOverdue';
+				return $isAuthor ? 'author.submission.roundStatus.reviewOverdue' : 'editor.submission.roundStatus.reviewOverdue';
 			case REVIEW_ROUND_STATUS_PENDING_RECOMMENDATIONS:
 				return 'editor.submission.roundStatus.pendingRecommendations';
 			case REVIEW_ROUND_STATUS_RECOMMENDATIONS_READY:

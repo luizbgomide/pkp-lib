@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:50:00+00:00\n"
-"PO-Revision-Date: 2020-03-04 09:36+0000\n"
-"Last-Translator: Sergei Yukhimets <y_s_n@mail.ru>\n"
+"PO-Revision-Date: 2020-12-18 16:52+0000\n"
+"Last-Translator: Pavel Pisklakov <ppv1979@mail.ru>\n"
 "Language-Team: Russian <http://translate.pkp.sfu.ca/projects/pkp-lib/"
-"submission/ru/>\n"
+"submission/ru_RU/>\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,6 +26,9 @@ msgstr "Введите отформатированный список ссыл�
 
 msgid "author.submission.roundStatus.reviewsReady"
 msgstr "Новые рецензии были отправлены рецензентами и рассмотрены редактором."
+
+msgid "author.submission.roundStatus.reviewOverdue"
+msgstr "Один или несколько рецензентов пропустили сроки отправки. Редакция была уведомлена об этом и предпримет необходимые действия, чтобы рецензии были завершены. Сейчас Вам не нужно предпринимать никаких действий. Вы получите уведомление, когда решение будет принято."
 
 msgid "submission.confirm.message"
 msgstr "Ваш материал был загружен на сервер и готов к отправке. Вы можете вернуться назад, чтобы проверить и откорректировать любую информацию, которую вы ввели, перед тем как продолжить. Когда вы будете готовы, щелкните на кнопке «Завершить отправку»."
@@ -62,6 +65,18 @@ msgstr "Принятие Условий передачи авторских пр
 
 msgid "submission.submit.copyrightNoticeAgree"
 msgstr "Да, я согласен выполнять Условия передачи авторских прав."
+
+msgid "submission.submit.genre.label"
+msgstr "Какого типа этот файл?"
+
+msgid "submission.submit.genre.description"
+msgstr "Выберите вариант, которые лучше всего описывает этот файл."
+
+msgid "submission.submit.genre.error"
+msgstr "Пожалуйста, выберите тип файла для каждого из загружаемых файлов."
+
+msgid "submission.submit.removeConfirm"
+msgstr "Вы уверены, что хотите удалить этот файл?"
 
 msgid "submission.submit.whatNext"
 msgstr "Что делать дальше?"
@@ -420,9 +435,6 @@ msgstr "Принята"
 msgid "submission.acknowledge"
 msgstr "Подтвердить"
 
-msgid "submission.addSuppFile"
-msgstr "Добавить дополнительный файл"
-
 msgid "submission.ask"
 msgstr "Запрос"
 
@@ -571,7 +583,7 @@ msgid "submission.event.submissionSubmitted"
 msgstr "Первоначальная отправка материала завершена."
 
 msgid "submission.event.fileRevised"
-msgstr "Версия «{$name}» (ID файла {$fileId}-{$fileRevision}) была загружена."
+msgstr "Версия «{$name}» (ID файла {$submissionFileId}) была загружена."
 
 msgid "submission.event.general.metadataUpdated"
 msgstr "Метаданные материала обновлены"
@@ -635,6 +647,9 @@ msgstr "Файлы"
 
 msgid "submission.files.downloadAll"
 msgstr "Скачать все файлы"
+
+msgid "submission.file.notAllowedUploaderUserId"
+msgstr "Запись загрузчика файлов сохранена при создании файла и её нельзя изменить."
 
 msgid "submission.galley"
 msgstr "Гранка"
@@ -729,9 +744,6 @@ msgstr "Вы уверены, что хотите навсегда удалить
 msgid "submission.layout.confirmDeleteGalleyImage"
 msgstr "Вы уверены, что хотите удалить это изображение из гранки?"
 
-msgid "submission.layout.confirmDeleteSupplementaryFile"
-msgstr "Вы уверены, что хотите навсегда удалить этот дополнительный файл?"
-
 msgid "submission.layout.deleteGalleyStylesheet"
 msgstr "Удалить эту таблицу стилей."
 
@@ -795,14 +807,8 @@ msgstr "Версия для верстки"
 msgid "submission.layout.newGalley"
 msgstr "Создать новую гранку"
 
-msgid "submission.layout.newSupplementaryFile"
-msgstr "Загрузить новый дополнительный файл"
-
 msgid "submission.layout.noStyleFile"
 msgstr "Файл таблицы стилей не был добавлен к этой гранке."
-
-msgid "submission.layout.supplementaryFiles"
-msgstr "Рецензия на дополнительный файл"
 
 msgid "submission.layout.viewingGalley"
 msgstr "Просмотр гранки материала"
@@ -1029,6 +1035,12 @@ msgstr "Зависимые файлы"
 msgid "submission.manageDependentFiles"
 msgstr "Управление зависимыми файлами"
 
+msgid "submission.upload.instructions"
+msgstr "Загрузите все файлы, которые понадобятся редакции, чтобы оценить Ваш отправленный материал."
+
+msgid "submission.upload.percentComplete"
+msgstr "Загрузка: {$percent}% завершено"
+
 msgid "submission.upload.dependent"
 msgstr "Загрузить зависимый файл"
 
@@ -1037,9 +1049,6 @@ msgstr "Загрузить файл обсуждения"
 
 msgid "submission.summary"
 msgstr "Сводка"
-
-msgid "submission.supplementaryFiles"
-msgstr "Дополнительные файлы"
 
 msgid "submission.supportingAgencies"
 msgstr "Поддерживающие организации"
@@ -1164,9 +1173,6 @@ msgstr "Отклонен"
 msgid "submission.status.published"
 msgstr "Опубликован"
 
-msgid "submission.status.scheduled"
-msgstr "Запланирован"
-
 msgid "submission.submit.uploadStep"
 msgstr "1. Загрузить файл"
 
@@ -1220,9 +1226,6 @@ msgstr "Загрузить файл"
 
 msgid "submission.upload.copyeditedVersion"
 msgstr "Загрузить файл после литературного редактирования"
-
-msgid "submission.upload.fairCopy"
-msgstr "Загрузить окончательный вариант"
 
 msgid "submission.upload.uploadFiles"
 msgstr "Загрузить файлы"
@@ -1315,7 +1318,7 @@ msgid "editor.submission.addStageParticipant.form.userRequired"
 msgstr "Вы должны выбрать пользователя для указанной группы пользователей."
 
 msgid "editor.submission.addStageParticipant.form.reviewerWarning"
-msgstr "Выбранный вами пользователь назначен проводить «слепое» рецензирование. Если вы назначите его участником, он получит доступ к информации об авторе. Рекомендуем вам не назначать этого участника, если вы не уверены в том, что удастся сохранить независимость процесса «слепого» рецензирования."
+msgstr "Выбранный вами пользователь назначен проводить анонимное рецензирование. Если вы назначите его участником, он получит доступ к информации об авторе. Рекомендуем вам не назначать этого участника, если вы не уверены в том, что удастся сохранить независимость процесса «слепого» рецензирования."
 
 msgid "editor.submission.removePermissionToEdit"
 msgstr "Запретить редактировать метаданные"
@@ -1364,6 +1367,9 @@ msgstr "Одобрить корректуры"
 
 msgid "editor.submission.decision.disapproveProofsDescription"
 msgstr "Этот файл корректуры больше не будет доступен для скачивания или покупки. Вы хотите отменить его одобрение?"
+
+msgid "editor.submission.decision.revertDecline"
+msgstr "Отменить отклонение материала"
 
 msgid "editor.submission.decision.noDecisionsAvailable"
 msgstr "Назначить редактора, чтобы включить решения редакции для этого этапа."
@@ -1418,6 +1424,9 @@ msgstr "Файлы черновиков"
 
 msgid "editor.submission.addAuditorError"
 msgstr "Произошла ошибка при попытке назначить аудитора. Пожалуйста, попробуйте снова."
+
+msgid "submission.event.fileEdited"
+msgstr "Метаданные для файла «{$originalFileName}» были отредактированы пользователем {$username}."
 
 msgid "submission.event.fileUploaded"
 msgstr "Файл «{$originalFileName}» был загружен для материала «{$submissionId}» пользователем «{$username}»."
@@ -1494,6 +1503,9 @@ msgstr "Начат новый раунд рецензирования."
 msgid "notification.type.editorDecisionDecline"
 msgstr "Материал отклонен."
 
+msgid "notification.type.editorDecisionRevertDecline"
+msgstr "Отклонение материала было отменено."
+
 msgid "notification.uploadedResponse"
 msgstr "Загружен ответ."
 
@@ -1502,6 +1514,9 @@ msgstr "Редактор должен быть назначен до начал�
 
 msgid "notification.type.submissionNewVersion"
 msgstr "Новая версия представления была создана"
+
+msgid "notification.type.revertDecline"
+msgstr "Решение об отклонении этого материала было отменено."
 
 msgid "grid.reviewAttachments.title"
 msgstr "Файлы, прикрепленные рецензентом"
@@ -1611,26 +1626,17 @@ msgstr "Добавить следующие права к материалу:"
 msgid "submission.license"
 msgstr "Лицензия"
 
-msgid "submission.license.description"
-msgstr "Автоматически при публикации будет назначена лицензия <a href='{$licenseUrl}' target='_blank'>{$licenseName}</a>."
-
 msgid "submission.copyright"
 msgstr "Авторское право"
 
 msgid "submission.copyrightHolder"
 msgstr "Владелец авторского права"
 
-msgid "submission.copyrightHolder.description"
-msgstr "Автоматически при публикации будет проставлено авторское право {$copyright}."
-
 msgid "submission.copyrightHolder.other"
 msgstr "Пользовательская формулировка Предупреждения об авторском праве"
 
 msgid "submission.copyrightOther"
 msgstr "Предупреждение об авторском праве"
-
-msgid "submission.copyrightOther.description"
-msgstr "Проставить авторское право на опубликованных материалах с указанием следующей формулировки."
 
 msgid "submission.copyrightYear"
 msgstr "Год авторского права"
@@ -1706,9 +1712,6 @@ msgstr "Обсуждения рецензирования"
 
 msgid "submission.queries.editorial"
 msgstr "Обсуждения литературного редактирования"
-
-msgid "submission.queries.production"
-msgstr "Обсуждения публикации"
 
 msgid "submission.query.subject"
 msgstr "Тема"
@@ -1854,74 +1857,20 @@ msgstr "В этой категории пока ничего не опублик
 msgid "catalog.category.subcategories"
 msgstr "Подкатегории"
 
-msgid "submission.publication"
-msgstr "Публикация"
-
-msgid "submission.publications"
-msgstr "Публикации"
-
 msgid "publication.contributors"
 msgstr "Авторы"
-
-msgid "publication.copyrightYearBasis.issueDescription"
-msgstr "Год копирайта будет задан автоматически при публикации выпуска."
-
-msgid "publication.copyrightYearBasis.submissionDescription"
-msgstr "Год копирайта будет проставлен автоматически, исходя из даты публикации."
 
 msgid "publication.createVersion"
 msgstr "Создать новую версию"
 
-msgid "publication.datePublished"
-msgstr "Дата публикации"
-
 msgid "publication.datePublished.errorFormat"
 msgstr "Дата должна быть в формате ГГГГ-ММ-ДД, например, 2019-01-01."
-
-msgid "publication.editDisabled"
-msgstr "Эта версия была опубликована, её нельзя отредактировать."
-
-msgid "publication.event.published"
-msgstr "Материал был опубликован."
-
-msgid "publication.event.scheduled"
-msgstr "Материал запланирован к публикации."
-
-msgid "publication.event.unpublished"
-msgstr "Материал был снят с публикации."
 
 msgid "publication.event.versionCreated"
 msgstr "Создана новая версия."
 
-msgid "publication.event.versionPublished"
-msgstr "Опубликована новая версия."
-
-msgid "publication.event.versionScheduled"
-msgstr "Новая версия запланирована к публикации."
-
-msgid "publication.event.versionUnpublished"
-msgstr "Версия была убрана с публикации."
-
-msgid "publication.invalidSubmission"
-msgstr "Материал для этой публикации не удаётся найти."
-
 msgid "publication.publicationLicense"
 msgstr "Разрешения и соглашения"
-
-msgid "publication.publish"
-msgstr "Опубликовать"
-
-msgid "publication.publish.requirements"
-msgstr "Перед публикацией необходимо выполнить следующие требования."
-
-msgid "publication.required.declined"
-msgstr "Отклонённый материал нельзя опубликовать."
-
-msgid "publication.required.reviewStage"
-msgstr "Перед публикацией материал должен быть на этапе «Литературное редактирование» или «Публикация»."
-
-msgid "publication.status.published"
-msgstr "Опубликовано"
 
 msgid "publication.status.scheduled"
 msgstr "Запланировано"
@@ -1929,23 +1878,11 @@ msgstr "Запланировано"
 msgid "publication.status.unpublished"
 msgstr "Снято с публикации"
 
-msgid "publication.status.unscheduled"
-msgstr "Снято с плана"
-
 msgid "publication.titleAbstract"
 msgstr "Название и аннотация"
 
-msgid "publication.unpublish"
-msgstr "Снять с публикации"
-
-msgid "publication.unpublish.confirm"
-msgstr "Вы уверены, что не хотите публиковать этот материал?"
-
 msgid "publication.unschedule"
 msgstr "Снять с плана"
-
-msgid "publication.unschedule.confirm"
-msgstr "Вы уверены, что не хотите запланировать этот материал к публикации?"
 
 msgid "publication.urlPath"
 msgstr "Путь URL"
@@ -1965,11 +1902,17 @@ msgstr "Все версии"
 msgid "publication.version.confirm"
 msgstr "Вы уверены, что хотите создать новую версию?"
 
-msgid "publication.version.details"
-msgstr "Информация о публикации для версии {$version}"
-
 msgid "publication.wordCountLong"
 msgstr "Аннотация слишком длинная. Она должна быть длиной не больше {$limit} слов. В данный момент её длина {$count} слов."
 
 msgid "publication.wordCount"
 msgstr "Число слов: {$count}/{$limit}"
+
+msgid "notification.type.revertDecline"
+msgstr "Решение об отклонении этого материала было отменено."
+
+msgid "notification.type.editorDecisionRevertDecline"
+msgstr "Отклонение материала было отменено."
+
+msgid "editor.submission.decision.revertDecline"
+msgstr "Отменить отклонение материала"

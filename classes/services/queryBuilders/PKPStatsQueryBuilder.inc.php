@@ -3,8 +3,8 @@
 /**
  * @file classes/services/QueryBuilders/PKPStatsQueryBuilder.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPStatsQueryBuilder
@@ -243,7 +243,7 @@ class PKPStatsQueryBuilder {
 
 		$q->where(STATISTICS_DIMENSION_METRIC_TYPE, '=', METRIC_TYPE_COUNTER);
 
-		\HookRegistry::call('Stats::queryObject', array($q, $this));
+		\HookRegistry::call('Stats::queryObject', array(&$q, $this));
 
 		return $q;
 	}

@@ -2,8 +2,8 @@
 /**
  * @file classes/notification/managerDelegate/EditorialReportNotificationManager.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class EditorialReportNotificationManager
@@ -85,8 +85,8 @@ class EditorialReportNotificationManager extends NotificationManagerDelegate {
 			'totalSubmissions' => Services::get('editorialStats')->countSubmissionsReceived(['contextIds' => [$this->_context->getId()]]),
 			'month' => $this->_getLocalizedMonthName($dateStart, $locale),
 			'year' => $dateStart->format('Y'),
-			'editorialStatsLink' => $dispatcher->url($this->_request, ROUTE_PAGE, $this->_context->getPath(), 'stats', 'editorial'),
-			'publicationStatsLink' => $dispatcher->url($this->_request, ROUTE_PAGE, $this->_context->getPath(), 'stats', 'publications')
+			'editorialStatsLink' => $dispatcher->url($this->_request, PKPApplication::ROUTE_PAGE, $this->_context->getPath(), 'stats', 'editorial'),
+			'publicationStatsLink' => $dispatcher->url($this->_request, PKPApplication::ROUTE_PAGE, $this->_context->getPath(), 'stats', 'publications')
 		];
 
 		$this->_userRolesOverview = Services::get('user')->getRolesOverview(['contextId' => $this->_context->getId()]);
@@ -181,7 +181,7 @@ class EditorialReportNotificationManager extends NotificationManagerDelegate {
 	public function getNotificationUrl($request, $notification) {
 		$application = Application::get();
 		$context = $application->getContextDAO()->getById($notification->getContextId());
-		return $application->getDispatcher()->url($this->_request, ROUTE_PAGE, $context->getPath(), 'stats', 'editorial');
+		return $application->getDispatcher()->url($this->_request, PKPApplication::ROUTE_PAGE, $context->getPath(), 'stats', 'editorial');
 	}
 
 	/**
@@ -205,7 +205,7 @@ class EditorialReportNotificationManager extends NotificationManagerDelegate {
 	 * @param $user User The user who will be notified
 	 * @return PKPNotification The notification instance
 	 */
-	public function notify(User $user) : PKPNotification
+	public function notify(User $user) : ?PKPNotification
 	{
 		return parent::createNotification(
 			$this->_request,

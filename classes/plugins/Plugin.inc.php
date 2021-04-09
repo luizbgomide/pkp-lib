@@ -9,8 +9,8 @@
 /**
  * @file classes/plugins/Plugin.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Plugin
@@ -90,30 +90,27 @@ abstract class Plugin {
 	function register($category, $path, $mainContextId = null) {
 		$this->pluginPath = $path;
 		$this->pluginCategory = $category;
-		if ($this->getInstallSchemaFile() || $this->getInstallMigration()) {
-			HookRegistry::register ('Installer::postInstall', array($this, 'updateSchema'));
+		if ($this->getInstallMigration()) {
+			HookRegistry::register ('Installer::postInstall', [$this, 'updateSchema']);
 		}
 		if ($this->getInstallSitePluginSettingsFile()) {
-			HookRegistry::register ('Installer::postInstall', array($this, 'installSiteSettings'));
+			HookRegistry::register ('Installer::postInstall', [$this, 'installSiteSettings']);
 		}
 		if ($this->getInstallControlledVocabFiles()) {
-			HookRegistry::register ('Installer::postInstall', array($this, 'installControlledVocabs'));
+			HookRegistry::register ('Installer::postInstall', [$this, 'installControlledVocabs']);
 		}
 		if ($this->getInstallEmailTemplatesFile()) {
-			HookRegistry::register ('Installer::postInstall', array($this, 'installEmailTemplates'));
-			HookRegistry::register ('PKPLocale::installLocale', array($this, 'installLocale'));
+			HookRegistry::register ('Installer::postInstall', [$this, 'installEmailTemplates']);
+			HookRegistry::register ('PKPLocale::installLocale', [$this, 'installLocale']);
 		}
 		if ($this->getInstallEmailTemplateDataFile()) {
-			HookRegistry::register ('Installer::postInstall', array($this, 'installEmailTemplateData'));
-		}
-		if ($this->getInstallDataFile()) {
-			HookRegistry::register ('Installer::postInstall', array($this, 'installData'));
+			HookRegistry::register ('Installer::postInstall', [$this, 'installEmailTemplateData']);
 		}
 		if ($this->getContextSpecificPluginSettingsFile()) {
-			HookRegistry::register ('Context::add', array($this, 'installContextSpecificSettings'));
+			HookRegistry::register ('Context::add', [$this, 'installContextSpecificSettings']);
 		}
 
-		HookRegistry::register ('Installer::postInstall', array($this, 'installFilters'));
+		HookRegistry::register ('Installer::postInstall', [$this, 'installFilters']);
 
 		$this->_registerTemplateResource();
 		return true;
@@ -200,13 +197,9 @@ abstract class Plugin {
 	//
 
 	/**
-	 * Get the filename of the ADODB schema for this plugin.
-	 * Subclasses using SQL tables should override this.
-	 * @deprecated See Plugin::getInstallMigration
-	 * @return string?
+	 * @deprecated See https://github.com/pkp/pkp-lib/issues/2493
 	 */
-	function getInstallSchemaFile() {
-		return null;
+	final public function getInstallSchemaFile() {
 	}
 
 	/**
@@ -214,16 +207,6 @@ abstract class Plugin {
 	 * @return Illuminate\Database\Migrations\Migration?
 	 */
 	function getInstallMigration() {
-		return null;
-	}
-
-	/**
-	 * Get the filename of the install data for this plugin.
-	 * Subclasses using SQL tables should override this.
-	 * @deprecated Use getInstallMigration instead.
-	 * @return string|array|null one or more data files to be installed.
-	 */
-	function getInstallDataFile() {
 		return null;
 	}
 
@@ -446,15 +429,13 @@ abstract class Plugin {
 	/**
 	 * Load locale data for this plugin.
 	 *
-	 * @param $locale string
+	 * @param $locale string|null
 	 * @return boolean
 	 */
 	function addLocaleData($locale = null) {
-		if ($locale == '') $locale = AppLocale::getLocale();
-		$localeFilenames = $this->getLocaleFilename($locale);
-		if ($localeFilenames) {
-			if (is_scalar($localeFilenames)) $localeFilenames = array($localeFilenames);
-			foreach($localeFilenames as $localeFilename) {
+		$locale = $locale ?? AppLocale::getLocale();
+		if ($localeFilenames = $this->getLocaleFilename($locale)) {
+			foreach((array) $localeFilenames as $localeFilename) {
 				AppLocale::registerLocaleFile($locale, $localeFilename);
 			}
 			return true;
@@ -515,65 +496,29 @@ abstract class Plugin {
 	}
 
 	/*
-	 * Protected helper methods (for internal use only, should not
+	 * Helper methods (for internal use only, should not
 	 * be used by custom plug-ins)
 	 *
 	 * NB: These methods may change without notice in the future!
 	 */
 	/**
 	 * Get the filename for the locale data for this plugin.
+	 * (Warning: This function is used by the custom locale plugin)
 	 *
 	 * @param $locale string
 	 * @return array The locale file names.
 	 */
-	function getLocaleFilename($locale) {
+	public function getLocaleFilename($locale) {
 		$masterLocale = MASTER_LOCALE;
 		$baseLocaleFilename = $this->getPluginPath() . "/locale/$locale/locale.po";
 		$baseMasterLocaleFilename = $this->getPluginPath() . "/locale/$masterLocale/locale.po";
 		$libPkpFilename = "lib/pkp/$baseLocaleFilename";
 		$masterLibPkpFilename = "lib/pkp/$baseMasterLocaleFilename";
-		$filenames = array();
-		if (file_exists($baseMasterLocaleFilename)) $filenames[] = $baseLocaleFilename;
-		if (file_exists($masterLibPkpFilename)) $filenames[] = $libPkpFilename;
 
-		// This compatibility code for XML file fallback will eventually be removed.
-		// See https://github.com/pkp/pkp-lib/issues/5090.
-		$baseMasterXmlLocaleFilename = preg_replace('/\.po$/', '.xml', $baseMasterLocaleFilename);
-		if (file_exists($baseMasterXmlLocaleFilename)) $filenames[] = preg_replace('/\.po$/', '.xml', $baseLocaleFilename);
-		$masterXmlLibPkpLocaleFilename = preg_replace('/\.po$/', '.xml', $baseMasterLocaleFilename);
-		if (file_exists($masterXmlLibPkpLocaleFilename)) $filenames[] = preg_replace('/\.po$/', '.xml', $libPkpFilename);
-
-		return $filenames;
-	}
-
-	/**
-	 * Callback used to install data files.
-	 *
-	 * @param $hookName string
-	 * @param $args array
-	 * @return boolean
-	 */
-	function installData($hookName, $args) {
-		$installer =& $args[0];
-		$result =& $args[1];
-
-		// Treat single and multiple data files uniformly.
-		$dataFiles = $this->getInstallDataFile();
-		if (is_scalar($dataFiles)) $dataFiles = array($dataFiles);
-
-		// Install all data files.
-		foreach($dataFiles as $dataFile) {
-			$sql = $installer->dataXMLParser->parseData($dataFile);
-			if ($sql) {
-				$result = $installer->executeSQL($sql);
-			} else {
-				AppLocale::requireComponents(LOCALE_COMPONENT_PKP_INSTALLER);
-				$installer->setError(INSTALLER_ERROR_DB, str_replace('{$file}', $this->getInstallDataFile(), __('installer.installParseDBFileError')));
-				$result = false;
-			}
-			if (!$result) return false;
-		}
-		return false;
+		return array_filter([
+			file_exists($baseMasterLocaleFilename) ? $baseLocaleFilename : false,
+			file_exists($masterLibPkpFilename) ? $libPkpFilename : false,
+		]);
 	}
 
 	/**
@@ -686,7 +631,7 @@ abstract class Plugin {
 			if ($sql) {
 				$result = $installer->executeSQL($sql);
 			} else {
-				$installer->setError(INSTALLER_ERROR_DB, str_replace('{$file}', $this->getInstallDataFile(), __('installer.installParseEmailTemplatesFileError')));
+				$installer->setError(INSTALLER_ERROR_DB, str_replace('{$file}', $filename, __('installer.installParseEmailTemplatesFileError')));
 				$result = false;
 			}
 		}
@@ -760,22 +705,10 @@ abstract class Plugin {
 		$installer =& $args[0];
 		$result =& $args[1];
 
-		// Deprecated: Create schema using ADODB XML Schema
-		if ($schemaFile = $this->getInstallSchemaFile()) {
-			$schemaXMLParser = new adoSchema($installer->dbconn);
-			$sql = $schemaXMLParser->parseSchema($schemaFile);
-			if ($sql) {
-				$result = $installer->executeSQL($sql);
-			} else {
-				$installer->setError(INSTALLER_ERROR_DB, str_replace('{$file}', $this->getInstallSchemaFile(), __('installer.installParseDBFileError')));
-				$result = false;
-			}
-		}
-		// Preferred: Create schema using Migrations
 		if ($migration = $this->getInstallMigration()) try {
 			$migration->up();
 		} catch (Exception $e) {
-			$installer->setError(INSTALLER_ERROR_DB, __('installer.installMigrationError', ['class' => get_class($migration)]));
+			$installer->setError(INSTALLER_ERROR_DB, __('installer.installMigrationError', ['class' => get_class($migration), 'message' => $e->getMessage()]));
 			$result = false;
 		}
 		return false;

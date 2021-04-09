@@ -2,8 +2,8 @@
 
 # @file tools/travis/prepare-tests.sh
 #
-# Copyright (c) 2014-2020 Simon Fraser University
-# Copyright (c) 2010-2020 John Willinsky
+# Copyright (c) 2014-2021 Simon Fraser University
+# Copyright (c) 2010-2021 John Willinsky
 # Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 #
 # Script to prepare the environment for the test suite.
@@ -35,24 +35,18 @@ if [[ "$TEST" == "pgsql" ]]; then
 elif [[ "$TEST" == "mysql" ]]; then
 	sudo service mysql start
 	sudo mysql -u root -e 'CREATE DATABASE `ojs-ci` DEFAULT CHARACTER SET utf8'
-	sudo mysql -u root -e "GRANT ALL ON \`ojs-ci\`.* TO \`ojs-ci\`@localhost IDENTIFIED BY 'ojs-ci'"
+	sudo mysql -u root -e "CREATE USER \`ojs-ci\`@localhost IDENTIFIED BY 'ojs-ci'"
+	sudo mysql -u root -e "GRANT ALL ON \`ojs-ci\`.* TO \`ojs-ci\`@localhost WITH GRANT OPTION"
 	export DBTYPE=MySQLi
 fi
 
 # Use the template configuration file.
 cp config.TEMPLATE.inc.php config.inc.php
 
-# Use ENABLE_CDN = 1 to prevent default disabling of the CDN for test purposes.
-if [[ "$ENABLE_CDN" != "1" ]]; then
-	sed -i -e "s/enable_cdn = On/enable_cdn = Off/" config.inc.php
-fi
 # Use DISABLE_PATH_INFO = 1 to turn on disable_path_info mode in config.inc.php.
 if [[ "$DISABLE_PATH_INFO" == "1" ]]; then
 	sed -i -e "s/disable_path_info = Off/disable_path_info = On/" config.inc.php
 fi
-
-# Disable CDN usage.
-sed -i -e "s/enable_cdn = On/enable_cdn = Off/" config.inc.php
 
 # Make the files directory (this will be files_dir in config.inc.php after installation).
 mkdir --parents ${FILESDIR}

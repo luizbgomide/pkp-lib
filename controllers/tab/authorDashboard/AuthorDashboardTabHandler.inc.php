@@ -3,8 +3,8 @@
 /**
  * @file controllers/tab/authorDashboard/AuthorDashboardTabHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AuthorDashboardTabHandler
@@ -79,7 +79,7 @@ class AuthorDashboardTabHandler extends Handler {
 
 		if (in_array($stageId, array(WORKFLOW_STAGE_ID_INTERNAL_REVIEW, WORKFLOW_STAGE_ID_EXTERNAL_REVIEW))) {
 			$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO'); /* @var $reviewRoundDao ReviewRoundDAO */
-			$templateMgr->assign('reviewRounds', $reviewRoundDao->getBySubmissionId($submission->getId(), $stageId));
+			$templateMgr->assign('reviewRounds', $reviewRoundDao->getBySubmissionId($submission->getId(), $stageId)->toArray());
 		}
 
 		// If the submission is in or past the editorial stage,
@@ -145,6 +145,7 @@ class AuthorDashboardTabHandler extends Handler {
 				NOTIFICATION_TYPE_EDITOR_DECISION_RESUBMIT => $submissionAssocTypeAndIdArray,
 				NOTIFICATION_TYPE_EDITOR_DECISION_NEW_ROUND => $submissionAssocTypeAndIdArray,
 				NOTIFICATION_TYPE_EDITOR_DECISION_DECLINE => $submissionAssocTypeAndIdArray,
+				NOTIFICATION_TYPE_EDITOR_DECISION_REVERT_DECLINE => $submissionAssocTypeAndIdArray,
 				NOTIFICATION_TYPE_EDITOR_DECISION_SEND_TO_PRODUCTION => $submissionAssocTypeAndIdArray),
 			NOTIFICATION_LEVEL_TRIVIAL => array()
 		);

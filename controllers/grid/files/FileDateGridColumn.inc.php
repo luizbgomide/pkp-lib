@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/files/FileDateGridColumn.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  * Borrowed from FileDateGridColumn.inc.php
  *
@@ -49,7 +49,7 @@ class FileDateGridColumn extends GridColumn {
 		$submissionFileData = $row->getData();
 		$submissionFile = $submissionFileData['submissionFile'];
 		assert(is_a($submissionFile, 'SubmissionFile'));
-		$mtimestamp = strtotime($submissionFile->getDateModified());
+		$mtimestamp = strtotime($submissionFile->getData('updatedAt'));
 		$dateFormatLong = \Application::get()->getRequest()->getContext()->getLocalizedDateFormatLong();
 		$date = strftime($dateFormatLong, $mtimestamp);
 		// File age

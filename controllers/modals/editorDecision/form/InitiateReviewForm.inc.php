@@ -3,8 +3,8 @@
 /**
  * @file controllers/modals/editorDecision/form/InitiateReviewForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class InitiateReviewForm
@@ -49,7 +49,7 @@ class InitiateReviewForm extends EditorDecisionForm {
 
 		// Record the decision.
 		import('classes.workflow.EditorDecisionActionsManager');
-		$actionLabels = (new EditorDecisionActionsManager())->getActionLabels($request->getContext(), $this->getStageId(), array($this->_decision));
+		$actionLabels = (new EditorDecisionActionsManager())->getActionLabels($request->getContext(), $submission, $this->getStageId(), array($this->_decision));
 		import('lib.pkp.classes.submission.action.EditorAction');
 		$editorAction = new EditorAction();
 		$editorAction->recordDecision($request, $submission, $this->_decision, $actionLabels);

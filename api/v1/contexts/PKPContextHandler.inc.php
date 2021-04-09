@@ -2,8 +2,8 @@
 /**
  * @file api/v1/contexts/PKPContextHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPContextHandler
@@ -32,12 +32,12 @@ class PKPContextHandler extends APIHandler {
 					'roles' => $roles,
 				),
 				array(
-					'pattern' => $this->getEndpointPattern() . '/{contextId}',
+					'pattern' => $this->getEndpointPattern() . '/{contextId:\d+}',
 					'handler' => array($this, 'get'),
 					'roles' => $roles,
 				),
 				array(
-					'pattern' => $this->getEndpointPattern() . '/{contextId}/theme',
+					'pattern' => $this->getEndpointPattern() . '/{contextId:\d+}/theme',
 					'handler' => array($this, 'getTheme'),
 					'roles' => $roles,
 				),
@@ -51,19 +51,19 @@ class PKPContextHandler extends APIHandler {
 			),
 			'PUT' => array(
 				array(
-					'pattern' => $this->getEndpointPattern() . '/{contextId}',
+					'pattern' => $this->getEndpointPattern() . '/{contextId:\d+}',
 					'handler' => array($this, 'edit'),
 					'roles' => $roles,
 				),
 				array(
-					'pattern' => $this->getEndpointPattern() . '/{contextId}/theme',
+					'pattern' => $this->getEndpointPattern() . '/{contextId:\d+}/theme',
 					'handler' => array($this, 'editTheme'),
 					'roles' => $roles,
 				),
 			),
 			'DELETE' => array(
 				array(
-					'pattern' => $this->getEndpointPattern() . '/{contextId}',
+					'pattern' => $this->getEndpointPattern() . '/{contextId:\d+}',
 					'handler' => array($this, 'delete'),
 					'roles' => array(ROLE_ID_SITE_ADMIN),
 				),
@@ -143,14 +143,12 @@ class PKPContextHandler extends APIHandler {
 
 		$items = array();
 		$contextsIterator = Services::get('context')->getMany($allowedParams);
-		if (count($contextsIterator)) {
-			$propertyArgs = array(
-				'request' => $request,
-				'slimRequest' => $slimRequest,
-			);
-			foreach ($contextsIterator as $context) {
-				$items[] = Services::get('context')->getSummaryProperties($context, $propertyArgs);
-			}
+		$propertyArgs = array(
+			'request' => $request,
+			'slimRequest' => $slimRequest,
+		);
+		foreach ($contextsIterator as $context) {
+			$items[] = Services::get('context')->getSummaryProperties($context, $propertyArgs);
 		}
 
 		$data = array(
@@ -293,7 +291,7 @@ class PKPContextHandler extends APIHandler {
 		}
 
 		$context = Application::getContextDAO()->newDataObject();
-		$context->_data = $params;
+		$context->setAllData($params);
 		$context = $contextService->add($context, $request);
 		$contextProps = $contextService->getFullProperties($context, array(
 			'request' => $request,

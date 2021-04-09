@@ -9,8 +9,8 @@
 /**
  * @file classes/search/SearchFileParser.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SearchFileParser
@@ -94,11 +94,12 @@ class SearchFileParser {
 
 	/**
 	 * Create a text parser for a file.
-	 * @param $file [Article|Paper]File
+	 * @param SubmissionFile $submissionFile
 	 * @return SearchFileParser
 	 */
-	static function fromFile($file) {
-		return SearchFileParser::fromFileType($file->getFileType(), $file->getFilePath());
+	static function fromFile($submissionFile) {
+		$fullPath = rtrim(Config::getVar('files', 'files_dir'), '/') . '/' . $submissionFile->getData('path');
+		return SearchFileParser::fromFileType($submissionFile->getData('mimetype'), $fullPath);
 	}
 
 	/**

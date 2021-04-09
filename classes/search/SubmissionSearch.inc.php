@@ -3,8 +3,8 @@
 /**
  * @file classes/search/SubmissionSearch.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionSearch
@@ -22,6 +22,7 @@ define('SUBMISSION_SEARCH_TITLE',		0x00000002);
 define('SUBMISSION_SEARCH_ABSTRACT',		0x00000004);
 define('SUBMISSION_SEARCH_DISCIPLINE',		0x00000008);
 define('SUBMISSION_SEARCH_SUBJECT',		0x00000010);
+define('SUBMISSION_SEARCH_KEYWORD',  	0x00000011);
 define('SUBMISSION_SEARCH_TYPE',		0x00000020);
 define('SUBMISSION_SEARCH_COVERAGE',		0x00000040);
 define('SUBMISSION_SEARCH_GALLEY_FILE',		0x00000080);
@@ -115,10 +116,7 @@ abstract class SubmissionSearch {
 	 * @return array An ordered and flattened list of article IDs.
 	 */
 	function _getMergedArray($context, &$keywords, $publishedFrom, $publishedTo) {
-		$resultsPerKeyword = Config::getVar('search', 'results_per_keyword');
-		$resultCacheHours = Config::getVar('search', 'result_cache_hours');
-		if (!is_numeric($resultsPerKeyword)) $resultsPerKeyword = 100;
-		if (!is_numeric($resultCacheHours)) $resultCacheHours = 24;
+		$resultsPerKeyword = Config::getVar('search', 'results_per_keyword', 100);
 
 		$mergedKeywords = array('+' => array(), '' => array(), '-' => array());
 		foreach ($keywords as $type => $keyword) {
@@ -129,13 +127,13 @@ abstract class SubmissionSearch {
 			if (!empty($keyword['-']))
 				$mergedKeywords['-'][] = array('type' => $type, '+' => array(), '' => $keyword['-'], '-' => array());
 		}
-		return $this->_getMergedKeywordResults($context, $mergedKeywords, null, $publishedFrom, $publishedTo, $resultsPerKeyword, $resultCacheHours);
+		return $this->_getMergedKeywordResults($context, $mergedKeywords, null, $publishedFrom, $publishedTo, $resultsPerKeyword);
 	}
 
 	/**
 	 * Recursive helper for _getMergedArray.
 	 */
-	function _getMergedKeywordResults($context, &$keyword, $type, $publishedFrom, $publishedTo, $resultsPerKeyword, $resultCacheHours) {
+	function _getMergedKeywordResults($context, &$keyword, $type, $publishedFrom, $publishedTo, $resultsPerKeyword) {
 		$mergedResults = null;
 
 		if (isset($keyword['type'])) {
@@ -143,7 +141,7 @@ abstract class SubmissionSearch {
 		}
 
 		foreach ($keyword['+'] as $phrase) {
-			$results = $this->_getMergedPhraseResults($context, $phrase, $type, $publishedFrom, $publishedTo, $resultsPerKeyword, $resultCacheHours);
+			$results = $this->_getMergedPhraseResults($context, $phrase, $type, $publishedFrom, $publishedTo, $resultsPerKeyword);
 			if ($mergedResults === null) {
 				$mergedResults = $results;
 			} else {
@@ -163,7 +161,7 @@ abstract class SubmissionSearch {
 
 		if (!empty($mergedResults) || empty($keyword['+'])) {
 			foreach ($keyword[''] as $phrase) {
-				$results = $this->_getMergedPhraseResults($context, $phrase, $type, $publishedFrom, $publishedTo, $resultsPerKeyword, $resultCacheHours);
+				$results = $this->_getMergedPhraseResults($context, $phrase, $type, $publishedFrom, $publishedTo, $resultsPerKeyword);
 				foreach ($results as $submissionId => $data) {
 					if (isset($mergedResults[$submissionId])) {
 						$mergedResults[$submissionId]['count'] += $data['count'];
@@ -174,7 +172,7 @@ abstract class SubmissionSearch {
 			}
 
 			foreach ($keyword['-'] as $phrase) {
-				$results = $this->_getMergedPhraseResults($context, $phrase, $type, $publishedFrom, $publishedTo, $resultsPerKeyword, $resultCacheHours);
+				$results = $this->_getMergedPhraseResults($context, $phrase, $type, $publishedFrom, $publishedTo, $resultsPerKeyword);
 				foreach ($results as $submissionId => $count) {
 					if (isset($mergedResults[$submissionId])) {
 						unset($mergedResults[$submissionId]);
@@ -189,22 +187,18 @@ abstract class SubmissionSearch {
 	/**
 	 * Recursive helper for _getMergedArray.
 	 */
-	function _getMergedPhraseResults($context, &$phrase, $type, $publishedFrom, $publishedTo, $resultsPerKeyword, $resultCacheHours) {
+	protected function _getMergedPhraseResults($context, &$phrase, $type, $publishedFrom, $publishedTo, $resultsPerKeyword) {
 		if (isset($phrase['+'])) {
-			return $this->_getMergedKeywordResults($context, $phrase, $type, $publishedFrom, $publishedTo, $resultsPerKeyword, $resultCacheHours);
+			return $this->_getMergedKeywordResults($context, $phrase, $type, $publishedFrom, $publishedTo, $resultsPerKeyword);
 		}
 
-		$mergedResults = array();
-		$searchDao = $this->getSearchDao();
-
-		return $searchDao->getPhraseResults(
+		return $this->getSearchDao()->getPhraseResults(
 			$context,
 			$phrase,
 			$publishedFrom,
 			$publishedTo,
 			$type,
-			$resultsPerKeyword,
-			$resultCacheHours
+			$resultsPerKeyword
 		);
 	}
 

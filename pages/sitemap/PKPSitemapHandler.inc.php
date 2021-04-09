@@ -3,8 +3,8 @@
 /**
  * @file pages/sitemap/PKPSitemapHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPSitemapHandler
@@ -72,7 +72,6 @@ class PKPSitemapHandler extends Handler {
 	 */
 	function _createContextSitemap($request) {
 		$context = $request->getContext();
-		$contextId = $context->getId();
 
 		$doc = new DOMDocument('1.0', 'utf-8');
 
@@ -91,9 +90,7 @@ class PKPSitemapHandler extends Handler {
 		if ($context->getData('enableAnnouncements') == 1) {
 			$root->appendChild($this->_createUrlTree($doc, $request->url($context->getPath(), 'announcement')));
 			$announcementDao = DAORegistry::getDAO('AnnouncementDAO'); /* @var $announcementDao AnnouncementDAO */
-			$contextAssocType = Application::getContextAssocType();
-			$announcementsResult = $announcementDao->getByAssocId($contextAssocType, $contextId);
-			while ($announcement = $announcementsResult->next()) {
+			foreach ($announcementDao->getByAssocId($context->getAssocType(), $context->getId()) as $announcement) {
 				$root->appendChild($this->_createUrlTree($doc, $request->url($context->getPath(), 'announcement', 'view', $announcement->getId())));
 			}
 		}
@@ -113,7 +110,7 @@ class PKPSitemapHandler extends Handler {
 		}
 		// Custom pages (navigation menu items)
 		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO'); /* @var $navigationMenuItemDao NavigationMenuItemDAO */
-		$menuItemsResult = $navigationMenuItemDao->getByType(NMI_TYPE_CUSTOM, $contextId);
+		$menuItemsResult = $navigationMenuItemDao->getByType(NMI_TYPE_CUSTOM, $context->getId());
 		while ($menuItem = $menuItemsResult->next()) {
 			$root->appendChild($this->_createUrlTree($doc, $request->url($context->getPath(), $menuItem->getPath())));
 		}

@@ -188,23 +188,8 @@ msgstr "Error"
 msgid "common.notice"
 msgstr "Notice"
 
-msgid "common.captcha.error.missing-input-secret"
-msgstr "The captcha validation for this website is not configured correctly. The secret key is missing."
-
-msgid "common.captcha.error.invalid-input-secret"
-msgstr "The captcha validation for this website is not configured correctly. The secret key is invalid."
-
 msgid "common.captcha.error.missing-input-response"
 msgstr "You must complete the validation check used to prevent spam submissions."
-
-msgid "common.captcha.error.invalid-input-response"
-msgstr "You did not pass the validation check used to prevent spam submissions."
-
-msgid "common.captchaField.description"
-msgstr "Please enter the letters as they appear in the image above."
-
-msgid "common.captchaField"
-msgstr "Validation"
 
 msgid "common.ccLicense"
 msgstr ""
@@ -353,6 +338,9 @@ msgstr "Download PDF"
 
 msgid "common.edit"
 msgstr "Edit"
+
+msgid "common.editItem"
+msgstr "Edit {$name}"
 
 msgid "common.enable"
 msgstr "Enable"
@@ -809,6 +797,9 @@ msgstr "The file could not be uploaded or revised."
 
 msgid "common.up"
 msgstr "Up"
+
+msgid "common.addFile"
+msgstr "Add File"
 
 msgid "common.upload.addFile"
 msgstr "Upload File"
@@ -1542,6 +1533,12 @@ msgstr "Search for"
 msgid "search.searchResults"
 msgstr "Search Results"
 
+msgid "search.searchResults.foundSingle"
+msgstr "Found one item."
+
+msgid "search.searchResults.foundPlural"
+msgstr "Found {$count} items."
+
 msgid "search.subject"
 msgstr "Keyword(s)"
 
@@ -1697,6 +1694,18 @@ msgstr "Invalid submission."
 msgid "user.authorization.invalidRepresentation"
 msgstr "Invalid representation."
 
+msgid "user.authorization.invalidReviewRound"
+msgstr "Invalid review round."
+
+msgid "user.authorization.invalidQuery"
+msgstr "Invalid discussion."
+
+msgid "user.authorization.unauthorizedNote"
+msgstr "You do not have access to this discussion message."
+
+msgid "user.authorization.unauthorizedReviewAssignment"
+msgstr "You do not have access to this review assignment."
+
 msgid "user.authorization.authorRoleMissing"
 msgstr "You do not currently have sufficient privileges to view the submission. Please edit your profile to ensure that you have been granted the appropriate roles under \"Register As\"."
 
@@ -1747,6 +1756,27 @@ msgstr "Navigation menu was succesfully updated"
 
 msgid "notification.removedNavigationMenu"
 msgstr "Navigation menu was succesfully removed"
+
+msgid "notification.unsubscribeNotifications.success"
+msgstr "You have been unsubscribed"
+
+msgid "notification.unsubscribeNotifications.error"
+msgstr "We could not unsubscribe you"
+
+msgid "notification.unsubscribeNotifications.pageMessage"
+msgstr "Select the emails that you no longer wish to receive at {$email} from {$contextName}."
+
+msgid "notification.unsubscribeNotifications.resubscribe"
+msgstr "You can resubscribe to email notifications at any time from your <a href=\"{$profileNotificationUrl}\">user profile</a>."
+
+msgid "notification.unsubscribeNotifications.successMessage"
+msgstr "The email address {$email} has been successfully unsubscribed. We'll no longer send you those emails. You can resubscribe to email notifications at any time from your <a href=\"{$profileNotificationUrl}\">user profile</a>."
+
+msgid "notification.unsubscribeNotifications.errorMessage"
+msgstr "There was an unexpected error and we could not unsubscribe the email address {$email}. You can unsubscribe from all email notifications in your <a href=\"{$profileNotificationUrl}\">user profile</a> or contact us directly for help."
+
+msgid "notification.unsubscribeNotifications"
+msgstr "Unsubscribe"
 
 msgid "list.viewMore"
 msgstr "Show more details about {$name}"

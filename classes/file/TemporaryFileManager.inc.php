@@ -3,8 +3,8 @@
 /**
  * @file classes/file/TemporaryFileManager.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPTemporaryFileManager
@@ -100,44 +100,6 @@ class TemporaryFileManager extends PrivateFileManager {
 			$temporaryFile->setFileType(PKPString::mime_content_type($this->getBasePath() . $newFileName, array_pop($exploded)));
 			$temporaryFile->setFileSize($_FILES[$fileName]['size']);
 			$temporaryFile->setOriginalFileName($this->truncateFileName($_FILES[$fileName]['name'], 127));
-			$temporaryFile->setDateUploaded(Core::getCurrentDate());
-
-			$temporaryFileDao->insertObject($temporaryFile);
-
-			return $temporaryFile;
-
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Create a new temporary file from a submission file.
-	 * @param $submissionFile object
-	 * @param $userId int
-	 * @return object The new TemporaryFile or false on failure
-	 */
-	function submissionToTemporaryFile($submissionFile, $userId) {
-		// Get the file extension, then rename the file.
-		$fileExtension = $this->parseFileExtension($submissionFile->getServerFileName());
-
-		if (!$this->fileExists($this->filesDir, 'dir')) {
-			// Try to create destination directory
-			$this->mkdirtree($this->filesDir);
-		}
-
-		$newFileName = basename(tempnam($this->filesDir, $fileExtension));
-		if (!$newFileName) return false;
-
-		if (copy($submissionFile->getFilePath(), $this->filesDir . $newFileName)) {
-			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO'); /* @var $temporaryFileDao TemporaryFileDAO */
-			$temporaryFile = $temporaryFileDao->newDataObject();
-
-			$temporaryFile->setUserId($userId);
-			$temporaryFile->setServerFileName($newFileName);
-			$temporaryFile->setFileType($submissionFile->getFileType());
-			$temporaryFile->setFileSize($submissionFile->getFileSize());
-			$temporaryFile->setOriginalFileName($submissionFile->getOriginalFileName());
 			$temporaryFile->setDateUploaded(Core::getCurrentDate());
 
 			$temporaryFileDao->insertObject($temporaryFile);

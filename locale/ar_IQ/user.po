@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:39+00:00\n"
-"PO-Revision-Date: 2020-07-16 03:40+0000\n"
+"PO-Revision-Date: 2020-12-01 11:47+0000\n"
 "Last-Translator: M. Ali <vorteem@gmail.com>\n"
 "Language-Team: Arabic <http://translate.pkp.sfu.ca/projects/pkp-lib/user/"
 "ar_IQ/>\n"
@@ -99,9 +99,6 @@ msgstr "الاسم"
 msgid "user.interests"
 msgstr "إهتمامات التحكيم"
 
-msgid "user.interests.description"
-msgstr "(إفصل بين الاهتمامات عبر زر enter أو بالفوارز الإنجليزية)"
-
 msgid "user.gossip"
 msgstr "ملاحظات التحرير"
 
@@ -187,7 +184,7 @@ msgid "user.logOut"
 msgstr "الخروج"
 
 msgid "user.logOutAs"
-msgstr "الخروج كأنني"
+msgstr "الخروج كأنني {$username}"
 
 msgid "user.hello"
 msgstr "مرحباً "

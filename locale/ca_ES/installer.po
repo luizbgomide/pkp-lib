@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:39+00:00\n"
-"PO-Revision-Date: 2020-03-13 09:36+0000\n"
+"PO-Revision-Date: 2020-12-01 11:47+0000\n"
 "Last-Translator: Jordi LC <jordi.lacruz@uab.cat>\n"
 "Language-Team: Catalan <http://translate.pkp.sfu.ca/projects/pkp-lib/"
-"installer/ca/>\n"
+"installer/ca_ES/>\n"
 "Language: ca_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,12 +43,6 @@ msgstr "Joc de caràcters de la connexió"
 
 msgid "installer.contentsOfConfigFile"
 msgstr "Continguts del fitxer de configuració"
-
-msgid "installer.createDatabase"
-msgstr "Crea una base de dades nova"
-
-msgid "installer.createDatabaseInstructions"
-msgstr "Per utilitzar aquesta opció, el vostre sistema de bases de dades ha d'admetre la creació remota de bases de dades i el vostre compte d'usuari/ària ha de tenir els permisos adequats per crear noves bases de dades. Si heu seleccionat aquesta opció i la instal·lació falla, creeu la base de dades manualment al servidor i torneu a executar l'instal·lador amb l'opció desactivada."
 
 msgid "installer.databaseDriver"
 msgstr "Controlador de la base de dades"
@@ -208,3 +202,7 @@ msgid "installer.unsupportedPhpError"
 msgstr ""
 "Aquest programari no és compatible amb la versió PHP del vostre servidor. "
 "Torneu a comprovar els requisits d'instal·lació a docs/README."
+
+#, fuzzy
+msgid "installer.installMigrationError"
+msgstr "Error en executar la classe de migració <tt>{$class}</tt>."

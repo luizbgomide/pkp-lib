@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-27T09:47:23-07:00\n"
-"PO-Revision-Date: 2020-06-18 17:39+0000\n"
+"PO-Revision-Date: 2021-03-04 17:09+0000\n"
 "Last-Translator: Jordi LC <jordi.lacruz@uab.cat>\n"
 "Language-Team: Spanish <http://translate.pkp.sfu.ca/projects/pkp-lib/"
 "submission/es_ES/>\n"
@@ -359,9 +359,6 @@ msgstr "Aceptado"
 msgid "submission.acknowledge"
 msgstr "Recibido"
 
-msgid "submission.addSuppFile"
-msgstr "Añadir archivo complementario"
-
 msgid "submission.ask"
 msgstr "Preguntar"
 
@@ -411,7 +408,7 @@ msgid "submission.comments.sendDecisionToReviewers"
 msgstr "Enviar decisión de revisores/as y editorial"
 
 msgid "submission.comments.subject"
-msgstr "Materia"
+msgstr "Asunto"
 
 msgid "submission.complete"
 msgstr "Completado"
@@ -477,7 +474,7 @@ msgid "submission.event.submissionSubmitted"
 msgstr "Envío inicial completado."
 
 msgid "submission.event.fileRevised"
-msgstr "Se cargó la revisión \"{$name}\" (Id. de archivo {$fileId}-{$fileRevision})."
+msgstr "Se cargó la revisión \"{$name}\" del archivo {$submissionFileId}."
 
 msgid "submission.event.general.metadataUpdated"
 msgstr "Metadatos de envío actualizados"
@@ -593,9 +590,6 @@ msgstr "¿Seguro que quieres eliminar esta galerada de forma permanente?"
 msgid "submission.layout.confirmDeleteGalleyImage"
 msgstr "¿Seguro que quieres eliminar esta imagen de la galerada?"
 
-msgid "submission.layout.confirmDeleteSupplementaryFile"
-msgstr "¿Seguro que quieres eliminar este archivo adicional de forma permanente?"
-
 msgid "submission.layout.deleteGalleyStylesheet"
 msgstr "Eliminar esta hoja de estilo."
 
@@ -659,14 +653,8 @@ msgstr "Versión maquetada"
 msgid "submission.layout.newGalley"
 msgstr "Crear nueva galerada"
 
-msgid "submission.layout.newSupplementaryFile"
-msgstr "Subir nuevo archivo complementario"
-
 msgid "submission.layout.noStyleFile"
 msgstr "No se ha añadido ningún archivo de hoja de estilo a esta galerada."
-
-msgid "submission.layout.supplementaryFiles"
-msgstr "Revisión de archivo complementario"
 
 msgid "submission.layout.viewingGalley"
 msgstr "Ver galerada de envío"
@@ -893,9 +881,6 @@ msgstr "Subir un archivo dependiente"
 msgid "submission.summary"
 msgstr "Resumen"
 
-msgid "submission.supplementaryFiles"
-msgstr "Archivos complementarios"
-
 msgid "submission.supportingAgencies"
 msgstr "Agencias de apoyo"
 
@@ -1044,9 +1029,6 @@ msgstr "Subir archivo"
 
 msgid "submission.upload.copyeditedVersion"
 msgstr "Subir archivo corregido"
-
-msgid "submission.upload.fairCopy"
-msgstr "Subir copia en limpio"
 
 msgid "submission.upload.uploadFiles"
 msgstr "Subir archivos"
@@ -1321,7 +1303,7 @@ msgid "submission.supplementary.creator"
 msgstr "Creador (o propietario) del archivo"
 
 msgid "submission.supplementary.subject"
-msgstr "Materia"
+msgstr "Asunto"
 
 msgid "submission.supplementary.publisher"
 msgstr "Editorial"
@@ -1445,9 +1427,6 @@ msgstr "Discusiones de revisión"
 msgid "submission.queries.editorial"
 msgstr "Discusiones de corrección"
 
-msgid "submission.queries.production"
-msgstr "Discusiones de producción"
-
 msgid "submission.query.subject"
 msgstr "Tema"
 
@@ -1485,7 +1464,7 @@ msgid "submission.query.new.contents"
 msgstr "Ha sido añadido a la conversación titulada \"{$queryTitle}\" que hace referencia al envío \"{$submissionTitle}\"."
 
 msgid "submission.submit.submissionChecklist"
-msgstr "Requisitos de envío"
+msgstr "Requisitos del envío"
 
 msgid "submission.submit.submissionChecklistDescription"
 msgstr "Antes de continuar debe leer y confirmar que ha completado los requisitos siguientes."
@@ -1524,7 +1503,9 @@ msgid "submission.howToCite.citationFormats"
 msgstr "Más formatos de cita"
 
 msgid "submission.submit.submissionLocaleDescription"
-msgstr "Se aceptan envíos en varios idiomas. Elija el idioma principal del envío desde el menú desplegable de abajo."
+msgstr ""
+"Se aceptan envíos en varios idiomas. Elija el idioma principal del envío "
+"desde el menú desplegable de arriba."
 
 msgid "submission.upload.proof"
 msgstr "Subir un archivo listo para publicación"
@@ -1560,10 +1541,10 @@ msgid "submission.list.itemsOfTotal"
 msgstr "{$count} de {$total} envíos"
 
 msgid "submission.list.responseDue"
-msgstr "Plazo de respuesta"
+msgstr "Plazo de respuesta: {$date}"
 
 msgid "submission.list.reviewDue"
-msgstr "Plazo de revisión"
+msgstr "Plazo de revisión: {$date}"
 
 msgid "submission.list.confirmDelete"
 msgstr "¿Eliminar envío?"
@@ -1667,7 +1648,11 @@ msgid "editor.submission.roundStatus.submissionResubmitted"
 msgstr "El artículo se ha envíado a otra ronda de revisión."
 
 msgid "editor.submission.addStageParticipant.form.reviewerWarning"
-msgstr "El colaborador/a que ha seleccionado ha sido asignado para llevar a cabo una revisión ciega. Si lo asigna como participante tendrá acceso a la identidad del autor/a. Le aconsejamos no elegir este colaborador/a a menos que pueda garantizar la integridad del proceso de revisión por pares."
+msgstr ""
+"El colaborador/a que ha seleccionado ha sido asignado para llevar a cabo una "
+"revisión anónima. Si lo asigna como participante tendrá acceso a la "
+"identidad del autor/a. Le aconsejamos no elegir este colaborador/a a menos "
+"que pueda garantizar la integridad del proceso de revisión por pares."
 
 msgid "editor.submission.makeRecommendation"
 msgstr "Hacer una recomendación"
@@ -1836,32 +1821,17 @@ msgstr ""
 "El resumen es demasiado largo. Debería tener {$limit} palabras o menos. "
 "Actualmente tiene {$count} palabras."
 
-msgid "publication.version.details"
-msgstr "Detalles de publicación de la versión {$version}"
-
 msgid "publication.version.confirm"
 msgstr "¿Seguro que quiere crear una versión nueva?"
 
 msgid "publication.version.all"
 msgstr "Todas las versiones"
 
-msgid "publication.unschedule.confirm"
-msgstr "¿Seguro que no quiere que esto se programe para su publicación?"
-
 msgid "publication.unschedule"
 msgstr "Desprogramar"
 
-msgid "publication.unpublish.confirm"
-msgstr "¿Seguro que no quiere que esto sea publicado?"
-
-msgid "publication.unpublish"
-msgstr "Retirar de publicación"
-
 msgid "publication.titleAbstract"
 msgstr "Título y resumen"
-
-msgid "publication.status.unscheduled"
-msgstr "Desprogramado"
 
 msgid "publication.status.unpublished"
 msgstr "Retirado de publicación"
@@ -1869,79 +1839,20 @@ msgstr "Retirado de publicación"
 msgid "publication.status.scheduled"
 msgstr "Programado"
 
-msgid "publication.status.published"
-msgstr "Publicado"
-
-msgid "publication.required.reviewStage"
-msgstr ""
-"El envío debe estar en las fases de \"corrección\" o de \"producción\" antes "
-"de poder ser publicado."
-
-msgid "publication.required.declined"
-msgstr "Un envío rechazado no puede ser publicado."
-
-msgid "publication.publish.requirements"
-msgstr ""
-"Se deben cumplir los siguientes requisitos antes de que esto pueda ser "
-"publicado."
-
-msgid "publication.publish"
-msgstr "Publicar"
-
 msgid "publication.publicationLicense"
 msgstr "Permisos y divulgación"
-
-msgid "publication.invalidSubmission"
-msgstr "No se pudo encontrar el envío para esta publicación."
-
-msgid "publication.event.versionUnpublished"
-msgstr "Se eliminó una versión de publicación."
-
-msgid "publication.event.versionScheduled"
-msgstr "Se programó una versión nueva para su publicación."
-
-msgid "publication.event.versionPublished"
-msgstr "Se publicó una versión nueva."
 
 msgid "publication.event.versionCreated"
 msgstr "Se creó una versión nueva."
 
-msgid "publication.event.unpublished"
-msgstr "El envío fue retirado de publicación."
-
-msgid "publication.event.scheduled"
-msgstr "El envío se programó para su publicación."
-
-msgid "publication.event.published"
-msgstr "El envío fue publicado."
-
-msgid "publication.editDisabled"
-msgstr "Esta versión ya ha sido publicada y no puede editarse."
-
 msgid "publication.datePublished.errorFormat"
 msgstr "La fecha debe estar en formato AAAA-MM-DD, por ejemplo 2019-01-01."
-
-msgid "publication.datePublished"
-msgstr "Fecha de publicación"
 
 msgid "publication.createVersion"
 msgstr "Crear una versión nueva"
 
-msgid "publication.copyrightYearBasis.submissionDescription"
-msgstr ""
-"El año de los derechos de autor se ajustará automáticamente en función de la "
-"fecha de publicación."
-
-msgid "publication.copyrightYearBasis.issueDescription"
-msgstr ""
-"El año de los derechos de autor se ajustará automáticamente cuando se "
-"publique en un número."
-
 msgid "publication.contributors"
 msgstr "Colaboradores/as"
-
-msgid "submission.publication"
-msgstr "Publicación"
 
 msgid "submission.list.reviewCancelled"
 msgstr "Revisión cancelada"
@@ -2012,25 +1923,11 @@ msgstr ""
 "by-nc-nd/3.0/\">Creative Commons Reconocimiento-NoComercial-SinObraDerivada "
 "3.0</a>.</p>"
 
-msgid "submission.copyrightOther.description"
-msgstr ""
-"Asignar derechos de autor para los envíos publicados en la parte siguiente."
-
 msgid "submission.copyrightOther"
 msgstr "Declaración de derechos de autor"
 
 msgid "submission.copyrightHolder.other"
 msgstr "Declaración de derechos de autor personalizada"
-
-msgid "submission.copyrightHolder.description"
-msgstr ""
-"Los derechos de autor se asignarán automáticamente a {$copyright} cuando se "
-"publique."
-
-msgid "submission.license.description"
-msgstr ""
-"La licencia se ajustará automáticamente a <a href='{$licenseUrl}' "
-"target='_blank'>{$licenseName}</a> cuando se publique."
 
 msgid "log.review.reviewReady"
 msgstr ""
@@ -2070,9 +1967,6 @@ msgstr "Deshabilitar la edición de metadatos"
 
 msgid "editor.submission.editStageParticipant"
 msgstr "Editar asignación"
-
-msgid "submission.status.scheduled"
-msgstr "Programado"
 
 msgid "submission.outdatedVersion"
 msgstr ""
@@ -2115,9 +2009,6 @@ msgstr "La ruta URL no puede ser un número."
 msgid "publication.urlPath"
 msgstr "Ruta URL"
 
-msgid "submission.publications"
-msgstr "Publicaciones"
-
 msgid "submission.publisherId.enable"
 msgstr "Habilitar para {$objects}"
 
@@ -2154,3 +2045,39 @@ msgstr "Archivos adicionales"
 
 msgid "submission.representationOfTitle"
 msgstr "{$representation} de {$title}"
+
+msgid "submission.event.fileEdited"
+msgstr ""
+"{$username} ha editado los metadatados del archivo \"{$originalFileName}\"."
+
+msgid "submission.upload.percentComplete"
+msgstr "{$percent}% de carga completado"
+
+msgid "submission.upload.instructions"
+msgstr ""
+"Cargue todos los archivos que el equipo editorial necesitará para evaluar su "
+"envío."
+
+msgid "submission.file.notAllowedUploaderUserId"
+msgstr ""
+"Se guarda un registro del cargador de archivos cuando se crea el archivo y "
+"no se puede cambiar."
+
+msgid "submission.submit.removeConfirm"
+msgstr "¿Seguro que desea eliminar este archivo?"
+
+msgid "submission.submit.genre.error"
+msgstr "Seleccione el tipo de archivo para cada carga."
+
+msgid "submission.submit.genre.description"
+msgstr "Elija la opción que mejor describa a este archivo."
+
+msgid "submission.submit.genre.label"
+msgstr "Qué tipo de archivo es?"
+
+msgid "author.submission.roundStatus.reviewOverdue"
+msgstr ""
+"Uno o más revisores/as han sobrepasado la fecha límite. El equipo editorial "
+"ha sido notificado y tomará las acciones oportunas para que se completen las "
+"revisiones. No necesita hacer nada más en este momento. Será notificado "
+"cuando se tome una decisión."

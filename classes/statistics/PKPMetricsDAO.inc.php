@@ -6,8 +6,8 @@
 /**
  * @file lib/pkp/classes/statistics/PKPMetricsDAO.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPMetricsDAO
@@ -199,7 +199,10 @@ class PKPMetricsDAO extends DAO {
 		else $result = $this->retrieve($sql, $params);
 
 		// Return the report.
-		$returner = $result->GetAll();
+		$returner = [];
+		foreach ($result as $row) {
+			$returner[] = (array) $row;
+		}
 		return $returner;
 	}
 
@@ -213,15 +216,12 @@ class PKPMetricsDAO extends DAO {
 	 * @return array
 	 */
 	function getLoadId($assocType, $assocId, $metricType) {
-		$params = array($assocType, $assocId, $metricType);
-		$result = $this->retrieve('SELECT load_id FROM metrics WHERE assoc_type = ? AND assoc_id = ? AND metric_type = ? GROUP BY load_id', $params);
+		$result = $this->retrieve('SELECT load_id FROM metrics WHERE assoc_type = ? AND assoc_id = ? AND metric_type = ? GROUP BY load_id', [$assocType, $assocId, $metricType]);
 
-		$loadIds = array();
-		while (!$result->EOF) {
-			$row = $result->FetchRow();
-			$loadIds[] = $row['load_id'];
+		$loadIds = [];
+		foreach ($result as $row) {
+			$loadIds[] = $row->load_id;
 		}
-
 		return $loadIds;
 	}
 
@@ -232,13 +232,8 @@ class PKPMetricsDAO extends DAO {
 	 * @return boolean
 	 */
 	function hasRecord($metricType) {
-		$result = $this->retrieve('SELECT load_id FROM metrics WHERE metric_type = ? LIMIT 1', array($metricType));
-		$row = $result->GetRowAssoc();
-		if ($row) {
-			return true;
-		} else {
-			return false;
-		}
+		$result = $this->retrieve('SELECT load_id FROM metrics WHERE metric_type = ? LIMIT 1', [$metricType]);
+		return (boolean) $result->current();
 	}
 
 	/**
@@ -247,7 +242,7 @@ class PKPMetricsDAO extends DAO {
 	 * @param $loadId string
 	 */
 	function purgeLoadBatch($loadId) {
-		$this->update('DELETE FROM metrics WHERE load_id = ?', $loadId); // Not a number.
+		$this->update('DELETE FROM metrics WHERE load_id = ?', [$loadId]); // Not a number.
 	}
 
 	/**
@@ -257,7 +252,7 @@ class PKPMetricsDAO extends DAO {
 	 * @param $toDate string
 	 */
 	function purgeRecords($metricType, $toDate) {
-		$this->update('DELETE FROM metrics WHERE metric_type = ? AND day IS NOT NULL AND day <= ?', array($metricType, $toDate));
+		$this->update('DELETE FROM metrics WHERE metric_type = ? AND day IS NOT NULL AND day <= ?', [$metricType, $toDate]);
 	}
 
 	/**
@@ -270,7 +265,7 @@ class PKPMetricsDAO extends DAO {
 		$recordToStore = array();
 
 		// Required dimensions.
-		$requiredDimensions = array('load_id', 'assoc_type', 'assoc_id', 'metric_type');
+		$requiredDimensions = ['load_id', 'assoc_type', 'assoc_id', 'metric_type'];
 		foreach ($requiredDimensions as $requiredDimension) {
 			if (!isset($record[$requiredDimension])) {
 				throw new Exception('Cannot load record: missing dimension "' . $requiredDimension . '".');
@@ -280,8 +275,9 @@ class PKPMetricsDAO extends DAO {
 		$assocType = $recordToStore['assoc_type'] = (int)$recordToStore['assoc_type'];
 		$assocId = $recordToStore['assoc_id'] = (int)$recordToStore['assoc_id'];
 
+		$initialRepresentationId = isset($record['representation_id']) ? $record['representation_id'] : null;
 		list($contextId, $pkpSectionId, $assocObjType,
-			$assocObjId, $submissionId, $representationId) = $this->foreignKeyLookup($assocType, $assocId);
+			$assocObjId, $submissionId, $representationId) = $this->foreignKeyLookup($assocType, $assocId, $initialRepresentationId);
 
 		$recordToStore['context_id'] = $contextId;
 		$recordToStore['pkp_section_id'] = $pkpSectionId;
@@ -341,12 +337,13 @@ class PKPMetricsDAO extends DAO {
 	 * Foreign key lookup for the published object dimension.
 	 * @param $assocType int
 	 * @param $assocId int
+	 * @param $representationId int, optional
 	 * @return array Values must be foreign keys relative to the
 	 * context, pkp section, associated object (type and id), submission
 	 * and representation.
 	 */
-	protected function foreignKeyLookup($assocType, $assocId) {
-		$contextId = $sectionId = $submissionId = $assocObjectType = $assocObjectId = $representationId = null;
+	protected function foreignKeyLookup($assocType, $assocId, $representationId = null) {
+		$contextId = $sectionId = $submissionId = $assocObjectType = $assocObjectId = null;
 
 		$isFile = false;
 		$isRepresentation = false;
@@ -354,13 +351,14 @@ class PKPMetricsDAO extends DAO {
 		switch($assocType) {
 			case ASSOC_TYPE_SUBMISSION_FILE:
 			case ASSOC_TYPE_SUBMISSION_FILE_COUNTER_OTHER:
-				$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-				$submissionFile = $submissionFileDao->getLatestRevision($assocId);
+				$submissionFile = Services::get('submissionFile')->get($assocId);
 				if ($submissionFile) {
 					$isFile = true;
-					$submissionId = $submissionFile->getSubmissionId();
-					if ($submissionFile->getAssocType() == ASSOC_TYPE_REPRESENTATION) {
-						$representationId = $submissionFile->getAssocId();
+					$submissionId = $submissionFile->getData('submissionId');
+					if ($submissionFile->getData('assocType') == ASSOC_TYPE_REPRESENTATION) {
+						if (is_null($representationId)) {
+							throw new Exception('Cannot load record: the representation ID is missing for the submission file.');
+						}
 					} else {
 						throw new Exception('Cannot load record: submission file is not associated with a representation object.');
 					}

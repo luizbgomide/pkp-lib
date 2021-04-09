@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/site/PKPSiteInformationForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPSiteInformationForm
@@ -15,7 +15,6 @@ namespace PKP\components\forms\site;
 use \PKP\components\forms\FormComponent;
 use \PKP\components\forms\FieldRichTextarea;
 use \PKP\components\forms\FieldText;
-use \PKP\components\forms\FieldTextarea;
 
 define('FORM_SITE_INFO', 'siteInfo');
 
@@ -37,7 +36,7 @@ class PKPSiteInformationForm extends FormComponent {
 		$this->action = $action;
 		$this->locales = $locales;
 
-		$this->addField(new FieldTextarea('about', [
+		$this->addField(new FieldRichTextarea('about', [
 				'label' => __('admin.settings.about'),
 				'isMultilingual' => true,
 				'value' => $site->getData('about'),

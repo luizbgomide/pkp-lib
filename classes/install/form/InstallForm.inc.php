@@ -3,8 +3,8 @@
 /**
  * @file classes/install/form/InstallForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class InstallForm
@@ -113,10 +113,10 @@ class InstallForm extends MaintenanceForm {
 			'maxFileUploadSize' => get_cfg_var('upload_max_filesize'),
 			'databaseDriverOptions' => $this->checkDBDrivers(),
 			'supportsMBString' => PKPString::hasMBString() ? __('common.yes') : __('common.no'),
-			'phpIsSupportedVersion' => version_compare(PHP_REQUIRED_VERSION, PHP_VERSION) != 1,
+			'phpIsSupportedVersion' => version_compare(PKPApplication::PHP_REQUIRED_VERSION, PHP_VERSION) != 1,
 			'xslEnabled' => XSLTransformer::checkSupport(),
 			'xslRequired' => REQUIRES_XSL,
-			'phpRequiredVersion' => PHP_REQUIRED_VERSION,
+			'phpRequiredVersion' => PKPApplication::PHP_REQUIRED_VERSION,
 			'phpVersion' => PHP_VERSION,
 		));
 
@@ -147,7 +147,6 @@ class InstallForm extends MaintenanceForm {
 			'databaseUsername' => Application::getName(),
 			'databasePassword' => '',
 			'databaseName' => Application::getName(),
-			'createDatabase' => 1,
 			'oaiRepositoryId' => Application::getName() . '.' . $this->_request->getServerHost(),
 			'enableBeacon' => true,
 		);
@@ -172,7 +171,6 @@ class InstallForm extends MaintenanceForm {
 			'databaseUsername',
 			'databasePassword',
 			'databaseName',
-			'createDatabase',
 			'oaiRepositoryId',
 			'enableBeacon',
 		));

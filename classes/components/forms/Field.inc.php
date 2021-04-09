@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/Field.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Field
@@ -91,7 +91,7 @@ abstract class Field {
 	 */
 	public function getConfig() {
 		if (!$this->validate()) {
-			fatalError('Form field configuration did not pass validation: ' . print_r($this, true));
+			throw new \Exception('Form field configuration did not pass validation: ' . print_r($this, true));
 		}
 		$config = array(
 			'name' => $this->name,

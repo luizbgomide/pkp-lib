@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/native/filter/PKPPublicationNativeXmlFilter.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPPublicationNativeXmlFilter
@@ -74,7 +74,7 @@ class PKPPublicationNativeXmlFilter extends NativeExportFilter {
 		$entityNode = $doc->createElementNS($deployment->getNamespace(), 'publication');
 
 		$this->addIdentifiers($doc, $entityNode, $entity);
-		
+
 		$entityNode->setAttribute('locale', $entity->getData('locale'));
 		$entityNode->setAttribute('version', $entity->getData('version') ?: 1);
 		$entityNode->setAttribute('status', $entity->getData('status'));
@@ -83,19 +83,29 @@ class PKPPublicationNativeXmlFilter extends NativeExportFilter {
 
 		$isPublished = $entity->getData('status') === STATUS_PUBLISHED;
 		$isPublished ? $entityNode->setAttribute('seq', (int) $entity->getData('seq')) : $entityNode->setAttribute('seq', '0');
-		
+
 		$entityLanguages = $entity->getData('languages');
 		if ($entityLanguages) {
 			$entityNode->setAttribute('language', $entityLanguages);
 		}
-		
+
 		if ($datePublished = $entity->getData('datePublished')) {
 			$entityNode->setAttribute('date_published', strftime('%Y-%m-%d', strtotime($datePublished)));
 		}
 
 		$this->addMetadata($doc, $entityNode, $entity);
-		$this->addAuthors($doc, $entityNode, $entity);
+
+		$authors = $entity->getData('authors');
+		if ($authors && count($authors) > 0) {
+			$this->addAuthors($doc, $entityNode, $entity);
+		}
+
 		$this->addRepresentations($doc, $entityNode, $entity);
+
+		$citationsListNode = $this->createCitationsNode($doc, $deployment, $entity);
+		if ($citationsListNode->hasChildNodes() || $citationsListNode->hasAttributes()) {
+			$entityNode->appendChild($citationsListNode);
+		}
 
 		return $entityNode;
 	}
@@ -164,13 +174,13 @@ class PKPPublicationNativeXmlFilter extends NativeExportFilter {
 		$this->createLocalizedNodes($doc, $entityNode, 'type', $entity->getData('type'));
 		$this->createLocalizedNodes($doc, $entityNode, 'source', $entity->getData('source'));
 		$this->createLocalizedNodes($doc, $entityNode, 'rights', $entity->getData('rights'));
-		
+
 		if ($entity->getData('licenseUrl')) {
 			$entityNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'licenseUrl', htmlspecialchars($entity->getData('licenseUrl'))));
 		}
 
 		$this->createLocalizedNodes($doc, $entityNode, 'copyrightHolder', $entity->getData('copyrightHolder'));
-		
+
 		if ($entity->getData('copyrightYear')) {
 			$entityNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'copyrightYear', intval($entity->getData('copyrightYear'))));
 		}
@@ -263,6 +273,7 @@ class PKPPublicationNativeXmlFilter extends NativeExportFilter {
 		return array(
 				'keywords' => array('SubmissionKeywordDAO', 'getKeywords', 'keyword'),
 				'agencies' => array('SubmissionAgencyDAO', 'getAgencies', 'agency'),
+				'languages' => array('SubmissionLanguageDAO', 'getLanguages', 'language'),
 				'disciplines' => array('SubmissionDisciplineDAO', 'getDisciplines', 'discipline'),
 				'subjects' => array('SubmissionSubjectDAO', 'getSubjects', 'subject'),
 		);
@@ -278,6 +289,27 @@ class PKPPublicationNativeXmlFilter extends NativeExportFilter {
 	 */
 	function getFiles($representation) {
 		assert(false); // To be overridden by subclasses
+	}
+
+	/**
+	 * Create and return a Citations node.
+	 * @param $doc DOMDocument
+	 * @param $deployment
+	 * @param $publication Publication
+	 * @return DOMElement
+	 */
+	private function createCitationsNode($doc, $deployment, $publication) {
+		$citationDao = DAORegistry::getDAO('CitationDAO'); /** @var $citationDao CitationDAO */
+
+		$nodeCitations = $doc->createElementNS($deployment->getNamespace(), 'citations');
+		$submissionCitations = $citationDao->getByPublicationId($publication->getId())->toAssociativeArray();
+
+		foreach ($submissionCitations as $submissionCitation) {
+			$rawCitation = $submissionCitation->getRawCitation();
+			$nodeCitations->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'citation', htmlspecialchars($rawCitation, ENT_COMPAT, 'UTF-8')));
+		}
+
+		return $nodeCitations;
 	}
 }
 

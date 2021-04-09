@@ -3,8 +3,8 @@
 /**
  * @file classes/notification/managerDelegate/PendingRevisionsNotificationManager.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PendingRevisionsNotificationManager
@@ -118,7 +118,7 @@ class PendingRevisionsNotificationManager extends NotificationManagerDelegate {
 					NOTIFICATION_TYPE_EDITOR_DECISION_PENDING_REVISIONS,
 					$context->getId()
 				);
-				if ($notificationFactory->wasEmpty()) {
+				if (!$notificationFactory->next()) {
 					// Create or update a pending revision task notification.
 					$notificationDao = DAORegistry::getDAO('NotificationDAO'); /* @var $notificationDao NotificationDAO */
 					$notificationDao->build(
@@ -159,9 +159,9 @@ class PendingRevisionsNotificationManager extends NotificationManagerDelegate {
 
 		switch ($this->getNotificationType()) {
 			case NOTIFICATION_TYPE_PENDING_INTERNAL_REVISIONS:
-				return array_key_exists(WORKFLOW_STAGE_ID_INTERNAL_REVIEW, $stagesData) ? $stagesData[WORKFLOW_STAGE_ID_INTERNAL_REVIEW] : null;
+				return $stagesData[WORKFLOW_STAGE_ID_INTERNAL_REVIEW] ?? null;
 			case NOTIFICATION_TYPE_PENDING_EXTERNAL_REVISIONS:
-				return $stagesData[WORKFLOW_STAGE_ID_EXTERNAL_REVIEW];
+				return $stagesData[WORKFLOW_STAGE_ID_EXTERNAL_REVIEW] ?? null;
 			default:
 				assert(false);
 		}

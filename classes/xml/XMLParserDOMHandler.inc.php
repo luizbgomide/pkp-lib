@@ -3,15 +3,15 @@
 /**
  * @file classes/xml/XMLParserDOMHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class XMLParserDOMHandler
  * @ingroup xml
- * @see XMLParser
+ * @see PKPXMLParser
  *
- * @brief Default handler for XMLParser returning a simple DOM-style object.
+ * @brief Default handler for PKPXMLParser returning a simple DOM-style object.
  * This handler parses an XML document into a tree structure of XMLNode objects.
  *
  */
@@ -44,7 +44,7 @@ class XMLParserDOMHandler extends XMLParserHandler {
 
 	/**
 	 * Callback function to act as the start element handler.
-	 * @param $parser XMLParser
+	 * @param $parser PKPXMLParser
 	 * @param $tag string
 	 * @param $attributes array
 	 */
@@ -66,7 +66,7 @@ class XMLParserDOMHandler extends XMLParserHandler {
 
 	/**
 	 * Callback function to act as the end element handler.
-	 * @param $parser XMLParser
+	 * @param $parser PKPXMLParser
 	 * @param $tag string
 	 */
 	function endElement($parser, $tag) {
@@ -77,7 +77,7 @@ class XMLParserDOMHandler extends XMLParserHandler {
 
 	/**
 	 * Callback function to act as the character data handler.
-	 * @param $parser XMLParser
+	 * @param $parser PKPXMLParser
 	 * @param $data string
 	 */
 	function characterData($parser, $data) {

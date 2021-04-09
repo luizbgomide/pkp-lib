@@ -3,8 +3,8 @@
 /**
  * @file api/v1/stats/PKPStatsHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPStatsPublicationHandler
@@ -45,17 +45,17 @@ abstract class PKPStatsPublicationHandler extends APIHandler {
 					'roles' => $roles
 				),
 				array(
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}',
 					'handler' => array($this, 'get'),
 					'roles' => $roles
 				),
 				array(
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}/abstract',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}/abstract',
 					'handler' => array($this, 'getAbstract'),
 					'roles' => $roles
 				),
 				array(
-					'pattern' => $this->getEndpointPattern() . '/{submissionId}/galley',
+					'pattern' => $this->getEndpointPattern() . '/{submissionId:\d+}/galley',
 					'handler' => array($this, 'getGalley'),
 					'roles' => $roles
 				),
@@ -242,13 +242,11 @@ abstract class PKPStatsPublicationHandler extends APIHandler {
 			$statsQB->filterBySubmissions($allowedParams['submissionIds']);
 		}
 		$statsQO = $statsQB->getSubmissionIds();
-		$result = \DAORegistry::getDAO('MetricsDAO')
-			->retrieve($statsQO->toSql(), $statsQO->getBindings());
-		$itemsMax = $result->RecordCount();
 
+		$metricsDao = \DAORegistry::getDAO('MetricsDAO'); /** @var MetricsDAO */
 		return $response->withJson([
 			'items' => $items,
-			'itemsMax' => $itemsMax,
+			'itemsMax' => $metricsDao->countRecords($statsQO->toSql(), $statsQO->getBindings()),
 		], 200);
 	}
 

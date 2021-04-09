@@ -2,8 +2,8 @@
 /**
  * @file classes/security/authorization/internal/SubmissionFileMatchesWorkflowStageIdPolicy.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionFileMatchesWorkflowStageIdPolicy
@@ -23,8 +23,8 @@ class SubmissionFileMatchesWorkflowStageIdPolicy extends SubmissionFileBaseAcces
 	 * @param $request PKPRequest
 	 * @param $stageId int Workflow stage ID (WORKFLOW_STAGE_ID_...)
 	 */
-	function __construct($request, $fileIdAndRevision = null, $stageId = null) {
-		parent::__construct($request, $fileIdAndRevision);
+	function __construct($request, $submissionFileId = null, $stageId = null) {
+		parent::__construct($request, $submissionFileId);
 		$this->_stageId = (int) $stageId;
 	}
 
@@ -41,11 +41,10 @@ class SubmissionFileMatchesWorkflowStageIdPolicy extends SubmissionFileBaseAcces
 		$submissionFile = $this->getSubmissionFile($request);
 		if (!is_a($submissionFile, 'SubmissionFile')) return AUTHORIZATION_DENY;
 
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-		$workflowStageId = $submissionFileDao->getWorkflowStageId($submissionFile);
+		$workflowStageId = Services::get('submissionFile')->getWorkflowStageId($submissionFile);
 
 		// Check if the submission file belongs to the specified workflow stage.
-		if ($workflowStageId !== $this->_stageId) return AUTHORIZATION_DENY;
+		if ($workflowStageId != $this->_stageId) return AUTHORIZATION_DENY;
 
 		return AUTHORIZATION_PERMIT;
 	}

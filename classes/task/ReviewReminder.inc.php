@@ -3,8 +3,8 @@
 /**
  * @file classes/task/ReviewReminder.inc.php
  *
- * Copyright (c) 2013-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2013-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewReminder
@@ -77,7 +77,7 @@ class ReviewReminder extends ScheduledTask {
 		$application = Application::get();
 		$request = $application->getRequest();
 		$dispatcher = $application->getDispatcher();
-		$submissionReviewUrl = $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'reviewer', 'submission', null, $reviewUrlArgs);
+		$submissionReviewUrl = $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $context->getPath(), 'reviewer', 'submission', null, $reviewUrlArgs);
 
 		// Format the review due date
 		$reviewDueDate = strtotime($reviewAssignment->getDateDue());
@@ -105,7 +105,7 @@ class ReviewReminder extends ScheduledTask {
 			'reviewDueDate' => $reviewDueDate,
 			'responseDueDate' => $responseDueDate,
 			'editorialContactSignature' => $context->getData('contactName') . "\n" . $context->getLocalizedName(),
-			'passwordResetUrl' => $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'login', 'resetPassword', $reviewer->getUsername(), array('confirm' => Validation::generatePasswordResetHash($reviewer->getId()))),
+			'passwordResetUrl' => $dispatcher->url($request, PKPApplication::ROUTE_PAGE, $context->getPath(), 'login', 'resetPassword', $reviewer->getUsername(), array('confirm' => Validation::generatePasswordResetHash($reviewer->getId()))),
 			'submissionReviewUrl' => $submissionReviewUrl,
 			'messageToReviewer' => __('reviewer.step1.requestBoilerplate'),
 			'abstractTermIfEnabled' => ($submission->getLocalizedAbstract() == '' ? '' : __('common.abstract')),

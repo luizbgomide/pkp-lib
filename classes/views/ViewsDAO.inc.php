@@ -3,8 +3,8 @@
 /**
  * @file classes/views/ViewsDAO.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ViewsDAO
@@ -12,10 +12,6 @@
  *
  * @brief Class for keeping track of item views.
  */
-
-define('RECORD_VIEW_RESULT_FAIL', 0);
-define('RECORD_VIEW_RESULT_EXISTING', 1);
-define('RECORD_VIEW_RESULT_INSERTED', 2);
 
 class ViewsDAO extends DAO {
 
@@ -29,13 +25,13 @@ class ViewsDAO extends DAO {
 	public function recordView($assocType, $assocId, $userId) {
 		return $this->replace(
 			'item_views',
-			array(
+			[
 				'date_last_viewed' => strftime('%Y-%m-%d %H:%M:%S'),
 				'assoc_type' => (int) $assocType,
 				'assoc_id' => $assocId,
 				'user_id' => (int) $userId
-			),
-			array('assoc_type', 'assoc_id', 'user_id')
+			],
+			['assoc_type', 'assoc_id', 'user_id']
 		);
 	}
 
@@ -47,17 +43,18 @@ class ViewsDAO extends DAO {
 	 * @return string|boolean Datetime of last view. False if no view found.
 	 */
 	public function getLastViewDate($assocType, $assocId, $userId = null) {
-		$params = array((int)$assocType, $assocId);
+		$params = [(int)$assocType, $assocId];
 		if ($userId) $params[] = (int)$userId;
 		$result = $this->retrieve(
 			'SELECT	date_last_viewed
 			FROM	item_views
 			WHERE	assoc_type = ?
-				AND	assoc_id = ?' .
-				($userId ? ' AND	user_id = ?' : ''),
+				AND assoc_id = ?' .
+				($userId ? ' AND user_id = ?' : ''),
 			$params
 		);
-		return (isset($result->fields[0])) ? $result->fields[0] : false;
+		$row = $result->current();
+		return $row ? $row->date_last_viewed : false;
 	}
 
 	/**
@@ -69,7 +66,7 @@ class ViewsDAO extends DAO {
 	public function moveViews($assocType, $oldAssocId, $newAssocId) {
 		return $this->update(
 			'UPDATE item_views SET assoc_id = ? WHERE assoc_type = ? AND assoc_id = ?',
-			array($newAssocId, (int)$assocType, $oldAssocId)
+			[$newAssocId, (int)$assocType, $oldAssocId]
 		);
 	}
 
@@ -81,7 +78,7 @@ class ViewsDAO extends DAO {
 	public function deleteViews($assocType, $assocId) {
 		return $this->update(
 			'DELETE FROM item_views WHERE assoc_type = ? AND assoc_id = ?',
-			array((int)$assocType, $assocId)
+			[(int)$assocType, $assocId]
 		);
 	}
 }

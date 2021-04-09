@@ -2,8 +2,8 @@
 /**
  * @file classes/services/QueryBuilders/PKPPublicationQueryBuilder.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPPublicationQueryBuilder
@@ -145,7 +145,7 @@ class PKPPublicationQueryBuilder implements EntityQueryBuilderInterface {
 	public function getDateBoundaries() {
 		return $this->getQuery(false)
 			->select([
-				Capsule::raw('MIN(p.date_published), MAX(p.date_published)')
+				Capsule::raw('MIN(p.date_published) AS min_date_published, MAX(p.date_published) AS max_date_published')
 			]);
 	}
 

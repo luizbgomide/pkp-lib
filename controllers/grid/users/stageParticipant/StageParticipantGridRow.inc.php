@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/stageParticipant/StageParticipantGridRow.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class StageParticipantGridRow
@@ -110,7 +110,7 @@ class StageParticipantGridRow extends GridRow {
 				}
 				$redirectUrl = $dispatcher->url(
 					$request,
-					ROUTE_PAGE,
+					PKPApplication::ROUTE_PAGE,
 					$context->getPath(),
 					$handler,
 					$op,
@@ -123,7 +123,7 @@ class StageParticipantGridRow extends GridRow {
 						new RedirectConfirmationModal(
 							__('grid.user.confirmLogInAs'),
 							__('grid.action.logInAs'),
-							$dispatcher->url($request, ROUTE_PAGE, null, 'login', 'signInAsUser', $userId, array('redirectUrl'=> $redirectUrl))
+							$dispatcher->url($request, PKPApplication::ROUTE_PAGE, null, 'login', 'signInAsUser', $userId, array('redirectUrl'=> $redirectUrl))
 						),
 						__('grid.action.logInAs'),
 						'enroll_user'

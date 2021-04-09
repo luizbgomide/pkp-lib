@@ -1,8 +1,8 @@
 {**
  * templates/management/website.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * The website settings page.
@@ -20,10 +20,10 @@
 		</notification>
 	{/if}
 
-	<tabs>
+	<tabs :track-history="true">
 		<tab id="appearance" label="{translate key="manager.website.appearance"}">
 			{help file="settings/website-settings" class="pkp_help_tab"}
-			<tabs :is-side-tabs="true">
+			<tabs :is-side-tabs="true" :track-history="true">
 				<tab id="theme" label="{translate key="manager.setup.theme"}">
 					<theme-form
 						v-bind="components.{$smarty.const.FORM_THEME}"
@@ -47,7 +47,7 @@
 		</tab>
 		<tab id="setup" label="{translate key="navigation.setup"}">
 			{help file="settings/website-settings" section="setup" class="pkp_help_tab"}
-			<tabs :is-side-tabs="true">
+			<tabs :is-side-tabs="true" :track-history="true">
 				<tab id="information" label="{translate key="manager.website.information"}">
 					<pkp-form
 						v-bind="components.{$smarty.const.FORM_INFORMATION}"
@@ -55,13 +55,13 @@
 					/>
 				</tab>
 				<tab id="languages" label="{translate key="common.languages"}">
-					{capture assign=languagesUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.settings.languages.ManageLanguageGridHandler" op="fetchGrid" escape=false}{/capture}
+					{capture assign=languagesUrl}{url router=PKPApplication::ROUTE_COMPONENT component="grid.settings.languages.ManageLanguageGridHandler" op="fetchGrid" escape=false}{/capture}
 					{load_url_in_div id="languageGridContainer" url=$languagesUrl}
 				</tab>
 				<tab id="navigationMenus" label="{translate key="manager.navigationMenus"}">
-					{capture assign=navigationMenusGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.navigationMenus.NavigationMenusGridHandler" op="fetchGrid" escape=false}{/capture}
+					{capture assign=navigationMenusGridUrl}{url router=PKPApplication::ROUTE_COMPONENT component="grid.navigationMenus.NavigationMenusGridHandler" op="fetchGrid" escape=false}{/capture}
 					{load_url_in_div id="navigationMenuGridContainer" url=$navigationMenusGridUrl}
-					{capture assign=navigationMenuItemsGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.navigationMenus.NavigationMenuItemsGridHandler" op="fetchGrid" escape=false}{/capture}
+					{capture assign=navigationMenuItemsGridUrl}{url router=PKPApplication::ROUTE_COMPONENT component="grid.navigationMenus.NavigationMenuItemsGridHandler" op="fetchGrid" escape=false}{/capture}
 					{load_url_in_div id="navigationMenuItemsGridContainer" url=$navigationMenuItemsGridUrl}
 				</tab>
 				<tab id="announcements" label="{translate key="manager.setup.announcements"}">
@@ -93,13 +93,13 @@
 		</tab>
 		<tab id="plugins" label="{translate key="common.plugins"}">
 			{help file="settings/website-settings" section="plugins" class="pkp_help_tab"}
-			<tabs :options="{ useUrlFragment: false }">
+			<tabs :track-history="true">
 				<tab id="installedPlugins" label="{translate key="manager.plugins.installed"}">
-					{capture assign=pluginGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.settings.plugins.SettingsPluginGridHandler" op="fetchGrid" escape=false}{/capture}
+					{capture assign=pluginGridUrl}{url router=PKPApplication::ROUTE_COMPONENT component="grid.settings.plugins.SettingsPluginGridHandler" op="fetchGrid" escape=false}{/capture}
 					{load_url_in_div id="pluginGridContainer" url=$pluginGridUrl}
 				</tab>
 				<tab id="pluginGallery" label="{translate key="manager.plugins.pluginGallery"}">
-					{capture assign=pluginGalleryGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.plugins.PluginGalleryGridHandler" op="fetchGrid" escape=false}{/capture}
+					{capture assign=pluginGalleryGridUrl}{url router=PKPApplication::ROUTE_COMPONENT component="grid.plugins.PluginGalleryGridHandler" op="fetchGrid" escape=false}{/capture}
 					{load_url_in_div id="pluginGalleryGridContainer" url=$pluginGalleryGridUrl}
 				</tab>
 				{call_hook name="Template::Settings::website::plugins"}
